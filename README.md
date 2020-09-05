@@ -11,7 +11,8 @@ IT Project
 
 ### Setup for Frontend
 
-npm install
+1.cd client
+2.npm install
 
 ### How to Run both Server and client
 
