@@ -1,0 +1,3 @@
+{
+  "mongoURI": "mongodb+srv://mehmet:1234@eportfolio.kpvsq.mongodb.net/ePortfolio?retryWrites=true&w=majority"
+}
