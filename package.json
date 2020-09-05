@@ -1,0 +1,33 @@
+{
+  "name": "quaranteam",
+  "version": "1.0.0",
+  "description": "ePortfolio",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server",
+    "server": "nodemon",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daltavida/Quaranteam.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/daltavida/Quaranteam/issues"
+  },
+  "homepage": "https://github.com/daltavida/Quaranteam#readme",
+  "dependencies": {
+    "config": "^3.3.1",
+    "express": "^4.17.1",
+    "express-validator": "^6.6.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.10.3"
+  },
+  "devDependencies": {
+    "concurrently": "^5.3.0",
+    "nodemon": "^2.0.4"
+  }
+}
