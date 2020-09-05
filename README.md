@@ -9,6 +9,10 @@ IT Project
 3. npm i express express-validator config jsonwebtoken mongoose
 4. npm i -D nodemon concurrently
 
+### Setup for Frontend
+
+npm install
+
 ### How to Run both Server and client
 
 npm run dev
