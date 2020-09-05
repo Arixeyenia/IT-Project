@@ -9,9 +9,10 @@ IT Project
 3. npm i express express-validator config jsonwebtoken mongoose
 4. npm i -D nodemon concurrently
 
-### How to Run Server and Test
+### How to Run both Server and client
 
-npm run server
+npm run dev
+(then you don't need to type npm run server again)
 
 while server is running:
 
