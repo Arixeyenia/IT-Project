@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const jwt = require('jsonwebtoken');
+const config = require('config');
 const { check, validationResult } = require('express-validator');
 
 // Bring in User Model
@@ -32,7 +34,9 @@ router.post(
       if (user) {
         // response looks weird but its to make sure all error message jsons are
         // formatted the same to make frontends job easier
-        res.status(400).json({ errors: [{ msg: 'User already exists' }] });
+        return res
+          .status(400)
+          .json({ errors: [{ msg: 'User already exists' }] });
       }
 
       // Create user
@@ -44,9 +48,21 @@ router.post(
 
       await user.save();
 
-      // Return webtoken
+      const payload = {
+        user: {
+          id: user.id,
+        },
+      };
 
-      res.send('User route');
+      jwt.sign(
+        payload,
+        config.get('jwtSecret'),
+        { expiresIn: 3600000 }, //should probably expire in 3600 (an hour) but kept it longer for testing
+        (err, token) => {
+          if (err) throw err;
+          res.json({ token });
+        }
+      );
     } catch (err) {
       console.error(err.message);
       res.status(500).send('Server error');
