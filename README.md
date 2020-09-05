@@ -20,3 +20,20 @@ while server is running:
 POST localhost:5000/api/users
 header: key = Content-Type, value = application/json
 body: {"name": "name", "email": "email", "password": "password"}
+
+returns a TOKEN
+
+#### To Authenticate user, on Postman:
+
+GET localhost:5000/api/auth
+header: key = x-auth-token, value = "TOKEN" (from register step)
+
+returns user info without password
+
+#### To Login user, on Postman
+
+POST localhost:5000/api/auth
+header: key = Content-Type, value = application/json
+body: {"email": "email", "password": "password"}
+
+returns TOKEN if email & password is correct

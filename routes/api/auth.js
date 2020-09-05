@@ -1,23 +1,33 @@
 const express = require('express');
 const router = express.Router();
+const auth = require('../../middleware/auth');
 const jwt = require('jsonwebtoken');
 const config = require('config');
 const { check, validationResult } = require('express-validator');
 
-// Bring in User Model
 const User = require('../../models/User');
 
-// @route   POST api/users
-// @desc    Register user
+// @route   GET api/auth
+// @desc    Return user info (test)
+// @access  Public
+router.get('/', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route   POST api/auth
+// @desc    Authenticate user and get Token
 // @access  Public
 router.post(
   '/',
   [
-    check('name', 'Name is required').not().isEmpty(),
     check('email', 'Please include a valid email').isEmail(),
-    check('password', 'Please enter a password with 6+ characters').isLength({
-      min: 6,
-    }),
+    check('password', 'Password is required').exists(),
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -25,28 +35,26 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { name, email, password } = req.body;
+    const { email, password } = req.body;
 
     try {
       // Check if user exists
       let user = await User.findOne({ email });
 
-      if (user) {
-        // response looks weird but its to make sure all error message jsons are
-        // formatted the same to make frontends job easier
+      if (!user) {
         return res
           .status(400)
-          .json({ errors: [{ msg: 'User already exists' }] });
+          .json({ errors: [{ msg: 'Invalid Credentials' }] });
       }
 
-      // Create user
-      user = new User({
-        name,
-        email,
-        password,
-      });
+      // Make sure password matches (this will not be needed once we use Google Oauth)
+      const isMatch = password === user.password;
 
-      await user.save();
+      if (!isMatch) {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: 'Invalid Credentials' }] });
+      }
 
       const payload = {
         user: {
@@ -57,7 +65,7 @@ router.post(
       jwt.sign(
         payload,
         config.get('jwtSecret'),
-        { expiresIn: onfig.get('expiressIn') }, //should probably expire in 3600 (an hour) but kept it longer for testing
+        { expiresIn: config.get('expiressIn') }, //should probably expire in 3600 (an hour) but kept it longer for testing
         (err, token) => {
           if (err) throw err;
           res.json({ token });

@@ -1,4 +1,5 @@
 {
   "mongoURI": "mongodb+srv://mehmet:1234@eportfolio.kpvsq.mongodb.net/ePortfolio?retryWrites=true&w=majority",
-  "jwtSecret": "secrettoken"
+  "jwtSecret": "secrettoken",
+  "expiressIn": 3600000
 }
