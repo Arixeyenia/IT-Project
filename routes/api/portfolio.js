@@ -39,8 +39,8 @@ router.post('/', auth, async (req, res) => {
 
 // @route   GET api/portfolio/:id
 // @desc    Get portfolio by Portfolio ID
-// @access  Private
-router.get('/:id', auth, async (req, res) => {
+// @access  Public
+router.get('/:id', async (req, res) => {
   try {
     const portfolio = await Portfolio.findById(req.params.id);
     if (!portfolio) {
@@ -135,8 +135,8 @@ router.delete('/blog/:id/:blog_id', auth, async (req, res) => {
 
 // @route   GET api/portfolio/blog/:id
 // @desc    Get blog posts in a portfolio ordered by date (new-old)
-// @access  Private
-router.get('/blog/:id', auth, async (req, res) => {
+// @access  Public
+router.get('/blog/:id', async (req, res) => {
   try {
     const portfolio = await Portfolio.findById(req.params.id);
     if (!portfolio) {
