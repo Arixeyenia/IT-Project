@@ -136,23 +136,29 @@ router.delete('/blog/:id/:blog_id', auth, async (req, res) => {
 // @route   GET api/portfolio/blog/:id
 // @desc    Get blog posts in a portfolio ordered by date (new-old)
 // @access  Public
-router.get('/blog/:id', async (req, res) => {
+router.get('/blog/:id/:sort', async (req, res) => {
   try {
     const portfolio = await Portfolio.findById(req.params.id);
     if (!portfolio) {
       return res.status(404).json({ msg: 'Portfolio not found' });
     }
 
-    // Check user
-    if (portfolio.user.toString() !== req.user.id) {
-      return res.status(401).json({ msg: 'User not authorized' });
-    }
+    const sortByOld = req.params.sort;
 
-    res.json(
-      portfolio.blog.sort((a, b) => {
-        return new Date(b.date).getTime() - new Date(a.date).getTime();
-      })
-    );
+    // Return the blog posts depending on sort order
+    if (sortByOld == 1) {
+      res.json(
+        portfolio.blog.sort((a, b) => {
+          return new Date(a.date).getTime() - new Date(b.date).getTime();
+        })
+      );
+    } else {
+      res.json(
+        portfolio.blog.sort((a, b) => {
+          return new Date(b.date).getTime() - new Date(a.date).getTime();
+        })
+      );
+    }
   } catch (err) {
     console.error(err.message);
     if (err.kind === 'ObjectId') {
