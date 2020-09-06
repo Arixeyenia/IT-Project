@@ -5,6 +5,7 @@ const { check, validationResult } = require('express-validator');
 
 const Portfolio = require('../../models/Portfolio');
 const User = require('../../models/User');
+const { parseDate } = require('tough-cookie');
 
 /*
 The calls to create/edit/delete portfolio 
@@ -128,6 +129,35 @@ router.delete('/blog/:id/:blog_id', auth, async (req, res) => {
     res.json(portfolio);
   } catch (err) {
     console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route   GET api/portfolio/blog/:id
+// @desc    Get blog posts in a portfolio ordered by date (new-old)
+// @access  Private
+router.get('/blog/:id', auth, async (req, res) => {
+  try {
+    const portfolio = await Portfolio.findById(req.params.id);
+    if (!portfolio) {
+      return res.status(404).json({ msg: 'Portfolio not found' });
+    }
+
+    // Check user
+    if (portfolio.user.toString() !== req.user.id) {
+      return res.status(401).json({ msg: 'User not authorized' });
+    }
+
+    res.json(
+      portfolio.blog.sort((a, b) => {
+        return new Date(b.date).getTime() - new Date(a.date).getTime();
+      })
+    );
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'Portfolio not found' });
+    }
     res.status(500).send('Server Error');
   }
 });
