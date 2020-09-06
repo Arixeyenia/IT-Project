@@ -97,4 +97,39 @@ router.post(
   }
 );
 
+// @route   DELETE api/portfolio/blog/:id/:blog_id
+// @desc    Delete a blog post
+// @access  Private
+router.delete('/blog/:id/:blog_id', auth, async (req, res) => {
+  try {
+    const portfolio = await Portfolio.findById(req.params.id);
+
+    // Pull out the blog post
+    const blog = portfolio.blog.find((blog) => blog.id === req.params.blog_id);
+
+    // Make sure blog post exists
+    if (!blog) {
+      return res.status(404).json({ msg: 'Blog does not exist' });
+    }
+
+    // Check user
+    if (portfolio.user.toString() !== req.user.id) {
+      return res.status(401).json({ msg: 'User not authorized' });
+    }
+
+    // Find remove index
+    const removeIndex = portfolio.blog
+      .map((blog) => blog.id.toString())
+      .indexOf(req.params.blog_id);
+
+    portfolio.blog.splice(removeIndex, 1);
+
+    await portfolio.save();
+    res.json(portfolio);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 module.exports = router;
