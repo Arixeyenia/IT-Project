@@ -5,11 +5,7 @@ class Footer extends Component {
 
   change = (evt) => {};
   render() {
-    return (
-      <React.Fragment>
-        <h1>{this.props.title}</h1>
-      </React.Fragment>
-    );
+    return <React.Fragment></React.Fragment>;
   }
 }
 
