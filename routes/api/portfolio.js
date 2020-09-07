@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../../middleware/auth');
 const { check, validationResult } = require('express-validator');
+const config = require('config');
 
 const Portfolio = require('../../models/Portfolio');
 const User = require('../../models/User');
@@ -133,10 +134,10 @@ router.delete('/blog/:id/:blog_id', auth, async (req, res) => {
   }
 });
 
-// @route   GET api/portfolio/blog/:id
+// @route   GET api/portfolio/blog/:id/:sort/:page
 // @desc    Get blog posts in a portfolio ordered by date (new-old)
 // @access  Public
-router.get('/blog/:id/:sort', async (req, res) => {
+router.get('/blog/:id/:sort/:page', async (req, res) => {
   try {
     const portfolio = await Portfolio.findById(req.params.id);
     if (!portfolio) {
@@ -144,19 +145,39 @@ router.get('/blog/:id/:sort', async (req, res) => {
     }
 
     const sortByOld = req.params.sort;
+    const pageRequest = req.params.page;
+    const numPosts = portfolio.blog.length;
+    const postPerPage = config.get('postPerPage');
+    const maxPage = Math.ceil(numPosts / postPerPage);
+
+    let page;
+
+    if (pageRequest <= 0) {
+      page = 1;
+    } else if (pageRequest >= maxPage) {
+      page = maxPage;
+    }
+
+    // Find the post indexes that need to be returned
+    const startIndex = postPerPage * (page - 1);
+    const endIndex = Math.min(postPerPage * page, numPosts + 1);
 
     // Return the blog posts depending on sort order
     if (sortByOld == 1) {
       res.json(
-        portfolio.blog.sort((a, b) => {
-          return new Date(a.date).getTime() - new Date(b.date).getTime();
-        })
+        portfolio.blog
+          .sort((a, b) => {
+            return new Date(a.date).getTime() - new Date(b.date).getTime();
+          })
+          .slice(startIndex, endIndex)
       );
     } else {
       res.json(
-        portfolio.blog.sort((a, b) => {
-          return new Date(b.date).getTime() - new Date(a.date).getTime();
-        })
+        portfolio.blog
+          .sort((a, b) => {
+            return new Date(b.date).getTime() - new Date(a.date).getTime();
+          })
+          .slice(startIndex, endIndex)
       );
     }
   } catch (err) {
@@ -167,5 +188,12 @@ router.get('/blog/:id/:sort', async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
+
+// @route   POST api/portfolio/blog/:id/:blog_id
+// @desc    Edit a blog post
+// @access  Private
+// copy the stuff from delete blog post,
+//get the date, get the index, remove the post,
+//make new post, add date, put to custom index
 
 module.exports = router;
