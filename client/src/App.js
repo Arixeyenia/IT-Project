@@ -1,10 +1,13 @@
 import React, { Fragment } from 'react';
 import './App.css';
+import Header from './components/layout/header';
+import Footer from './components/layout/footer';
 
 function App() {
   return (
     <Fragment>
-      <h1>app page</h1>
+      <Header title='this is header' />
+      <Footer title='this is footer' />
     </Fragment>
   );
 }
