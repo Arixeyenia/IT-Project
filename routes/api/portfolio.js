@@ -135,8 +135,9 @@ router.delete('/blog/:id/:blog_id', auth, async (req, res) => {
 });
 
 // @route   GET api/portfolio/blog/:id/:sort/:page
-// @desc    Get blog posts in a portfolio ordered by date (new-old)
+// @desc    Get blog posts in a portfolio ordered by date
 // @access  Public
+// :id = portfolio_id, :sort = (1 is old-new otherwise new-old), :page = page number
 router.get('/blog/:id/:sort/:page', async (req, res) => {
   try {
     const portfolio = await Portfolio.findById(req.params.id);
@@ -156,6 +157,8 @@ router.get('/blog/:id/:sort/:page', async (req, res) => {
       page = 1;
     } else if (pageRequest >= maxPage) {
       page = maxPage;
+    } else {
+      page = pageRequest;
     }
 
     // Find the post indexes that need to be returned
@@ -192,8 +195,64 @@ router.get('/blog/:id/:sort/:page', async (req, res) => {
 // @route   POST api/portfolio/blog/:id/:blog_id
 // @desc    Edit a blog post
 // @access  Private
-// copy the stuff from delete blog post,
-//get the date, get the index, remove the post,
-//make new post, add date, put to custom index
+router.post('/blog/:id/:blog_id', auth, async (req, res) => {
+  try {
+    const portfolio = await Portfolio.findById(req.params.id);
+
+    // Pull out the blog post
+    const blog = portfolio.blog.find((blog) => blog.id === req.params.blog_id);
+
+    // Make sure blog post exists
+    if (!blog) {
+      return res.status(404).json({ msg: 'Blog does not exist' });
+    }
+
+    // Check user
+    if (portfolio.user.toString() !== req.user.id) {
+      return res.status(401).json({ msg: 'User not authorized' });
+    }
+
+    // Find remove index
+    const removeIndex = portfolio.blog
+      .map((blog) => blog.id.toString())
+      .indexOf(req.params.blog_id);
+
+    let newTitle;
+    let newText;
+
+    // Check which fields are being updated
+    if ('title' in req.body) {
+      newTitle = req.body.title;
+    } else {
+      newTitle = blog.title;
+    }
+
+    if ('text' in req.body) {
+      newText = req.body.text;
+    } else {
+      newText = blog.text;
+    }
+
+    // Create new post
+    const newBlog = {
+      title: newTitle,
+      text: newText,
+      date: blog.date,
+    };
+
+    // Remove old post
+    portfolio.blog.splice(removeIndex, 1);
+
+    // Add new post to the correct index
+    portfolio.blog.splice(removeIndex, 0, newBlog);
+
+    // Save portfolio
+    await portfolio.save();
+    res.json(portfolio);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
 
 module.exports = router;
