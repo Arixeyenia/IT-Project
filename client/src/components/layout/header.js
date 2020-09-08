@@ -1,18 +1,19 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { Button, Box } from '@material-ui/core';
 
-class Header extends Component {
-  state = {
-    name: '',
-  };
+class Header extends React.Component{
+    render(){
+        return (
+            <Box className="header gray4">
+                Logo here
+                <Button variant="contained" color="primary" onClick={this.clickLogin}>Log In</Button>
+            </Box>
+        );
+    }
 
-  change = (evt) => {};
-  render() {
-    return (
-      <React.Fragment>
-        <h1>{this.props.title}</h1>
-      </React.Fragment>
-    );
-  }
+    clickLogin(){
+        // Open login popup
+    }
 }
 
 export default Header;

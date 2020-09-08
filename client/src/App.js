@@ -1,14 +1,17 @@
 import React, { Fragment } from 'react';
 import './App.css';
-import Header from './components/layout/header';
-import Footer from './components/layout/footer';
+import { ThemeProvider } from '../node_modules/@material-ui/core/styles';
+import theme from './styles/themes'
+import LandingPage from './components/layout/LandingPage'
+import { CssBaseline } from '@material-ui/core';
+
 
 function App() {
   return (
-    <Fragment>
-      <Header title='this is header' />
-      <Footer title='this is footer' />
-    </Fragment>
+    <ThemeProvider theme={theme}>
+        <CssBaseline/>
+        <LandingPage></LandingPage>
+    </ThemeProvider>
   );
 }
 
