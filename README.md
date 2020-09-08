@@ -23,6 +23,7 @@ IT Project
 
 ## currently front end has
 http://localhost:3000/dashboard
+http://localhost:3000/profile
 http://localhost:3000/register
 http://localhost:3000/login
 http://localhost:3000/home
