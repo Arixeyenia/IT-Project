@@ -39,8 +39,13 @@ class Header extends Component {
           {currentUser ? (
             <div className='navbar-nav ml-auto'>
               <li className='nav-item'>
+                <Link to={'/dashboard'} className='navbar-brand'>
+                  dashboard
+                </Link>
+              </li>
+              <li className='nav-item'>
                 <Link to={'/profile'} className='nav-link'>
-                  {currentUser.username}
+                  profile {currentUser.username}
                 </Link>
               </li>
               <li className='nav-item'>

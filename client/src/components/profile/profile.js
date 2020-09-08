@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 
-class Dashboard extends Component {
+class Profile extends Component {
   render() {
     return (
       <React.Fragment>
-        <h1>this is your dashboard</h1>
+        <h1>this is your Profile</h1>
       </React.Fragment>
     );
   }
 }
 
-export default Dashboard;
+export default Profile;
