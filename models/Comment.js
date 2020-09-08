@@ -5,6 +5,9 @@ const CommentSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
   },
+  name: {
+    type: String,
+  },
   item: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'item',
@@ -17,6 +20,10 @@ const CommentSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  modified: {
+    type: Boolean,
+    default: false,
+  },
 });
 
-module.exports = Item = mongoose.model('item', ItemSchema);
+module.exports = Comment = mongoose.model('comment', CommentSchema);
