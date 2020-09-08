@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../../middleware/auth');
-const { check, validationResult } = require('express-validator');
+const { check, validationResult, body } = require('express-validator');
 const config = require('config');
 
 const Portfolio = require('../../models/Portfolio');
@@ -10,6 +10,7 @@ const Item = require('../../models/Item');
 const Comment = require('../../models/Comment');
 const { parseDate } = require('tough-cookie');
 const { Mongoose } = require('mongoose');
+const { resetWarningCache } = require('prop-types');
 
 // @route   GET api/comment
 // @desc    Test route
@@ -92,7 +93,7 @@ router.get('/:item_id', async (req, res) => {
 // @access  Private
 router.delete('/edit/:comment_id', auth, async (req, res) => {
   try {
-    // find the comment and the item
+    // find the comment, item, portfolio
     const comment = await Comment.findById(req.params.comment_id);
     const item = await Item.findById(comment.item);
     const portfolio = await Portfolio.findById(item.portfolio);
@@ -123,20 +124,48 @@ router.delete('/edit/:comment_id', auth, async (req, res) => {
   }
 });
 
-// @route   POST api/comment/:comment_id
+// @route   POST api/comment/edit/:comment_id
 // @desc    Edit a comment (only commenter) makes modified true
 // @access  Private
 router.post(
   '/edit/:comment_id',
   [auth, [check('text', 'Cannot leave empty comment').not().isEmpty()]],
   async (req, res) => {
-    // find comment
-    // make sure user is comment sender
-    // copy comment info, update text
-    // change comment modified to true
-    // remove old comment
-    // add new comment
-    // return updated comment
+    try {
+      // find the comment and the item
+      const comment = await Comment.findById(req.params.comment_id);
+
+      // make sure comment exists
+      if (!comment) {
+        return res.status(404).json({ msg: 'Comment not found' });
+      }
+
+      // make sure user is comment sender
+      if (comment.from.toString() !== req.user.id) {
+        return res.status(401).json({ msg: 'User not authorized' });
+      }
+      // copy comment info, update text
+      const newComment = new Comment({
+        from: comment.from,
+        name: comment.name,
+        item: comment.item,
+        text: req.body.text,
+        date: comment.date,
+        modified: true,
+      });
+      // remove old comment
+      await comment.remove();
+      // add new comment
+      const updatedComment = await newComment.save();
+      // return updated comment
+      res.json(updatedComment);
+    } catch (err) {
+      console.error(err.message);
+      if (err.kind === 'ObjectId') {
+        return res.status(404).json({ msg: 'Comment not found' });
+      }
+      res.status(500).send('Server error');
+    }
   }
 );
 
