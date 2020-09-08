@@ -48,6 +48,9 @@ router.post(
       res.json(comment);
     } catch (err) {
       console.error(err.message);
+      if (err.kind === 'ObjectId') {
+        return res.status(404).json({ msg: 'Item does not exist' });
+      }
       res.status(500).send('Server error');
     }
   }
@@ -77,6 +80,9 @@ router.get('/:item_id', async (req, res) => {
     res.json(comments);
   } catch (err) {
     console.error(err.message);
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'Item does not exist' });
+    }
     res.status(500).send('Server error');
   }
 });
@@ -84,9 +90,54 @@ router.get('/:item_id', async (req, res) => {
 // @route   DELETE api/comment/:comment_id
 // @desc    Remove a comment (commenter & receiver)
 // @access  Private
+router.delete('/edit/:comment_id', auth, async (req, res) => {
+  try {
+    // find the comment and the item
+    const comment = await Comment.findById(req.params.comment_id);
+    const item = await Item.findById(comment.item);
+    const portfolio = await Portfolio.findById(item.portfolio);
+
+    // make sure comment exists
+    if (!comment) {
+      return res.status(404).json({ msg: 'Comment not found' });
+    }
+
+    // make sure user is either comment sender or receiver
+    if (
+      comment.from.toString() !== req.user.id ||
+      portfolio.user.toString() !== req.user.id
+    ) {
+      return res.status(401).json({ msg: 'User not authorized' });
+    }
+    // remove comment
+    await comment.remove();
+
+    // return commend deleted message
+    res.json({ msg: 'Comment removed' });
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'Comment not found' });
+    }
+    res.status(500).send('Server error');
+  }
+});
 
 // @route   POST api/comment/:comment_id
 // @desc    Edit a comment (only commenter) makes modified true
 // @access  Private
+router.post(
+  '/edit/:comment_id',
+  [auth, [check('text', 'Cannot leave empty comment').not().isEmpty()]],
+  async (req, res) => {
+    // find comment
+    // make sure user is comment sender
+    // copy comment info, update text
+    // change comment modified to true
+    // remove old comment
+    // add new comment
+    // return updated comment
+  }
+);
 
 module.exports = router;

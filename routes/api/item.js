@@ -28,6 +28,11 @@ router.post('/:id', auth, async (req, res) => {
     const user = await User.findById(req.user.id).select('-password');
     const portfolio = await Portfolio.findById(req.params.id);
 
+    // Check portfolio exists
+    if (!portfolio) {
+      return res.status(404).json({ msg: 'Portfolio not found' });
+    }
+
     // Check user
     if (portfolio.user.toString() !== req.user.id) {
       return res.status(401).json({ msg: 'User not authorized' });
@@ -41,6 +46,9 @@ router.post('/:id', auth, async (req, res) => {
     res.json(item);
   } catch (err) {
     console.error(err.message);
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'Portfolio not found' });
+    }
     res.status(500).send('Server Error');
   }
 });
