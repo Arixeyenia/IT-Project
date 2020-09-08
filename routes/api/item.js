@@ -6,6 +6,7 @@ const config = require('config');
 
 const Portfolio = require('../../models/Portfolio');
 const User = require('../../models/User');
+const Item = require('../../models/Item');
 const { parseDate } = require('tough-cookie');
 
 /*
