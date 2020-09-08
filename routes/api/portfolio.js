@@ -256,6 +256,7 @@ router.post('/blog/:id/:blog_id', auth, async (req, res) => {
 
     // Create new post
     const newBlog = {
+      _id: blog._id,
       title: newTitle,
       text: newText,
       date: blog.date,

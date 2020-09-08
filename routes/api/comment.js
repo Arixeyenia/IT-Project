@@ -146,6 +146,7 @@ router.post(
       }
       // copy comment info, update text
       const newComment = new Comment({
+        _id: comment._id,
         from: comment.from,
         name: comment.name,
         item: comment.item,
