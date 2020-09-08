@@ -7,6 +7,10 @@ import Login from './components/auth/login';
 import Register from './components/auth/register';
 import Dashboard from './components/dashboard/dashboard';
 import CreatePortfolio from './components/eportfolio/createPortfolio';
+import Template1 from './components/eportfolio/template1';
+import Template2 from './components/eportfolio/template2';
+import Template3 from './components/eportfolio/template3';
+import TemplateBlank from './components/eportfolio/templateBlank';
 import Profile from './components/profile/profile';
 import { Route, Switch } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -28,6 +32,10 @@ class App extends Component {
             <Route path='/dashboard' component={Dashboard} />
             <Route path='/profile' component={Profile} />
             <Route path='/createPortfolio' component={CreatePortfolio} />
+            <Route path='/template1' component={Template1} />
+            <Route path='/template2' component={Template2} />
+            <Route path='/template3' component={Template3} />
+            <Route path='/templateBlank' component={TemplateBlank} />
           </Switch>
           <Footer />
         </ThemeProvider>
