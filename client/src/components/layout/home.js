@@ -7,7 +7,7 @@ class Home extends Component {
   render() {
     return (
       <React.Fragment>
-        <h1>{this.props.title}</h1>
+        <h1>this is home page</h1>
       </React.Fragment>
     );
   }
