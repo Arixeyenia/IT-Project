@@ -17,16 +17,16 @@ IT Project
 ## How to Run both Server and client
 
 1. go out of client folder by "cd .."
-(make sure you are at root folder)
+   (make sure you are at root folder)
 2. do "npm run dev"
-(then you don't need to type npm run server again)
+   (then you don't need to type npm run server again)
 
 ## currently front end has
+
 http://localhost:3000/dashboard
 http://localhost:3000/register
 http://localhost:3000/login
 http://localhost:3000/home
-
 
 while server is running:
 
@@ -111,3 +111,57 @@ header: key = Content-Type, value = application/json
 body: {"title": "new title", "text": "new text"}
 
 description: if you only send title, only updates title, copies text from original post. If you only put text, updates text and copies title from original post. You can update both. Date is copied from old post.
+
+## Portfolio Items
+
+#### Create new item
+
+POST localhost:5000/api/item/:id
+
+:id = portfolio id
+
+header: key = x-auth-token, value = "TOKEN"
+
+description: Temporary Item creator to test comments. More will be added here.
+
+## Comments
+
+#### Leave a comment
+
+POST localhost:5000/api/comment/:item_id
+
+:item_id = the id of the item the comment is being left for
+
+header: key = x-auth-token, value = "TOKEN"
+header: key = Content-Type, value = application/json
+
+body: {"text": "content of comment"}
+
+#### Get all comments on an item
+
+GET localhost:5000/api/comment/:item_id
+
+:item_id = the id of the item the comment is being left for
+
+#### Remove comment
+
+DELETE localhost:5000/api/comment/edit/:comment_id
+
+:comment_id = id of comment
+
+header: key = x-auth-token, value = "TOKEN"
+
+IMPORTANT: remove/update comments are in comment/edit not just /comment
+
+#### Update comment
+
+POST localhost:5000/api/comment/edit/:comment_id
+
+:comment_id = id of comment
+
+header: key = x-auth-token, value = "TOKEN"
+header: key = Content-Type, value = application/json
+
+body: {"text" : "updated comment"}
+
+IMPORTANT: remove/update comments are in comment/edit not just /comment

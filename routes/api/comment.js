@@ -88,7 +88,7 @@ router.get('/:item_id', async (req, res) => {
   }
 });
 
-// @route   DELETE api/comment/:comment_id
+// @route   DELETE api/comment/edit/:comment_id
 // @desc    Remove a comment (commenter & receiver)
 // @access  Private
 router.delete('/edit/:comment_id', auth, async (req, res) => {
