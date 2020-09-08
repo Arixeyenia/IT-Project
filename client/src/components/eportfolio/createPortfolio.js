@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import AuthService from '../auth/auth.service';
 import { Link } from 'react-router-dom';
 
-class Dashboard extends Component {
+class CreatePortfolio extends Component {
   constructor(props) {
     super(props);
 
@@ -13,15 +13,10 @@ class Dashboard extends Component {
   render() {
     return (
       <React.Fragment>
-        <h1>this is dashboard</h1>
-        <Link to={'/createPortfolio'}>
-          <button type='button' className='btn btn-primary btn-block'>
-            create a portfolio
-          </button>
-        </Link>
+        <h1>create your portfolio here!</h1>
       </React.Fragment>
     );
   }
 }
 
-export default Dashboard;
+export default CreatePortfolio;
