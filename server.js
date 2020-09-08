@@ -2,6 +2,9 @@ const express = require('express');
 const connectDB = require('./config/db');
 
 const app = express();
+//add this bc i receive network error from front end
+var cors = require('cors');
+app.use(cors());
 
 // Connect Database
 connectDB();
