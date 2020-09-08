@@ -9,6 +9,7 @@ const User = require('../../models/User');
 const Item = require('../../models/Item');
 const Comment = require('../../models/Comment');
 const { parseDate } = require('tough-cookie');
+const { Mongoose } = require('mongoose');
 
 // @route   GET api/comment
 // @desc    Test route
@@ -31,7 +32,7 @@ router.post(
       const item = await Item.findById(req.params.item_id);
       const user = await User.findById(req.user.id).select('-password');
 
-      // Make sure item post exists
+      // Make sure item exists
       if (!item) {
         return res.status(404).json({ msg: 'Item does not exist' });
       }
@@ -55,6 +56,30 @@ router.post(
 // @route   GET api/comment/:item_id
 // @desc    View comment on an item
 // @access  Public
+router.get('/:item_id', async (req, res) => {
+  try {
+    // find the item
+    const item = await Item.findById(req.params.item_id);
+
+    // make sure item exists
+    if (!item) {
+      return res.status(404).json({ msg: 'Item does not exist' });
+    }
+
+    // find all comments with item_id
+    const comments = await Comment.find()
+      .where('item')
+      .in(req.params.item_id.toString())
+      .sort({ date: -1 })
+      .exec();
+
+    // return comments
+    res.json(comments);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
 
 // @route   DELETE api/comment/:comment_id
 // @desc    Remove a comment (commenter & receiver)
