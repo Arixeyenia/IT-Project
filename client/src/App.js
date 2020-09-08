@@ -10,21 +10,27 @@ import CreatePortfolio from './components/eportfolio/createPortfolio';
 import Profile from './components/profile/profile';
 import { Route, Switch } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { ThemeProvider } from '../node_modules/@material-ui/core/styles';
+import theme from './styles/themes';
+import { CssBaseline } from '@material-ui/core';
 
 class App extends Component {
   render() {
     return (
       <Fragment>
-        <Header />
-        <Switch>
-          <Route path='/register' component={Register} />
-          <Route path='/login' component={Login} />
-          <Route path='/home' component={Home} />
-          <Route path='/dashboard' component={Dashboard} />
-          <Route path='/profile' component={Profile} />
-          <Route path='/createPortfolio' component={CreatePortfolio} />
-        </Switch>
-        <Footer />
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Header />
+          <Switch>
+            <Route path='/register' component={Register} />
+            <Route path='/login' component={Login} />
+            <Route path='/home' component={Home} />
+            <Route path='/dashboard' component={Dashboard} />
+            <Route path='/profile' component={Profile} />
+            <Route path='/createPortfolio' component={CreatePortfolio} />
+          </Switch>
+          <Footer />
+        </ThemeProvider>
       </Fragment>
     );
   }
