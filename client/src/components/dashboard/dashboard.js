@@ -12,10 +12,14 @@ class Dashboard extends Component {
   render() {
     return (
       <React.Fragment>
+<<<<<<< HEAD
         <h1>this is dashboard</h1>
         <button className='btn btn-primary btn-block'>
           create a portfolio
         </button>
+=======
+        <h1>this is your dashboard</h1>
+>>>>>>> master
       </React.Fragment>
     );
   }

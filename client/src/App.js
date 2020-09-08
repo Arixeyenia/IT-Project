@@ -6,6 +6,7 @@ import Home from './components/layout/home';
 import Login from './components/auth/login';
 import Register from './components/auth/register';
 import Dashboard from './components/dashboard/dashboard';
+import Profile from './components/profile/profile';
 import { Route, Switch } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -19,6 +20,7 @@ class App extends Component {
           <Route path='/login' component={Login} />
           <Route path='/home' component={Home} />
           <Route path='/dashboard' component={Dashboard} />
+          <Route path='/profile' component={Profile} />
         </Switch>
         <Footer />
       </Fragment>
