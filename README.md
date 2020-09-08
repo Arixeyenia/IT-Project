@@ -12,12 +12,21 @@ IT Project
 ## Setup for Frontend
 
 1.cd client
-2.npm install
+2.npm install (this will automatically install all dependencies from client/package.json)
 
 ## How to Run both Server and client
 
-npm run dev
+1. go out of client folder by "cd .."
+(make sure you are at root folder)
+2. do "npm run dev"
 (then you don't need to type npm run server again)
+
+## currently front end has
+http://localhost:3000/dashboard
+http://localhost:3000/register
+http://localhost:3000/login
+http://localhost:3000/home
+
 
 while server is running:
 
