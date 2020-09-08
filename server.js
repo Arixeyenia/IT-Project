@@ -2,6 +2,9 @@ const express = require('express');
 const connectDB = require('./config/db');
 
 const app = express();
+//add this bc i receive network error from front end
+var cors = require('cors');
+app.use(cors());
 
 // Connect Database
 connectDB();
@@ -15,6 +18,7 @@ app.get('/', (req, res) => res.send('Hello World'));
 // Define Routes
 app.use('/api/users', require('./routes/api/users'));
 app.use('/api/auth', require('./routes/api/auth'));
+app.use('/api/portfolio', require('./routes/api/portfolio'));
 
 const PORT = process.env.PORT || 5000;
 
