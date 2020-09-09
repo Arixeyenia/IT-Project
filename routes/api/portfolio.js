@@ -74,6 +74,28 @@ router.get('/:id', auth, async (req, res) => {
   }
 });
 
+// @route   GET api/portfolio/guest/:id
+// @desc    Get portfolio by Portfolio ID
+// @access  Private
+router.get('/guest/:id', auth, async (req, res) => {
+  try {
+    const portfolio = await Portfolio.findById(req.params.id);
+    if (!portfolio) {
+      return res.status(404).json({ msg: 'Portfolio not found' });
+    }
+    if (portfolio.private) {
+      return res.status(401).json({ msg: 'User not authorized' });
+    }
+    res.json(portfolio);
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'Portfolio not found' });
+    }
+    res.status(500).send('Server Error');
+  }
+});
+
 // @route   POST api/portfolio/blog/:id
 // @desc    Create a blog post on a portfolio
 // @access  Private
