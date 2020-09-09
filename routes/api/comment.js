@@ -131,6 +131,10 @@ router.post(
   '/edit/:comment_id',
   [auth, [check('text', 'Cannot leave empty comment').not().isEmpty()]],
   async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
     try {
       // find the comment and the item
       const comment = await Comment.findById(req.params.comment_id);

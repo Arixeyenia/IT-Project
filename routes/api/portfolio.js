@@ -22,21 +22,31 @@ router.get('/', (req, res) => res.send('Portfolio route'));
 // @route   POST api/portfolio
 // @desc    Create a portfolio
 // @access  Private
-router.post('/', auth, async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id).select('-password');
+router.post(
+  '/',
+  [auth, [check('name', 'Portfolios must have a name').not().isEmpty()]],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
 
-    const newPortfolio = new Portfolio({
-      user: req.user.id,
-    });
+    try {
+      const user = await User.findById(req.user.id).select('-password');
 
-    const portfolio = await newPortfolio.save();
-    res.json(portfolio);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
+      const newPortfolio = new Portfolio({
+        name: req.body.name,
+        user: req.user.id,
+      });
+
+      const portfolio = await newPortfolio.save();
+      res.json(portfolio);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server Error');
+    }
   }
-});
+);
 
 // @route   GET api/portfolio/:id
 // @desc    Get portfolio by Portfolio ID
