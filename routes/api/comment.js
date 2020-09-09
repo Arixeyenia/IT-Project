@@ -58,7 +58,7 @@ router.post(
 );
 
 // @route   GET api/comment/:item_id
-// @desc    View comment on an item
+// @desc    View comments on an item
 // @access  Public
 router.get('/:item_id', async (req, res) => {
   try {

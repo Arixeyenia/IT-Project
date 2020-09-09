@@ -96,6 +96,39 @@ router.get('/guest/:id', auth, async (req, res) => {
   }
 });
 
+// @route   GET api/portfolio/user/:user_id
+// @desc    View all portfolios of a user
+// @access  Private
+router.get('/user/:user_id', auth, async (req, res) => {
+  try {
+    // Make sure user exists
+    const user = await User.findById(req.user.id).select('-password');
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    // Make sure user owner of portfolios
+    if (req.params.user_id.toString() !== req.user.id) {
+      return res.status(401).json({ msg: 'User not authorized' });
+    }
+
+    const portfolios = await Portfolio.find()
+      .where('user')
+      .in(req.user.id.toString())
+      .sort({ date: -1 })
+      .exec();
+
+    // return portfolios
+    res.json(portfolios);
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+    res.status(500).send('Server Error');
+  }
+});
+
 // @route   POST api/portfolio/blog/:id
 // @desc    Create a blog post on a portfolio
 // @access  Private
