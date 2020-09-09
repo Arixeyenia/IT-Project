@@ -22,30 +22,47 @@ router.get('/', (req, res) => res.send('Portfolio route'));
 // @route   POST api/portfolio
 // @desc    Create a portfolio
 // @access  Private
-router.post('/', auth, async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id).select('-password');
+router.post(
+  '/',
+  [auth, [check('name', 'Portfolios must have a name').not().isEmpty()]],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
 
-    const newPortfolio = new Portfolio({
-      user: req.user.id,
-    });
+    try {
+      const user = await User.findById(req.user.id).select('-password');
 
-    const portfolio = await newPortfolio.save();
-    res.json(portfolio);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
+      const newPortfolio = new Portfolio({
+        name: req.body.name,
+        user: req.user.id,
+        private: req.body.private,
+        thumbnailURL: req.body.thumbnailURL,
+      });
+
+      const portfolio = await newPortfolio.save();
+      res.json(portfolio);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server Error');
+    }
   }
-});
+);
 
 // @route   GET api/portfolio/:id
 // @desc    Get portfolio by Portfolio ID
-// @access  Public
-router.get('/:id', async (req, res) => {
+// @access  Private
+router.get('/:id', auth, async (req, res) => {
   try {
     const portfolio = await Portfolio.findById(req.params.id);
     if (!portfolio) {
       return res.status(404).json({ msg: 'Portfolio not found' });
+    }
+    if (portfolio.private && portfolio.user.toString() !== req.user.id) {
+      if (!(req.user.id in portfolio.allowedUsers)) {
+        return res.status(401).json({ msg: 'User not authorized' });
+      }
     }
     res.json(portfolio);
   } catch (err) {
@@ -56,6 +73,79 @@ router.get('/:id', async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
+
+// @route   GET api/portfolio/guest/:id
+// @desc    Get portfolio by Portfolio ID
+// @access  Private
+router.get('/guest/:id', auth, async (req, res) => {
+  try {
+    const portfolio = await Portfolio.findById(req.params.id);
+    if (!portfolio) {
+      return res.status(404).json({ msg: 'Portfolio not found' });
+    }
+    if (portfolio.private) {
+      return res.status(401).json({ msg: 'User not authorized' });
+    }
+    res.json(portfolio);
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'Portfolio not found' });
+    }
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route   GET api/portfolio/user/:user_id
+// @desc    View all portfolios of a user
+// @access  Private
+router.get('/user/:user_id', auth, async (req, res) => {
+  try {
+    // Make sure user exists
+    const user = await User.findById(req.user.id).select('-password');
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    // Make sure user owner of portfolios
+    if (req.params.user_id.toString() !== req.user.id) {
+      return res.status(401).json({ msg: 'User not authorized' });
+    }
+
+    const portfolios = await Portfolio.find()
+      .where('user')
+      .in(req.user.id.toString())
+      .sort({ date: -1 })
+      .exec();
+
+    // return portfolios
+    res.json(portfolios);
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route   DELETE api/portfolio/:id
+// @desc    Remove a portfolio
+// @access  Private
+
+// @route   POST api/portfolio/:id
+// @desc    Edit the name or privacy of a portfolio
+// @access  Private
+
+// @route   POST api/portfolio/permission/:id
+// @desc    Give permission to users to view private portfolio
+// @access  Private
+
+// @route   POST api/portfolio/permission/:id/:user_id
+// @desc    Remove permission of user_id to view portfolio
+// @access  Private
+
+/******************BLOG STUFF******************/
 
 // @route   POST api/portfolio/blog/:id
 // @desc    Create a blog post on a portfolio
@@ -159,6 +249,9 @@ router.get('/blog/:id/:sort/:page', async (req, res) => {
     const portfolio = await Portfolio.findById(req.params.id);
     if (!portfolio) {
       return res.status(404).json({ msg: 'Portfolio not found' });
+    }
+    if (portfolio.private) {
+      return res.status(401).json({ msg: 'User not authorized' });
     }
 
     const sortByOld = req.params.sort;
