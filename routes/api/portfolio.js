@@ -129,6 +129,22 @@ router.get('/user/:user_id', auth, async (req, res) => {
   }
 });
 
+// @route   DELETE api/portfolio/:id
+// @desc    Remove a portfolio
+// @access  Private
+
+// @route   POST api/portfolio/:id
+// @desc    Edit the name or privacy of a portfolio
+// @access  Private
+
+// @route   POST api/portfolio/permission/:id
+// @desc    Give permission to users to view private portfolio
+// @access  Private
+
+// @route   POST api/portfolio/permission/:id/:user_id
+// @desc    Remove permission of user_id to view portfolio
+// @access  Private
+
 /******************BLOG STUFF******************/
 
 // @route   POST api/portfolio/blog/:id
