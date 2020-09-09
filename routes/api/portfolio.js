@@ -3,6 +3,7 @@ const router = express.Router();
 const auth = require('../../middleware/auth');
 const { check, validationResult } = require('express-validator');
 const config = require('config');
+const puppeteer = require('puppeteer')
 
 const Portfolio = require('../../models/Portfolio');
 const User = require('../../models/User');
@@ -77,7 +78,7 @@ router.get('/:id', auth, async (req, res) => {
 // @route   GET api/portfolio/guest/:id
 // @desc    Get portfolio by Portfolio ID
 // @access  Private
-router.get('/guest/:id', auth, async (req, res) => {
+router.get('/guest/:id', async (req, res) => {
   try {
     const portfolio = await Portfolio.findById(req.params.id);
     if (!portfolio) {
@@ -372,5 +373,43 @@ router.post('/blog/:id/:blog_id', auth, async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
+
+// @route   GET api/portfolio/thumbnail/:id
+// @desc    Get thumbnail of portfolio by Portfolio ID
+// @access  Private
+router.get('/thumbnail/:id', auth, async (req, res) => {
+  try {
+    const portfolio = await Portfolio.findById(req.params.id);
+    if (!portfolio) {
+      return res.status(404).json({ msg: 'Portfolio not found' });
+    }
+    if (portfolio.private && portfolio.user.toString() !== req.user.id) {
+      if (!(req.user.id in portfolio.allowedUsers)) {
+        return res.status(401).json({ msg: 'User not authorized' });
+      }
+    } 
+      const browser = await puppeteer.launch({
+        args: ['--no-sandbox']
+      });
+      const page = await browser.newPage();
+      await page.setViewport({
+        width: 1920,
+        height: 1080
+      });
+      //TODO: replace with link to site
+      await page.goto("http://localhost:3000/api/portfolio/guest/"+ req.params.id);
+      const image = await page.screenshot();
+      await browser.close();
+      res.set('Content-Type', 'image/png');
+      res.send(image);
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'Portfolio not found' });
+    }
+    res.status(500).send('Server Error');
+  }
+});
+
 
 module.exports = router;

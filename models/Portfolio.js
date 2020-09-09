@@ -29,6 +29,22 @@ const PortfolioSchema = new mongoose.Schema({
         default: Date.now,
       },
     },
+  ],  
+  section: [
+   {
+     name: {
+       type: String,
+       required: true,
+     },
+     items: [
+      {
+      item: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'item',
+      },
+      },
+     ],
+   },
   ],
   date: {
     type: Date,
@@ -46,9 +62,6 @@ const PortfolioSchema = new mongoose.Schema({
       },
     },
   ],
-  thumbnailURL: {
-    type: String,
-  },
 });
 
 module.exports = Portfolio = mongoose.model('portfolio', PortfolioSchema);
