@@ -129,6 +129,8 @@ router.get('/user/:user_id', auth, async (req, res) => {
   }
 });
 
+/******************BLOG STUFF******************/
+
 // @route   POST api/portfolio/blog/:id
 // @desc    Create a blog post on a portfolio
 // @access  Private
@@ -231,6 +233,9 @@ router.get('/blog/:id/:sort/:page', async (req, res) => {
     const portfolio = await Portfolio.findById(req.params.id);
     if (!portfolio) {
       return res.status(404).json({ msg: 'Portfolio not found' });
+    }
+    if (portfolio.private) {
+      return res.status(401).json({ msg: 'User not authorized' });
     }
 
     const sortByOld = req.params.sort;
