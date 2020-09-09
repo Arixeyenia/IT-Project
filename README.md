@@ -13,7 +13,8 @@ IT Project
 
 1.cd client
 2.npm install (this will automatically install all dependencies from client/package.json)
-
+  or npm i material-ui/core jest-dom react user-event axios bootstrap react-dom react-router-dom react-scripts react-validation reactstrap validator ttf-loader file-loader
+  
 ## How to Run both Server and client
 
 1. go out of client folder by "cd .."
