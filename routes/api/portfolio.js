@@ -37,6 +37,8 @@ router.post(
       const newPortfolio = new Portfolio({
         name: req.body.name,
         user: req.user.id,
+        private: req.body.private,
+        thumbnailURL: req.body.thumbnailURL,
       });
 
       const portfolio = await newPortfolio.save();
@@ -50,12 +52,17 @@ router.post(
 
 // @route   GET api/portfolio/:id
 // @desc    Get portfolio by Portfolio ID
-// @access  Public
-router.get('/:id', async (req, res) => {
+// @access  Private
+router.get('/:id', auth, async (req, res) => {
   try {
     const portfolio = await Portfolio.findById(req.params.id);
     if (!portfolio) {
       return res.status(404).json({ msg: 'Portfolio not found' });
+    }
+    if (portfolio.private && portfolio.user.toString() !== req.user.id) {
+      if (!(req.user.id in portfolio.allowedUsers)) {
+        return res.status(401).json({ msg: 'User not authorized' });
+      }
     }
     res.json(portfolio);
   } catch (err) {

@@ -40,6 +40,7 @@ router.post('/:id', auth, async (req, res) => {
 
     const newItem = new Item({
       portfolio: portfolio.id,
+      private: req.body.private,
     });
 
     const item = await newItem.save();
