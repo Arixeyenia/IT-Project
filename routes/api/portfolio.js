@@ -79,6 +79,11 @@ router.post(
       const user = await User.findById(req.user.id).select('-password');
       const portfolio = await Portfolio.findById(req.params.id);
 
+      // Check portfolio exists
+      if (!protfolio) {
+        return res.status(404).json({ msg: 'Portfolio not found' });
+      }
+
       // Check user
       if (portfolio.user.toString() !== req.user.id) {
         return res.status(401).json({ msg: 'User not authorized' });
@@ -94,6 +99,9 @@ router.post(
       res.json(portfolio);
     } catch (err) {
       console.error(err.message);
+      if (err.kind === 'ObjectId') {
+        return res.status(404).json({ msg: 'Portfolio not found' });
+      }
       res.status(500).send('Server Error');
     }
   }
@@ -108,6 +116,11 @@ router.delete('/blog/:id/:blog_id', auth, async (req, res) => {
 
     // Pull out the blog post
     const blog = portfolio.blog.find((blog) => blog.id === req.params.blog_id);
+
+    // Make sure portfolio exists
+    if (!portfolio) {
+      return res.status(404).json({ msg: 'Portfolio does not exist' });
+    }
 
     // Make sure blog post exists
     if (!blog) {
@@ -130,6 +143,9 @@ router.delete('/blog/:id/:blog_id', auth, async (req, res) => {
     res.json(portfolio);
   } catch (err) {
     console.error(err.message);
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'Portfolio or Blog post not found' });
+    }
     res.status(500).send('Server Error');
   }
 });
@@ -202,6 +218,11 @@ router.post('/blog/:id/:blog_id', auth, async (req, res) => {
     // Pull out the blog post
     const blog = portfolio.blog.find((blog) => blog.id === req.params.blog_id);
 
+    // Make sure portfolio exists
+    if (!portfolio) {
+      return res.status(404).json({ msg: 'Portfolio does not exist' });
+    }
+
     // Make sure blog post exists
     if (!blog) {
       return res.status(404).json({ msg: 'Blog does not exist' });
@@ -235,6 +256,7 @@ router.post('/blog/:id/:blog_id', auth, async (req, res) => {
 
     // Create new post
     const newBlog = {
+      _id: blog._id,
       title: newTitle,
       text: newText,
       date: blog.date,
@@ -251,6 +273,9 @@ router.post('/blog/:id/:blog_id', auth, async (req, res) => {
     res.json(portfolio);
   } catch (err) {
     console.error(err.message);
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'Portfolio or Blog post not found' });
+    }
     res.status(500).send('Server Error');
   }
 });
