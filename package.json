@@ -20,13 +20,20 @@
   },
   "homepage": "https://github.com/daltavida/Quaranteam#readme",
   "dependencies": {
+    "axios": "^0.20.0",
+    "bootstrap": "^4.5.2",
     "config": "^3.3.1",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-validator": "^6.6.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.10.3",
+    "puppeteer": "^5.2.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
+    "react-scripts": "^3.4.3",
+    "react-validation": "^3.0.7",
     "tough-cookie": "^4.0.0"
   },
   "devDependencies": {
