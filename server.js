@@ -17,6 +17,7 @@ app.use(express.json({ extended: false }));
 app.use('/api/users', require('./routes/api/users'));
 app.use('/api/auth', require('./routes/api/auth'));
 app.use('/api/portfolio', require('./routes/api/portfolio'));
+app.use('/api/page', require('./routes/api/page'));
 app.use('/api/item', require('./routes/api/item'));
 app.use('/api/comment', require('./routes/api/comment'));
 
