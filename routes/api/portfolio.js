@@ -8,6 +8,7 @@ const puppeteer = require('puppeteer');
 const Portfolio = require('../../models/Portfolio');
 const User = require('../../models/User');
 const { parseDate } = require('tough-cookie');
+const { Redirect } = require('react-router-dom');
 
 /*
 The calls to create/edit/delete portfolio 
@@ -18,7 +19,15 @@ temporary for implementing blog and comments
 // @route   GET api/portfolio
 // @desc    Test route
 // @access  Public
-router.get('/', (req, res) => res.send('Portfolio route'));
+router.get('/', async (req, res) => {
+  try {
+    const portfolio = await Portfolio.find();
+    res.json(portfolio);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+})
 
 // @route   POST api/portfolio
 // @desc    Create a portfolio
@@ -39,7 +48,6 @@ router.post(
         name: req.body.name,
         user: req.user.id,
         private: req.body.private,
-        thumbnailURL: req.body.thumbnailURL,
       });
 
       const portfolio = await newPortfolio.save();
@@ -169,170 +177,48 @@ router.get('/thumbnail/:id', auth, async (req, res) => {
   }
 });
 
-// @route   DELETE api/portfolio/:id
+// @route   DELETE api/portfolio
 // @desc    Remove a portfolio
 // @access  Private
+router.delete('/delete', auth, async (req, res) => {
+  try {
+    const portfolio = await Portfolio.findById(req.body.id);
+    // check if portfolio exists
+    if (!portfolio) return res.status(404).json({ msg: 'Portfolio not found' });
+    // check if user is authorized
+    if (portfolio.user.toString() !== req.user.id) return res.status(401).json({ msg: 'User not authorized' });
+    // perform delete
+    await Portfolio.findByIdAndDelete(req.body.id);
+    return res.status(202).json({msg: 'Portfolio deleted successfully'});
+   } catch (err) {
+    console.error(err.message);
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'Portfolio not found' });
+    }
+    res.status(500).send('Server Error');
+  }
+});
 
-// @route   POST api/portfolio/:id
+// @route   POST api/portfolio/edit
 // @desc    Edit the name or privacy of a portfolio
 // @access  Private
-
-// @route   POST api/portfolio/permission/:id
-// @desc    Give permission to users to view private portfolio
-// @access  Private
-
-// @route   POST api/portfolio/permission/:id/:user_id
-// @desc    Remove permission of user_id to view portfolio
-// @access  Private
-
-/******************BLOG STUFF******************/
-
-// @route   POST api/portfolio/blog/:id
-// @desc    Create a blog post on a portfolio
-// @access  Private
-router.post(
-  '/blog/:id',
-  [
-    auth,
-    [
-      check('title', 'A Title is required').not().isEmpty(),
-      check('text', 'Text is required').not().isEmpty(),
-    ],
-  ],
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
-    try {
-      const user = await User.findById(req.user.id).select('-password');
-      const portfolio = await Portfolio.findById(req.params.id);
-
-      // Check portfolio exists
-      if (!protfolio) {
-        return res.status(404).json({ msg: 'Portfolio not found' });
-      }
-
-      // Check user
-      if (portfolio.user.toString() !== req.user.id) {
-        return res.status(401).json({ msg: 'User not authorized' });
-      }
-      const newBlog = {
-        title: req.body.title,
-        text: req.body.text,
-      };
-
-      portfolio.blog.unshift(newBlog);
-      await portfolio.save();
-
-      res.json(portfolio);
-    } catch (err) {
-      console.error(err.message);
-      if (err.kind === 'ObjectId') {
-        return res.status(404).json({ msg: 'Portfolio not found' });
-      }
-      res.status(500).send('Server Error');
-    }
-  }
-);
-
-// @route   DELETE api/portfolio/blog/:id/:blog_id
-// @desc    Delete a blog post
-// @access  Private
-router.delete('/blog/:id/:blog_id', auth, async (req, res) => {
+router.put('/edit', auth, async (req, res) => {
   try {
-    const portfolio = await Portfolio.findById(req.params.id);
-
-    // Pull out the blog post
-    const blog = portfolio.blog.find((blog) => blog.id === req.params.blog_id);
-
-    // Make sure portfolio exists
-    if (!portfolio) {
-      return res.status(404).json({ msg: 'Portfolio does not exist' });
+    const portfolio = await Portfolio.findById(req.body.portfolio);
+    // check if portfolio exists
+    if (!portfolio) return res.status(404).json({ msg: 'Portfolio not found' });
+    // check if user is authorized
+    if (portfolio.user.toString() !== req.user.id) return res.status(401).json({ msg: 'User not authorized' });
+    if (req.body.field === "name"){
+      res.json(await Portfolio.findByIdAndUpdate(req.body.portfolio, { $set: { name: req.body.value}}, {new : true}));
     }
-
-    // Make sure blog post exists
-    if (!blog) {
-      return res.status(404).json({ msg: 'Blog does not exist' });
+    else if (req.body.field === "private"){
+      res.json(await Portfolio.findByIdAndUpdate(req.body.portfolio, { $set: { private: req.body.value}}, {new : true}));
     }
-
-    // Check user
-    if (portfolio.user.toString() !== req.user.id) {
-      return res.status(401).json({ msg: 'User not authorized' });
+    else{
+      return res.status(422).json({ msg: 'Invalid field parameter' });
     }
-
-    // Find remove index
-    const removeIndex = portfolio.blog
-      .map((blog) => blog.id.toString())
-      .indexOf(req.params.blog_id);
-
-    portfolio.blog.splice(removeIndex, 1);
-
-    await portfolio.save();
-    res.json(portfolio);
-  } catch (err) {
-    console.error(err.message);
-    if (err.kind === 'ObjectId') {
-      return res.status(404).json({ msg: 'Portfolio or Blog post not found' });
-    }
-    res.status(500).send('Server Error');
-  }
-});
-
-// @route   GET api/portfolio/blog/:id/:sort/:page
-// @desc    Get blog posts in a portfolio ordered by date
-// @access  Public
-// :id = portfolio_id, :sort = (1 is old-new otherwise new-old), :page = page number
-router.get('/blog/:id/:sort/:page', async (req, res) => {
-  try {
-    const portfolio = await Portfolio.findById(req.params.id);
-    if (!portfolio) {
-      return res.status(404).json({ msg: 'Portfolio not found' });
-    }
-    if (portfolio.private) {
-      return res.status(401).json({ msg: 'User not authorized' });
-    }
-
-    const sortByOld = req.params.sort;
-    const pageRequest = req.params.page;
-    const numPosts = portfolio.blog.length;
-    const postPerPage = config.get('postPerPage');
-    const maxPage = Math.ceil(numPosts / postPerPage);
-
-    let page;
-
-    if (pageRequest <= 0) {
-      page = 1;
-    } else if (pageRequest >= maxPage) {
-      page = maxPage;
-    } else {
-      page = pageRequest;
-    }
-
-    // Find the post indexes that need to be returned
-    const startIndex = postPerPage * (page - 1);
-    const endIndex = Math.min(postPerPage * page, numPosts + 1);
-
-    // Return the blog posts depending on sort order
-    if (sortByOld == 1) {
-      res.json(
-        portfolio.blog
-          .sort((a, b) => {
-            return new Date(a.date).getTime() - new Date(b.date).getTime();
-          })
-          .slice(startIndex, endIndex)
-      );
-    } else {
-      res.json(
-        portfolio.blog
-          .sort((a, b) => {
-            return new Date(b.date).getTime() - new Date(a.date).getTime();
-          })
-          .slice(startIndex, endIndex)
-      );
-    }
-  } catch (err) {
+   } catch (err) {
     console.error(err.message);
     if (err.kind === 'ObjectId') {
       return res.status(404).json({ msg: 'Portfolio not found' });
@@ -341,73 +227,27 @@ router.get('/blog/:id/:sort/:page', async (req, res) => {
   }
 });
 
-// @route   POST api/portfolio/blog/:id/:blog_id
-// @desc    Edit a blog post
+
+// @route   POST api/portfolio/permission
+// @desc    Give or remove permission to users to view private portfolio
 // @access  Private
-router.post('/blog/:id/:blog_id', auth, async (req, res) => {
+router.put('/permission', auth, async (req, res) => {
   try {
-    const portfolio = await Portfolio.findById(req.params.id);
-
-    // Pull out the blog post
-    const blog = portfolio.blog.find((blog) => blog.id === req.params.blog_id);
-
-    // Make sure portfolio exists
-    if (!portfolio) {
-      return res.status(404).json({ msg: 'Portfolio does not exist' });
+    const portfolio = await Portfolio.findById(req.body.portfolio);
+    // check if portfolio exists
+    if (!portfolio) return res.status(404).json({ msg: 'Portfolio not found' });
+    // check if user is authorized
+    if (portfolio.user.toString() !== req.user.id) return res.status(401).json({ msg: 'User not authorized' });
+    if (req.body.add === true){
+      res.json(await Portfolio.findByIdAndUpdate(req.body.portfolio, { $push: { allowedUsers: { _id: req.body.user }}}, {new : true}));
     }
-
-    // Make sure blog post exists
-    if (!blog) {
-      return res.status(404).json({ msg: 'Blog does not exist' });
+    else{
+      res.json(await Portfolio.findByIdAndUpdate(req.body.portfolio, { $pull: { allowedUsers: { _id: req.body.user }}}, {new : true}));
     }
-
-    // Check user
-    if (portfolio.user.toString() !== req.user.id) {
-      return res.status(401).json({ msg: 'User not authorized' });
-    }
-
-    // Find remove index
-    const removeIndex = portfolio.blog
-      .map((blog) => blog.id.toString())
-      .indexOf(req.params.blog_id);
-
-    let newTitle;
-    let newText;
-
-    // Check which fields are being updated
-    if ('title' in req.body) {
-      newTitle = req.body.title;
-    } else {
-      newTitle = blog.title;
-    }
-
-    if ('text' in req.body) {
-      newText = req.body.text;
-    } else {
-      newText = blog.text;
-    }
-
-    // Create new post
-    const newBlog = {
-      _id: blog._id,
-      title: newTitle,
-      text: newText,
-      date: blog.date,
-    };
-
-    // Remove old post
-    portfolio.blog.splice(removeIndex, 1);
-
-    // Add new post to the correct index
-    portfolio.blog.splice(removeIndex, 0, newBlog);
-
-    // Save portfolio
-    await portfolio.save();
-    res.json(portfolio);
-  } catch (err) {
+   } catch (err) {
     console.error(err.message);
     if (err.kind === 'ObjectId') {
-      return res.status(404).json({ msg: 'Portfolio or Blog post not found' });
+      return res.status(404).json({ msg: 'Portfolio not found' });
     }
     res.status(500).send('Server Error');
   }

@@ -1,14 +1,33 @@
 const mongoose = require('mongoose');
 
 /* 
-Temporary Item Schema
-It just has a portfolio ID as a referance,
-date, and private (default set to false)
+Item Schema
 */
 const ItemSchema = new mongoose.Schema({
   portfolio: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'portfolio',
+  },
+  row: {
+    type: Number,
+  },
+  column: {
+    type: Number,
+  },
+  title: {
+    type: String,
+  },
+  subtitle: {
+    type: String,
+  },
+  paragraph: {
+    type: String,
+  },
+  media: {
+    type: String,
+  },
+  link: {
+    type: String,
   },
   date: {
     type: Date,

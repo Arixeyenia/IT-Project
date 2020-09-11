@@ -30,18 +30,22 @@ const PortfolioSchema = new mongoose.Schema({
       },
     },
   ],  
-  section: [
+  pages: [
    {
      name: {
        type: String,
        required: true,
      },
+     url: {
+      type: String,
+      required: true,
+     },
      items: [
       {
-      item: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'item',
-      },
+        item: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'item',
+        },
       },
      ],
    },
