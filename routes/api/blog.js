@@ -15,11 +15,11 @@ temporarily deprecated
 
 /******************BLOG STUFF******************/
 
-// @route   POST api/portfolio/blog/:id
+// @route   POST api/blog/:id
 // @desc    Create a blog post on a portfolio
 // @access  Private
 router.post(
-  '/blog/:id',
+  '/:id',
   [
     auth,
     [
@@ -65,10 +65,10 @@ router.post(
   }
 );
 
-// @route   DELETE api/portfolio/blog/:id/:blog_id
+// @route   DELETE api/blog/:id/:blog_id
 // @desc    Delete a blog post
 // @access  Private
-router.delete('/blog/:id/:blog_id', auth, async (req, res) => {
+router.delete('/:id/:blog_id', auth, async (req, res) => {
   try {
     const portfolio = await Portfolio.findById(req.params.id);
 
@@ -108,11 +108,11 @@ router.delete('/blog/:id/:blog_id', auth, async (req, res) => {
   }
 });
 
-// @route   GET api/portfolio/blog/:id/:sort/:page
+// @route   GET api/blog/:id/:sort/:page
 // @desc    Get blog posts in a portfolio ordered by date
 // @access  Public
 // :id = portfolio_id, :sort = (1 is old-new otherwise new-old), :page = page number
-router.get('/blog/:id/:sort/:page', async (req, res) => {
+router.get('/:id/:sort/:page', async (req, res) => {
   try {
     const portfolio = await Portfolio.findById(req.params.id);
     if (!portfolio) {
@@ -169,10 +169,10 @@ router.get('/blog/:id/:sort/:page', async (req, res) => {
   }
 });
 
-// @route   POST api/portfolio/blog/:id/:blog_id
+// @route   POST api/blog/:id/:blog_id
 // @desc    Edit a blog post
 // @access  Private
-router.post('/blog/:id/:blog_id', auth, async (req, res) => {
+router.post('/:id/:blog_id', auth, async (req, res) => {
   try {
     const portfolio = await Portfolio.findById(req.params.id);
 
