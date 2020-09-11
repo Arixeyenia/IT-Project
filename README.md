@@ -32,6 +32,9 @@ http://localhost:3000/home
 
 while server is running:
 
+## Backend API Documentation
+https://documenter.getpostman.com/view/12626526/TVK5cgbD
+
 ## Login
 
 #### To Register user, on Postman:
