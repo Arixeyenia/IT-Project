@@ -1,9 +1,7 @@
 const mongoose = require('mongoose');
 
 /* 
-Temporary Portfolio Schema
-More stuff will be added, for now it just has a user
-id as a referance, date and a list of blog posts
+Portfolio Schema
 */
 const PortfolioSchema = new mongoose.Schema({
   name: {
@@ -39,6 +37,10 @@ const PortfolioSchema = new mongoose.Schema({
      url: {
       type: String,
       required: true,
+     },
+     main: {
+      type: Boolean,
+      default: false,
      },
      items: [
       {
