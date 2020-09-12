@@ -9,6 +9,18 @@ const Item = require('../../models/Item');
 
 
 /*
+ Janky helper functions, to remove when populate is working
+*/
+const getItems = async item => {
+  const result = await Item.findById(item._id);
+  return result;
+}
+
+const getData = async list => {
+  return Promise.all(list.map(item => getItems(item)))
+}
+
+/*
 The calls to create/edit/delete pages in a portfolio
 */
 
@@ -133,15 +145,6 @@ router.put('/makemain', auth, async (req, res) => {
   }
 });
 
-const getItems = async item => {
-  const result = await Item.findById(item.id);
-  return result;
-}
-
-const getData = async list => {
-  return Promise.all(list.map(item => getItems(item)))
-}
-
 // @route   gets api/page/:id/:url
 // @desc    Get page by portfolio and url
 // @access  Private
@@ -159,11 +162,10 @@ router.get('/:id/:url?', auth, async (req, res) => {
     if (pageIndex === -1) res.status(404).json({msg: 'Page not found'});
     else{
       // TODO somehow get populate to work
-      let page = portfolio.pages[pageIndex];
+      let page = portfolio.pages[pageIndex].toObject();
       const result = await getData(page.items);
-      res.json(result);
-      //page.items = result;
-      //res.json(page);
+      page.items = result;
+      res.json(page);
     }
   } catch (err) {
     console.error(err.message);
