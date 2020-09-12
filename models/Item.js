@@ -8,6 +8,10 @@ const ItemSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'portfolio',
   },
+  pageid: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'page',
+  },
   row: {
     type: Number,
   },
@@ -23,10 +27,16 @@ const ItemSchema = new mongoose.Schema({
   paragraph: {
     type: String,
   },
-  media: {
+  mediaLink: {
     type: String,
   },
-  link: {
+  mediaType: {
+    type: String,
+  },
+  linkText: {
+    type: String,
+  },
+  linkAddress: {
     type: String,
   },
   date: {

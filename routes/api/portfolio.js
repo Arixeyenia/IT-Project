@@ -65,13 +65,10 @@ router.post(
 router.get('/:id', auth, async (req, res) => {
   try {
     const portfolio = await Portfolio.findById(req.params.id);
-    if (!portfolio) {
-      return res.status(404).json({ msg: 'Portfolio not found' });
-    }
-    if (portfolio.private && portfolio.user.toString() !== req.user.id) {
-      if (!(req.user.id in portfolio.allowedUsers)) {
-        return res.status(401).json({ msg: 'User not authorized' });
-      }
+    if (!portfolio) return res.status(404).json({ msg: 'Portfolio not found' });
+    // check that user is authorized
+    if (portfolio.private && portfolio.user.toString() !== req.user.id && !(req.user.id in portfolio.allowedUsers)){ 
+      return res.status(401).json({ msg: 'User not authorized' });
     }
     res.json(portfolio);
   } catch (err) {

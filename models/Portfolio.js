@@ -1,9 +1,8 @@
 const mongoose = require('mongoose');
+const deepPopulate = require('mongoose-deep-populate')(mongoose);
 
 /* 
-Temporary Portfolio Schema
-More stuff will be added, for now it just has a user
-id as a referance, date and a list of blog posts
+Portfolio Schema
 */
 const PortfolioSchema = new mongoose.Schema({
   name: {
@@ -40,6 +39,10 @@ const PortfolioSchema = new mongoose.Schema({
       type: String,
       required: true,
      },
+     main: {
+      type: Boolean,
+      default: false,
+     },
      items: [
       {
         item: {
@@ -68,4 +71,5 @@ const PortfolioSchema = new mongoose.Schema({
   ],
 });
 
+PortfolioSchema.plugin(deepPopulate /* TODO:add specific path */);
 module.exports = Portfolio = mongoose.model('portfolio', PortfolioSchema);
