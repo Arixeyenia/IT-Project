@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const deepPopulate = require('mongoose-deep-populate')(mongoose);
 
 /* 
 Portfolio Schema
@@ -71,5 +70,4 @@ const PortfolioSchema = new mongoose.Schema({
   ],
 });
 
-PortfolioSchema.plugin(deepPopulate /* TODO:add specific path */);
 module.exports = Portfolio = mongoose.model('portfolio', PortfolioSchema);
