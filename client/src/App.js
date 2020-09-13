@@ -11,6 +11,11 @@ import store from './store';
 import { loadUser } from './actions/auth';
 import setAuthToken from './utils/setAuthToken';
 
+// Material IU styles and theme
+import { ThemeProvider } from '../node_modules/@material-ui/core/styles';
+import theme from './styles/themes'
+import { Box, CssBaseline } from '@material-ui/core';
+
 import './App.css';
 
 const App = () => {
@@ -23,12 +28,17 @@ const App = () => {
     <Provider store={store}>
       <Router>
         <Fragment>
-          <Navbar />
-          <Switch>
-            <Route exact path='/' component={Landing} />
-            <Route component={Routes} />
-          </Switch>
-          <Footer />
+          <ThemeProvider theme={theme}>
+            <CssBaseline/>
+            <Navbar/>
+            <Box className="main-content">
+              <Switch>
+                <Route exact path='/' component={Landing} />
+                <Route component={Routes} />
+              </Switch>
+            </Box>
+            <Footer />
+          </ThemeProvider>
         </Fragment>
       </Router>
     </Provider>
