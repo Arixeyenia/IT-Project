@@ -21,9 +21,9 @@ const Landing = ({ isAuthenticated }) => {
           <Typography variant='h6'>
             Create your own highly customisable ePortfolios for every purpose.
           </Typography>
-          <Button variant='contained' color='primary'>
+          <Link to="/register"><Button variant='contained' color='primary'>
             GET STARTED NOW
-          </Button>
+          </Button></Link>
         </Box>
         <Box className='right'>
           <img src={image} alt='Vector Graphic'></img>
