@@ -7,7 +7,7 @@ import thunk from 'redux-thunk';
 
 //what is redux AND what is reducer:
 //redux --> a state manager --> make app level state accessible everywhere, every component
-//reducer --> data from server will be put into the redux store
+//reducer --> take previous state and action and return the new state --> data from server will be put into the redux store
 //--> from every component we can call actions to do delete, update etc through redux store to the server ...
 //there are multiples reducers , this rootReducer below brings all reducers together
 
