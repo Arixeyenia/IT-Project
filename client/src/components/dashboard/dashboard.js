@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import AuthService from '../auth/auth.service';
 import { Link } from 'react-router-dom';
+import { Typography, Divider, Box, List } from '@material-ui/core';
 
 class Dashboard extends Component {
   constructor(props) {
@@ -12,17 +13,39 @@ class Dashboard extends Component {
   }
   render() {
     return (
-      <React.Fragment>
-        <h1>this is dashboard</h1>
-        <h2>these are your existing portfolios</h2>
+      <Box className="content">
+        <Typography variant="h1">Welcome to your dashboard</Typography>
+        <Category title="Your existing ePortfolios"></Category>
+        <List children={this.getMyePortfolios()}></List>
+        <Category title="Your favourited ePortfolios"></Category>
+        <List children={this.getFavouritedEPortfolios()}></List>
         <Link to={'/createPortfolio'}>
           <button type='button' className='btn btn-primary btn-block'>
             create a portfolio
           </button>
         </Link>
-      </React.Fragment>
+      </Box>
     );
   }
+
+  getMyePortfolios(){
+    
+  }
+
+  getFavouritedEPortfolios(){
+    
+  }
+}
+
+function Category(props) {
+  return (
+    <Box className="category">
+      <Typography noWrap variant="body1">{props.title}</Typography>
+      <Box>
+        <Divider light className="categoryLine"/>
+      </Box>
+    </Box>
+  );
 }
 
 export default Dashboard;
