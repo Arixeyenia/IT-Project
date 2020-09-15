@@ -1,19 +1,12 @@
-import React, { Component } from 'react';
-import AuthService from '../auth/auth.service';
-import { Link } from 'react-router-dom';
+import React, { Fragment, useEffect } from 'react';
+// import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
+// import { connect } from 'react-redux';
 import { Typography, Divider, Box, List } from '@material-ui/core';
 
-class Dashboard extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      currentUser: AuthService.getCurrentUser(),
-    };
-  }
-  render() {
-    return (
-      <Box className="content">
+const Dashboard = () => {
+  return (
+    <Box className="content">
         <Typography variant="h1">Welcome to your dashboard</Typography>
         <Category title="Your existing ePortfolios"></Category>
         <List children={this.getMyePortfolios()}></List>
@@ -25,17 +18,8 @@ class Dashboard extends Component {
           </button>
         </Link>
       </Box>
-    );
-  }
-
-  getMyePortfolios(){
-    
-  }
-
-  getFavouritedEPortfolios(){
-    
-  }
-}
+  );
+};
 
 function Category(props) {
   return (
@@ -47,5 +31,10 @@ function Category(props) {
     </Box>
   );
 }
+Dashboard.propTypes = {
+  auth: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = (state) => ({});
 
 export default Dashboard;
