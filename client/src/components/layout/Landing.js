@@ -1,5 +1,5 @@
 import React, { Fragment, Component } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Box, Button, Typography, Grid } from '@material-ui/core';
@@ -8,11 +8,7 @@ import featureImg1 from '../../images/Vector 2.png';
 import featureImg2 from '../../images/Vector 3.png';
 import featureImg3 from '../../images/Vector 4.png';
 
-const Landing = ({ isAuthenticated }) => {
-  if (isAuthenticated) {
-    return <Redirect to='/dashboard' />;
-  }
-
+const Landing = () => {
   return (
     <Fragment>
       <Box className='content half gray6 fontg1'>
@@ -21,9 +17,11 @@ const Landing = ({ isAuthenticated }) => {
           <Typography variant='h6'>
             Create your own highly customisable ePortfolios for every purpose.
           </Typography>
-          <Link to="/register"><Button variant='contained' color='primary'>
-            GET STARTED NOW
-          </Button></Link>
+          <Link to='/register'>
+            <Button variant='contained' color='primary'>
+              GET STARTED NOW
+            </Button>
+          </Link>
         </Box>
         <Box className='right'>
           <img src={image} alt='Vector Graphic'></img>

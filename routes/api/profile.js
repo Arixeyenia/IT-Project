@@ -48,20 +48,7 @@ router.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const {
-      company,
-      location,
-      website,
-      bio,
-      skills,
-      status,
-      githubusername,
-      youtube,
-      twitter,
-      instagram,
-      linkedin,
-      facebook,
-    } = req.body;
+    const { company, location, website, bio, skills, status } = req.body;
 
     const profileFields = {
       user: req.user.id,
@@ -76,17 +63,7 @@ router.post(
         ? skills
         : skills.split(',').map((skill) => ' ' + skill.trim()),
       status,
-      githubusername,
     };
-
-    // Build social object and add to profileFields
-    const socialfields = { youtube, twitter, instagram, linkedin, facebook };
-
-    for (const [key, value] of Object.entries(socialfields)) {
-      if (value && value.length > 0)
-        socialfields[key] = normalize(value, { forceHttps: true });
-    }
-    profileFields.social = socialfields;
 
     try {
       // Using upsert option (creates new doc if no match is found):
@@ -154,27 +131,6 @@ router.delete('/', auth, async (req, res) => {
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
-  }
-});
-
-// @route    GET api/profile/github/:username
-// @desc     Get user repos from Github
-// @access   Public
-router.get('/github/:username', async (req, res) => {
-  try {
-    const uri = encodeURI(
-      `https://api.github.com/users/${req.params.username}/repos?per_page=5&sort=created:asc`
-    );
-    const headers = {
-      'user-agent': 'node.js',
-      Authorization: `token ${config.get('githubToken')}`,
-    };
-
-    const gitHubResponse = await axios.get(uri, { headers });
-    return res.json(gitHubResponse.data);
-  } catch (err) {
-    console.error(err.message);
-    return res.status(404).json({ msg: 'No Github profile found' });
   }
 });
 

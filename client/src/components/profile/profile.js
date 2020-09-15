@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import Spinner from '../layout/Spinner';
 import ProfileTop from './ProfileTop';
 import ProfileAbout from './ProfileAbout';
-import ProfileGithub from './ProfileGithub';
 import { getProfileById } from '../../actions/profile';
 
 const Profile = ({ getProfileById, profile: { profile }, auth, match }) => {
@@ -32,10 +31,6 @@ const Profile = ({ getProfileById, profile: { profile }, auth, match }) => {
           <div className='profile-grid my-1'>
             <ProfileTop profile={profile} />
             <ProfileAbout profile={profile} />
-
-            {profile.githubusername && (
-              <ProfileGithub username={profile.githubusername} />
-            )}
           </div>
         </Fragment>
       )}

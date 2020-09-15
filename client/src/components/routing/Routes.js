@@ -5,7 +5,6 @@ import Login from '../auth/Login';
 import Alert from '../layout/Alert';
 import Dashboard from '../dashboard/Dashboard';
 import ProfileForm from '../profile/ProfileForm';
-import Profiles from '../profile/Profiles';
 import Profile from '../profile/Profile';
 import PrivateRoute from '../routing/PrivateRoute';
 
@@ -16,7 +15,6 @@ const Routes = (props) => {
       <Switch>
         <Route exact path='/register' component={Register} />
         <Route exact path='/login' component={Login} />
-        <Route exact path='/profiles' component={Profiles} />
         <Route exact path='/profile/:id' component={Profile} />
         <PrivateRoute exact path='/dashboard' component={Dashboard} />
         <PrivateRoute exact path='/create-profile' component={ProfileForm} />
