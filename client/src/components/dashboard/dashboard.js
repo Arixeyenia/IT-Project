@@ -1,25 +1,24 @@
 import React, { Fragment, useEffect } from 'react';
-// import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-// import { connect } from 'react-redux';
+import { connect } from 'react-redux';
 import { Typography, Divider, Box, List } from '@material-ui/core';
+import {getUserEPortfolios} from '../../actions/eportoflio';
 
-const Dashboard = () => {
+const Dashboard = ({getUserEPortfolios, userEPortfolios: {userEPortfolios}}) => {
+  useEffect(() => {
+    getUserEPortfolios();
+  }, [getUserEPortfolios]);
+  
   return (
     <Box className="content">
-        <Typography variant="h1">Welcome to your dashboard</Typography>
-        <Category title="Your existing ePortfolios"></Category>
-        <List children={this.getMyePortfolios()}></List>
-        <Category title="Your favourited ePortfolios"></Category>
-        <List children={this.getFavouritedEPortfolios()}></List>
-        <Link to={'/createPortfolio'}>
-          <button type='button' className='btn btn-primary btn-block'>
-            create a portfolio
-          </button>
-        </Link>
-      </Box>
+      <Typography variant="h1">Welcome to your dashboard</Typography>
+      <Category title="Your existing ePortfolios"></Category>
+      <List ></List>
+      <Category title="Your favourited ePortfolios"></Category>
+      <List ></List>
+    </Box>
   );
-};
+}
 
 function Category(props) {
   return (
@@ -31,10 +30,14 @@ function Category(props) {
     </Box>
   );
 }
+
 Dashboard.propTypes = {
-  auth: PropTypes.object.isRequired,
+  getUserEPortfolios: PropTypes.func.isRequired,
+  userEPortfolios: PropTypes.object,
 };
 
-const mapStateToProps = (state) => ({});
+const mapStateToProps = (state) => ({
+  userEPortfolios: state.userEPortfolios,
+});
 
-export default Dashboard;
+export default connect(mapStateToProps, { getUserEPortfolios })(Dashboard);
