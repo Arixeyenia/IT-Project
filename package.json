@@ -32,8 +32,6 @@
     "mongoose": "^5.10.3",
     "normalize-url": "^5.0.0",
     "puppeteer": "^5.3.0",
-    "react": "^16.13.1",
-    "react-router-dom": "^5.2.0",
     "tough-cookie": "^4.0.0"
   },
   "devDependencies": {
