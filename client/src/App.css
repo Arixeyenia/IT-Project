@@ -107,7 +107,6 @@
 }
 
 /** Styles for main content of page (between header and footer) */
-
 .content {
   padding: 80px 10% 80px;
 }
@@ -164,6 +163,65 @@
 
 .category .categoryLine {
   margin-bottom: 5px;
+}
+
+/** Styles for portfolio card */
+.portfolioList {
+  display: flex;
+}
+
+.MuiCard-root {
+  height: 100%;
+}
+
+.MuiCardHeader-root {
+  padding: 0px;
+  margin-bottom: -72px;
+}
+
+.MuiCardHeader-action {
+  text-align: right;
+}
+
+.portfolioCard .MuiCardHeader-action .MuiButtonBase-root {
+  background-color: #333333;
+  opacity: 66%;
+}
+
+.portfolioListItem {
+  width: 30% !important;
+}
+
+.portfolioCard {
+  box-shadow: initial;
+}
+
+.addPortfolio {
+  padding: 18%;
+}
+
+.addPortfolioIcon {
+  display: table !important;
+  margin: auto !important;
+}
+
+.cardThumbnail {
+  width: 100%;
+  margin-bottom: -20%;
+}
+
+.MuiCardMedia-root {
+  height: 10px;
+  padding: 100%;
+}
+
+.overlayPortfolioItem {
+  opacity: 66%;
+  text-align: right;
+  background-color: #333333;
+  border-bottom-left-radius: inherit;
+  border-bottom-right-radius: inherit;
+  padding: 0 !important;
 }
 
 /** Styles for img tag */

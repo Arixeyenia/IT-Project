@@ -1,10 +1,12 @@
 import {
     GET_USER_EPORTFOLIOS,
-    EPORTFOLIOS_ERROR
+    EPORTFOLIOS_ERROR,
+    GET_EPORTFOLIO_THUMBNAILS
   } from '../actions/types';
 
 const initialState = {
-    userEPortfolios: {},
+    userEPortfolios: [],
+    eportfolioThumbnails: [],
     loading: true,
     error: {}
 };
@@ -17,14 +19,19 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 userEPortfolios: payload,
-                loading: false
+                loading: false,
+            };
+        case GET_EPORTFOLIO_THUMBNAILS:
+            return {
+                ...state,
+                eportfolioThumbnails: state.eportfolioThumbnails.concat(payload),
+                loading: false,
             };
         case EPORTFOLIOS_ERROR:
             return {
                 ...state,
                 error: payload,
                 loading: false,
-                userEPortfolios: {},
             };
       default:
         return state;
