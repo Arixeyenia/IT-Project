@@ -1,6 +1,5 @@
 import React, {Fragment, Component } from 'react';
 import { Box, Button, Typography, Grid } from '@material-ui/core';
-import AuthService from '../auth/auth.service';
 import image from '../../images/pick.png';
 
 const required = (value) => {
@@ -16,10 +15,6 @@ const required = (value) => {
 class CreatePortfolio extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      currentUser: AuthService.getCurrentUser(),
-    };
   }
   render() {
     return (
