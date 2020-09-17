@@ -13,7 +13,7 @@ import {
   TextField,
 } from '@material-ui/core';
 import Faker from 'faker';
-import DeleteIcon from '@material-ui/icons/Delete';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ChatIcon from '@material-ui/icons/Chat';
 import Helpers from './helpers/Helpers';
@@ -77,7 +77,7 @@ const Comment = ({ comments }) => {
                         secondary={comment.body}
                       />
                       <IconButton edge='end' aria-label='delete'>
-                        <DeleteIcon />
+                        <MoreVertIcon />
                       </IconButton>
                     </ListItem>
                     <Divider Light />
