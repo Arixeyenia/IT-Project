@@ -7,6 +7,7 @@ export default class Comments extends Component {
     isFetching: true,
   };
 
+  // Temporary stuff to test displaying comments as json
   async fetchData(url) {
     const response = await fetch(url);
     let data = await response.json();
@@ -28,6 +29,10 @@ export default class Comments extends Component {
     });
   }
 
+  // Get item_id
+  // Comments = router.get(/api/comments/item_id)
+
+  // Display comments inside comment box
   render() {
     const { comments, isFetching } = this.state;
     return isFetching ? 'Loading...' : <Comment comments={comments} />;
