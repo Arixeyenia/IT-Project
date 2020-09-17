@@ -62,7 +62,7 @@ router.post(
 // @route   GET api/portfolio/:id
 // @desc    Get portfolio by Portfolio ID
 // @access  Private
-router.get('/:id', auth, async (req, res) => {
+router.get('/single/:id', auth, async (req, res) => {
   try {
     const portfolio = await Portfolio.findById(req.params.id);
     if (!portfolio) return res.status(404).json({ msg: 'Portfolio not found' });
@@ -102,10 +102,10 @@ router.get('/guest/:id', async (req, res) => {
   }
 });
 
-// @route   GET api/portfolio/user/:user_id
+// @route   GET api/portfolio/user
 // @desc    View all portfolios of a user
 // @access  Private
-router.get('/user/:user_id', auth, async (req, res) => {
+router.get('/user', auth, async (req, res) => {
   try {
     // Make sure user exists
     const user = await User.findById(req.user.id).select('-password');
@@ -113,17 +113,12 @@ router.get('/user/:user_id', auth, async (req, res) => {
       return res.status(404).json({ msg: 'User not found' });
     }
 
-    // Make sure user owner of portfolios
-    if (req.params.user_id.toString() !== req.user.id) {
-      return res.status(401).json({ msg: 'User not authorized' });
-    }
-
     const portfolios = await Portfolio.find()
       .where('user')
       .in(req.user.id.toString())
       .sort({ date: -1 })
       .exec();
-
+    
     // return portfolios
     res.json(portfolios);
   } catch (err) {

@@ -1,28 +1,20 @@
-import React, { Component } from 'react';
-import AuthService from '../auth/auth.service';
-import { Link } from 'react-router-dom';
+import React, { Fragment, useEffect } from 'react';
+// import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
+// import { connect } from 'react-redux';
 
-class Dashboard extends Component {
-  constructor(props) {
-    super(props);
+const Dashboard = () => {
+  return (
+    <Fragment>
+      <h1 className='large text-primary'>Welcome to your dashboard</h1>
+    </Fragment>
+  );
+};
 
-    this.state = {
-      currentUser: AuthService.getCurrentUser(),
-    };
-  }
-  render() {
-    return (
-      <React.Fragment>
-        <h1>this is dashboard</h1>
-        <h2>these are your existing portfolios</h2>
-        <Link to={'/createPortfolio'}>
-          <button type='button' className='btn btn-primary btn-block'>
-            create a portfolio
-          </button>
-        </Link>
-      </React.Fragment>
-    );
-  }
-}
+Dashboard.propTypes = {
+  auth: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = (state) => ({});
 
 export default Dashboard;
