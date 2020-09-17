@@ -4,6 +4,7 @@ import Register from '../auth/register';
 import Login from '../auth/login';
 import Alert from '../layout/Alert';
 import Dashboard from '../dashboard/dashboard';
+import CreateEPortfolio from '../eportfolio/createPortfolio'
 import ProfileForm from '../profile/ProfileForm';
 import Profile from '../profile/profile';
 import PrivateRoute from '../routing/PrivateRoute';
@@ -17,6 +18,7 @@ const Routes = (props) => {
         <Route exact path='/login' component={Login} />
         <Route exact path='/profile/:id' component={Profile} />
         <PrivateRoute exact path='/dashboard' component={Dashboard} />
+        <PrivateRoute exact path='/create-eportfolio' component={CreateEPortfolio} />
         <PrivateRoute exact path='/create-profile' component={ProfileForm} />
         <PrivateRoute exact path='/edit-profile' component={ProfileForm} />
       </Switch>

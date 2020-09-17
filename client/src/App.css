@@ -618,6 +618,42 @@ button {
   text-align: center;
 }
 
+.select-template {
+  background-color: #F2F2F2;
+  display: flex;
+}
+
+.template-button {
+  background-color: #F2F2F2;
+  padding: 18px 38px;
+  text-align: center;
+  display: inline-block;
+  font-size: 14px;
+  border-radius: 8px;
+  margin-top: 25px;
+}
+
+.template-button:hover {
+  background-color: #4F4F4F;
+  color: #F2F2F2;
+}
+
+.template-button:focus {
+  background-color: #4F4F4F;
+  color: #F2F2F2;
+}
+
+.rectangle {
+  margin-top: 25px;
+  margin-left: 60px;
+  margin-bottom: 25px;
+  margin-right: 25px;
+  display: inline-block;
+  width: 700px;
+  height: 1px;
+  background: #4F4F4F;
+}
+
 /* Mobile Styles */
 @media (max-width: 700px) {
   .container {
