@@ -1,49 +1,60 @@
-import React, {Fragment, Component } from 'react';
-import { Box, Button, Typography, Grid } from '@material-ui/core';
-import image from '../../images/pick.png';
+import React, { Component, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { Typography, Box, Button, TextField } from '@material-ui/core';
+import { creatingPortfolioName, resetCreatingPortfolioName } from '../../actions/eportoflio'
+import { Link } from 'react-router-dom';
 
-const required = (value) => {
-  if (!value) {
-    return (
-      <div className='alert alert-danger' role='alert'>
-        This field is required!
-      </div>
-    );
-  }
-};
-
-class CreatePortfolio extends Component {
-  constructor(props) {
+class CreateEPortfolio extends Component  {
+  constructor(props){
     super(props);
+    this.state = {
+      name: "",
+      label: "Name of Portfolio",
+      error: false
+    }
+
+    this.handleInputChange = this.handleInputChange.bind(this);
   }
-  render() {
+
+  componentDidMount() {
+    this.props.resetCreatingPortfolioName();
+  }
+
+  handleInputChange(component){
+    this.setState({name: component.target.value});
+    if (component.target.value != ''){
+      this.state.error = false;
+      this.state.label = "Name of Portfolio"
+    }
+    else {
+      this.showError();
+    }
+  }
+
+  showError(){
+    this.state.label = "Please enter a name";
+    this.state.error = true;
+  }
+  render(){
     return (
-      <Fragment>
-        <Box className='select-template fontg1' bgcolor = '#FFFFFF'>
-          <button style={{ marginLeft: '150px'}} className="template-button">Professional</button>
-          <button style={{ marginLeft: '20px' }} className="template-button">Template2</button>
-          <button style={{ marginLeft: '20px' }} className="template-button">Template3</button>
-          <button style={{ marginLeft: '20px' }} className="template-button">Blank</button>
-        </Box>
-        <Box className='select-template fontg1' bgcolor = '#FFFFFF'>
-          <Typography style={{ marginLeft: '150px'}}>Pick a template</Typography>
-          <div className="rectangle"/>
-          <Button style={{marginBottom: '10px'}} variant='contained' size='sm' color='primary'> OK </Button>
-        </Box>
-        <Box className='content half gray6 fontg1'>
-          <Box className='left'>
-            <Typography style={{ marginTop: '120px'}} variant='h1'>Choose a template</Typography>
-            <Typography variant='h6'>
-              Pick one of the options above to see if it works for you.
-            </Typography>
-          </Box>
-        <Box className='right'>
-          <img src={image} alt='Illustration'></img>
-        </Box>
+      <Box className="content">
+        <Typography variant="h1">Enter your portfolio name here</Typography>
+        <form className="portfolio-name">
+          <TextField error={this.state.error} id="standard-required" className="portfolio-name-input" label={this.state.label} placeholder="My Portfolio" onChange={this.handleInputChange}></TextField>
+          <Link onClick={() => this.state.name && this.props.creatingPortfolioName(this.state.name)} to={()=> this.state.name ? "/pick-template" : this.showError()}><Button style={{float: 'right'}} variant="contained" color="primary" >NEXT</Button></Link>
+        </form>
       </Box>
-      </Fragment>
-    );
+    )
   }
 }
 
-export default CreatePortfolio;
+CreateEPortfolio.propTypes = {
+  creatingPortfolioName: PropTypes.func.isRequired,
+  resetCreatingPortfolioName: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+});
+
+export default connect(mapStateToProps, { creatingPortfolioName, resetCreatingPortfolioName })(CreateEPortfolio);

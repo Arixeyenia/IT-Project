@@ -1,12 +1,15 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { useEffect, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Typography, Divider, Box, List, ListItem, Card, CardContent, CardHeader, IconButton, Icon, Button, CardActionArea } from '@material-ui/core';
+import { Typography, Divider, Box, List, ListItem, Card, CardContent, CardHeader, IconButton, Icon, CardActionArea } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import AddIcon from '@material-ui/icons/Add'
 import {getUserEPortfolios, getEPortfolioThumbnail} from '../../actions/eportoflio';
+import { Link } from 'react-router-dom';
+import store from '../../store'
 
 const Dashboard = ({getUserEPortfolios, userEPortfolios, getEPortfolioThumbnail, eportfolioThumbnails}) => {
+
   useEffect(() => {
     if (userEPortfolios.length == 0){
       getUserEPortfolios();
@@ -30,7 +33,7 @@ const Dashboard = ({getUserEPortfolios, userEPortfolios, getEPortfolioThumbnail,
       thumbnail: eportfolioThumbnails[i]
     })
   }
-
+    
   return (
     <Fragment>
       <Typography variant="h1">Welcome to your dashboard</Typography>
@@ -56,13 +59,13 @@ const Dashboard = ({getUserEPortfolios, userEPortfolios, getEPortfolioThumbnail,
         })}
         <ListItem className="portfolioListItem" key="last">
             <Card raised={true} className="portfolioCard MuiButton-root">
-              <CardActionArea>
+              <CardActionArea><Link to="/create-eportfolio">
                 <Box className="addPortfolio">
                   <Icon aria-label="settings" className="addPortfolioIcon">
                     <AddIcon fontSize="large"/>
                   </Icon>
                 </Box>
-              </CardActionArea>
+              </Link></CardActionArea>
             </Card>
           </ListItem>
       </List>
@@ -71,7 +74,6 @@ const Dashboard = ({getUserEPortfolios, userEPortfolios, getEPortfolioThumbnail,
     </Fragment>
   );
 }
-
 function Category(props) {
   return (
     <Box className="category">
@@ -86,6 +88,7 @@ function Category(props) {
 Dashboard.propTypes = {
   getUserEPortfolios: PropTypes.func.isRequired,
   userEPortfolios: PropTypes.arrayOf(PropTypes.object).isRequired,
+  eportfolioThumbnails: PropTypes.arrayOf(PropTypes.string).isRequired
 };
 
 const mapStateToProps = (state) => ({

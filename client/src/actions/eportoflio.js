@@ -5,7 +5,10 @@ import { setAlert } from './alert';
 import {
     GET_USER_EPORTFOLIOS,
     EPORTFOLIOS_ERROR,
-    GET_EPORTFOLIO_THUMBNAILS
+    GET_EPORTFOLIO_THUMBNAILS,
+    CREATE_PORTFOLIO_NAME,
+    RESET_CREATEPORTFOLIO_NAME,
+    CREATE_PORTFOLIO
 } from './types';
 
 export const getUserEPortfolios = () => async dispatch => {
@@ -18,7 +21,7 @@ export const getUserEPortfolios = () => async dispatch => {
     } catch (err) {
         dispatch({
             type: EPORTFOLIOS_ERROR,
-            payload: { msg: err.response.statusText, status: err.response.status }
+            payload: { msg: err.message }
         });
     }
 };
@@ -35,9 +38,35 @@ export const getEPortfolioThumbnail = (eportfolioID) => async dispatch => {
     } catch (err) {
         dispatch({
             type: EPORTFOLIOS_ERROR,
-            payload: { msg: err.response.statusText, status: err.response.status }
+            payload: { msg: err.message }
         });
-        
-        dispatch(setAlert("hi"));
     }
 };
+
+export const creatingPortfolioName = (name) => async dispatch => {
+    dispatch({
+        type: CREATE_PORTFOLIO_NAME,
+        payload: name
+    });
+};
+
+export const resetCreatingPortfolioName = () => async dispatch => {
+    dispatch({
+        type: RESET_CREATEPORTFOLIO_NAME,
+        payload: ''
+    });
+}
+
+export const createPortfolio = (name) => async dispatch => {
+    try {
+        const res = await api.post('/portfolio', {name: name});
+        dispatch({
+            type: CREATE_PORTFOLIO
+        });
+    } catch (err) {
+        dispatch({
+            type: EPORTFOLIOS_ERROR,
+            payload: { msg: err.msg }
+        });
+    }
+}
