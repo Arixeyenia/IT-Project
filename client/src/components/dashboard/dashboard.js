@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Typography, Divider, Box, List, ListItem, Card, CardContent, CardHeader, IconButton, Icon, CardActionArea } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import AddIcon from '@material-ui/icons/Add'
-import {getUserEPortfolios, getEPortfolioThumbnail} from '../../actions/eportoflio';
+import {getUserEPortfolios, getEPortfolioThumbnail} from '../../actions/eportfolio';
 import { Link } from 'react-router-dom';
 import store from '../../store'
 

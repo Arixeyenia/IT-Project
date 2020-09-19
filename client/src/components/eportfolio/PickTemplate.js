@@ -3,7 +3,7 @@ import { Box, Button, Typography, Grid, Divider } from '@material-ui/core';
 import image from '../../images/pick.png';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { createPortfolio } from '../../actions/eportoflio'
+import { createPortfolio } from '../../actions/eportfolio'
 import store from '../../store'
 
 class PickTemplate extends Component {
