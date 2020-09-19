@@ -81,6 +81,9 @@ const useStyles = makeStyles((theme) => ({
   },
   pos: {
     marginBottom: 12,
+  },
+  unflex: {
+    flex: 0,
   }
 }));
 
@@ -111,14 +114,13 @@ const Edit = ({getPortfolio, portfolio, getPage, page}) => {
     items.filter(item => item._id === currID)[0][getField(index)] = newValue;
   }
 
-  const id = useParams().id;
-  const pageName = useParams().pagename;
+  const params = useParams();
   useEffect(() => {
     if (Object.keys(portfolio).length === 0){
-      getPortfolio(id);
+      getPortfolio(params.id);
     }
     if (Object.keys(page).length === 0){
-      getPage(id, pageName);
+      getPage(params.id, params.pagename);
     }
   }, [getPortfolio, portfolio, getPage, page]);
   let items = (Object.keys(page).length !== 0) ? page.items : [];
@@ -173,12 +175,14 @@ const card = (classes, handleDrawerOpen, itemID, title, subtitle, paragraph, lin
   return (
     <Card className={classes.cardRoot} variant="outlined">
        <CardHeader
+        classes={{action:classes.unflex}}
         action={
           <IconButton aria-label="settings" onClick={() => handleDrawerOpen(itemID)}>
             <EditIcon />
           </IconButton>
         }
         title={title}
+        
       />
       <CardContent>
         <Typography className={classes.pos} color="textSecondary">

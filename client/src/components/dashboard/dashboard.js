@@ -5,11 +5,10 @@ import { Typography, Divider, Box, List, Card, CardContent, CardHeader, IconButt
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import AddIcon from '@material-ui/icons/Add'
 import {getUserEPortfolios, getEPortfolioThumbnail, deletePortfolio, setDeletePortfolioID} from '../../actions/eportfolio';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useHistory } from 'react-router-dom';
 import { setAlert } from '../../actions/alert';
 
 const Dashboard = ({getUserEPortfolios, userEPortfolios, getEPortfolioThumbnail, eportfolioThumbnails, deletePortfolio}) => {
-
   useEffect(() => {
     if (userEPortfolios.length == 0){
       getUserEPortfolios();
@@ -87,6 +86,7 @@ function DisplayPortfolioItem(arrayOfPortfolioObjects, deletePortfolio) {
 
 // Currently using this component for the button and drop down menu
 function IndividualMenu(props) {
+  const history = useHistory();
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClick = (event) => {
@@ -137,8 +137,8 @@ function IndividualMenu(props) {
               open={Boolean(anchorEl)}
               onClose={handleClose}
               className="PortfolioCard-Menu">
-          <Link><MenuItem onClick={handleClose}>View</MenuItem></Link>
-          <MenuItem onClick={handleClose}>Edit</MenuItem>
+          <MenuItem onClick={() => history.push('/view/' + props.object.portfolio._id)}>View</MenuItem>
+          <MenuItem onClick={() => history.push('/edit/' + props.object.portfolio._id)}>Edit</MenuItem>
           <MenuItem onClick={() => {props.deletePortfolio(props.object.portfolio._id)}}>Delete</MenuItem>
           <MenuItem onClick={(event)=>openPopover(event, props.object.portfolio._id)}>Get link</MenuItem>
       </Menu>

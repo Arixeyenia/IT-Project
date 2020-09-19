@@ -19,14 +19,13 @@ const useStyles = makeStyles((theme) => ({
 const View = ({getPortfolio, portfolio, getPage, page}) => {
   const classes = useStyles();
   const theme = useTheme();
-  const id = useParams().id;
-  const pageName = useParams().pagename;
+  const params = useParams();
   useEffect(() => {
     if (Object.keys(portfolio).length === 0){
-      getPortfolio(id);
+      getPortfolio(params.id);
     }
     if (Object.keys(page).length === 0){
-      getPage(id, pageName);
+      getPage(params.id, params.pagename);
     }
   }, [getPortfolio, portfolio, getPage, page]);
   const items = (Object.keys(page).length !== 0) ? page.items : [];
