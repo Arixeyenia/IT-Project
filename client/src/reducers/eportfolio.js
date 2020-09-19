@@ -4,7 +4,10 @@ import {
     GET_EPORTFOLIO_THUMBNAILS,
     CREATE_PORTFOLIO_NAME,
     RESET_CREATEPORTFOLIO_NAME,
-    CREATE_PORTFOLIO, GET_PORTFOLIO, GET_PAGE
+    CREATE_PORTFOLIO, 
+    GET_PORTFOLIO, 
+    GET_PAGE,
+    DELETE_PORTFOLIO,
   } from '../actions/types';
 
 const initialState = {
@@ -49,7 +52,16 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 loading: false,
-                createPortfolioName: state.createPortfolioName
+                createPortfolioName: state.createPortfolioName,
+                eportfolioThumbnails: [],
+                userEPortfolios: [],
+            }
+        case DELETE_PORTFOLIO:
+            return {
+                ...state,
+                loading: false,
+                eportfolioThumbnails: [],
+                userEPortfolios: [],
             }
         case GET_PORTFOLIO:
             return {

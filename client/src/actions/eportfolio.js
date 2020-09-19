@@ -10,7 +10,8 @@ import {
     RESET_CREATEPORTFOLIO_NAME,
     CREATE_PORTFOLIO,
     GET_PORTFOLIO,
-    GET_PAGE
+    GET_PAGE,
+    DELETE_PORTFOLIO,
 } from './types';
 
 export const getUserEPortfolios = () => async dispatch => {
@@ -73,6 +74,21 @@ export const createPortfolio = (name) => async dispatch => {
     }
 }
 
+export const deletePortfolio = (id) => async dispatch => {
+    try {
+        const res = await api.delete('/portfolio/delete', { data: {id: id}});
+        dispatch({
+            type: DELETE_PORTFOLIO
+        });
+    } catch (err) {
+        dispatch({
+            type: EPORTFOLIOS_ERROR,
+            payload: { msg: err.message }
+        });
+    }
+}   
+
+
 export const getPortfolio = (eportfolioID) => async dispatch => {
     try {
         const res = await api.get('/portfolio/guest/' + eportfolioID);
@@ -86,7 +102,7 @@ export const getPortfolio = (eportfolioID) => async dispatch => {
             payload: { msg: err.message }
         });
     }
-};
+}
 
 export const getPage = (eportfolioID, pageName) => async dispatch => {
     try {
@@ -102,4 +118,4 @@ export const getPage = (eportfolioID, pageName) => async dispatch => {
             payload: { msg: err.message }
         });
     }
-};
+}

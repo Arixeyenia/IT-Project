@@ -171,10 +171,6 @@
   display: flex;
 }
 
-.MuiCard-root {
-  height: 100%;
-}
-
 .MuiCardHeader-root {
   padding: 0px;
   margin-bottom: -72px;
@@ -195,6 +191,10 @@
 
 .portfolioCard {
   box-shadow: initial;
+}
+
+.PortfolioCard-Menu {
+  width: 20%
 }
 
 .addPortfolio {
@@ -223,6 +223,25 @@
   border-bottom-left-radius: inherit;
   border-bottom-right-radius: inherit;
   padding: 0 !important;
+}
+
+.copylink-popover .MuiPaper-root {
+  width: 40%;
+  padding: 50px 20px;
+  margin: auto;
+  position: absolute;
+  top: 35% !important;
+  left: 32% !important;
+}
+
+.copylink-popover .MuiPaper-root .MuiButton-contained, textarea {
+  display: block;
+  margin: auto;
+  margin-top: 20px;
+}
+
+.copylink-popover .MuiPaper-root textarea {
+  width: 85% !important;
 }
 
 /** Styles for create portfolio page */
