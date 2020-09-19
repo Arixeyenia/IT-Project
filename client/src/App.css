@@ -225,6 +225,25 @@
   padding: 0 !important;
 }
 
+.copylink-popover .MuiPaper-root {
+  width: 40%;
+  padding: 50px 20px;
+  margin: auto;
+  position: absolute;
+  top: 35% !important;
+  left: 32% !important;
+}
+
+.copylink-popover .MuiPaper-root .MuiButton-contained, textarea {
+  display: block;
+  margin: auto;
+  margin-top: 20px;
+}
+
+.copylink-popover .MuiPaper-root textarea {
+  width: 85% !important;
+}
+
 /** Styles for create portfolio page */
 .portfolio-name-input {
   padding-bottom: 20px !important;

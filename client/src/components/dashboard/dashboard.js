@@ -1,11 +1,12 @@
 import React, { useEffect, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Typography, Divider, Box, List, ListItem, Card, CardContent, CardHeader, IconButton, Icon, CardActionArea, Menu, MenuItem, GridList, GridListTile } from '@material-ui/core';
+import { Typography, Divider, Box, List, Card, CardContent, CardHeader, IconButton, Icon, CardActionArea, Menu, MenuItem, GridList, GridListTile, Popover, Button, TextField } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import AddIcon from '@material-ui/icons/Add'
 import {getUserEPortfolios, getEPortfolioThumbnail, deletePortfolio, setDeletePortfolioID} from '../../actions/eportfolio';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { setAlert } from '../../actions/alert';
 
 const Dashboard = ({getUserEPortfolios, userEPortfolios, getEPortfolioThumbnail, eportfolioThumbnails, deletePortfolio}) => {
 
@@ -17,7 +18,7 @@ const Dashboard = ({getUserEPortfolios, userEPortfolios, getEPortfolioThumbnail,
       getEPortfolioThumbnail(id);
     });
   }, [getUserEPortfolios, getEPortfolioThumbnail, userEPortfolios]);
-  
+  console.log(userEPortfolios);
   var ePortfolioIDs = [];
   userEPortfolios.forEach(portfolio => {
     ePortfolioIDs.push(portfolio._id);
@@ -95,24 +96,61 @@ function IndividualMenu(props) {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const [popoverAnchor, setPopoverAnchor] = React.useState(null);
+
+  const openPopover = (event, id) => {
+    setPopoverAnchor(event.currentTarget);
+    var index = window.location.href.lastIndexOf('/');
+    setUrl(window.location.href.slice(0, index)+ '/' + id);
+    console.log(url);
+  };
+
+  const popoverClose = () => {
+    setPopoverAnchor(null);
+  };
+
+  // TODO: Copy success
+  var [url, setUrl] = React.useState('');
+  const copyClipboardLink = (elementId) => {
+    document.getElementById(elementId).value = url;
+    var textToCopy = document.getElementById(elementId);
+    var range = document.createRange();
+    range.selectNode(textToCopy);
+    var selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+    document.execCommand("copy");
+  }
+
   return(
-    <React.Fragment>
-    <CardHeader action={
-      <IconButton aria-label="settings" aria-controls={"menu-"+props.object.portfolio._id} onClick={handleClick}>
-        <MoreVertIcon />
-      </IconButton>
-    }>
-    </CardHeader>
-    <Menu id={"menu-"+props.i}
-            anchorEl={anchorEl}
-            keepMounted
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
-            className="PortfolioCard-Menu">
-        <MenuItem onClick={handleClose}>Edit</MenuItem>
-        <MenuItem onClick={() => {props.deletePortfolio(props.object.portfolio._id)}}>Delete</MenuItem>
-        <MenuItem onClick={handleClose}>Get link</MenuItem>
-      </Menu></React.Fragment>
+    <Box className="card-action-section">
+      <CardHeader action={
+        <IconButton aria-label="settings" aria-controls={"menu-"+props.object.portfolio._id} onClick={handleClick}>
+          <MoreVertIcon />
+        </IconButton>
+      }>
+      </CardHeader>
+      <Menu id={"menu-"+props.i}
+              anchorEl={anchorEl}
+              keepMounted
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+              className="PortfolioCard-Menu">
+          <Link><MenuItem onClick={handleClose}>View</MenuItem></Link>
+          <MenuItem onClick={handleClose}>Edit</MenuItem>
+          <MenuItem onClick={() => {props.deletePortfolio(props.object.portfolio._id)}}>Delete</MenuItem>
+          <MenuItem onClick={(event)=>openPopover(event, props.object.portfolio._id)}>Get link</MenuItem>
+      </Menu>
+      <Popover id={"popover-"+props.i}
+              anchorEl={popoverAnchor}
+              onClose={popoverClose}
+              open={Boolean(popoverAnchor)}
+              className="copylink-popover">
+        <textarea disabled id={"text-"+props.i} value={url}></textarea>
+        <Button variant="contained" color="primary" onClick={() => {copyClipboardLink("text-"+props.i)}}>Copy to clipboard</Button>
+      </Popover>
+    </Box>
   );
 
 }
