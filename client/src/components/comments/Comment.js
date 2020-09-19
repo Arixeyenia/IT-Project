@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Comment = ({ comments }) => {
+const Comment = ({ comments, item_id }) => {
   const classes = useStyles();
   const [openPopup, setOpenPopup] = useState(false);
 
@@ -95,19 +95,36 @@ const Comment = ({ comments }) => {
             </List>
           </Card>
           <form className={classes.form} noValidate autoComplete='off'>
+            {/* 
+              When button is pushed
+              Get contents of text field
+              make a post request to api/comments
+              need to figure out how to use x-auth-token with redux
+              if no x-auth, prompt login
+            */}
             <TextField
+              ref='inputComment'
               id='outlined-basic'
               variant='outlined'
               width='100%'
               InputProps={{
                 endAdornment: (
-                  <IconButton edge='end' aria-label='submit'>
+                  <IconButton
+                    edge='end'
+                    aria-label='submit'
+                    onClick={() => {
+                      fetch(`/api/comment/${item_id}`, {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                        body: {
+                          text: this.refs.inputComment.getValue(),
+                        },
+                      });
+                    }}
+                  >
                     <ArrowUpwardIcon />
-                    {/* 
-                    When button is pushed
-                    Get contents of text field
-                    make a post request to api/comments
-                     */}
                   </IconButton>
                 ),
               }}

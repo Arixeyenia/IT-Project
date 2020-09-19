@@ -5,12 +5,13 @@ export default class Comments extends Component {
   state = {
     comments: [],
     isFetching: true,
+    item_id: null
   };
 
 
   /*************************************/
   // Temporary stuff to test displaying comments as json
-  
+
   // async fetchData(url) {
   //   const response = await fetch(url);
   //   let data = await response.json();
@@ -45,6 +46,7 @@ export default class Comments extends Component {
         {
           comments: comments,
           isFetching: false,
+          item_id: item_id
         },
         () => console.log('New State', this.state.comments)
       );
@@ -54,6 +56,6 @@ export default class Comments extends Component {
   // Display comments inside comment box
   render() {
     const { comments, isFetching } = this.state;
-    return isFetching ? 'Loading...' : <Comment comments={comments} />;
+    return isFetching ? 'Loading...' : <Comment comments={comments, item_id} />;
   }
 }
