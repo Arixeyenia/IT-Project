@@ -1,9 +1,9 @@
 import React, { useEffect, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Typography, Drawer, Button, TextField, Divider, Box, List, ListItem, Card, CardContent, CardHeader, IconButton, Icon, CardActionArea, CardActions } from '@material-ui/core';
+import { Typography, Drawer, Grid, Button, CardMedia, TextField, Divider, Box, List, ListItem, Card, CardContent, CardHeader, IconButton, Icon, CardActionArea, CardActions } from '@material-ui/core';
 import {getPortfolio, getPage} from '../../actions/eportfolio';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import store from '../../store'
 
 
@@ -79,17 +79,25 @@ const useStyles = makeStyles((theme) => ({
   cardRoot: {
     minWidth: 275,
   },
-  pos: {
-    marginBottom: 12,
-  },
   unflex: {
     flex: 0,
+  },
+  pos: {
+    marginTop: '2em',
+    marginBottom: 12,
+  },
+  media: {
+    padding:'20vh'
+  },
+  titleText:{
+    fontSize: '1.5rem'
   }
 }));
 
 const Edit = ({getPortfolio, portfolio, getPage, page}) => {
   const classes = useStyles();
   const theme = useTheme();
+  const history = useHistory();
   const [open, setOpen] = React.useState(false);
   const [currID, setCurrID] = React.useState('');
 
@@ -107,7 +115,8 @@ const Edit = ({getPortfolio, portfolio, getPage, page}) => {
   }
   const getItem = (index) => {
     const curr = items.filter(item => item._id === currID);
-    const test = (curr.length > 0 && [getField(index)] in Object.keys(curr[0])) ? curr[0][getField(index)] : '';
+    const test = (curr.length > 0 && Object.keys(curr[0]).includes(getField(index))) ? curr[0][getField(index)] : '';
+    console.log(test);
     return test;
   }
   const editItem = (index, newValue) => {
@@ -123,11 +132,18 @@ const Edit = ({getPortfolio, portfolio, getPage, page}) => {
       getPage(params.id, params.pagename);
     }
   }, [getPortfolio, portfolio, getPage, page]);
-  let items = (Object.keys(page).length !== 0) ? page.items : [];
-  
+  const items = (Object.keys(page).length !== 0) ? page.items : [];
+  const rowLengths = {};
+  items.forEach(element => {
+    if ([element.row] in Object.keys(rowLengths)){
+      rowLengths[element.row]++; 
+    }
+    else{
+      rowLengths[element.row] = 1;
+    }
+  });
     
-  return (
-    
+  return (    
     <Fragment>
     <div className={classes.root}>
     <CssBaseline />
@@ -149,7 +165,7 @@ const Edit = ({getPortfolio, portfolio, getPage, page}) => {
       <form className={classes.root} noValidate autoComplete="off">
       <List>
         {['Title', 'Subtitle', 'Paragraph', 'Media Link', 'Media Type', 'Link Text', 'Link Address'].map((text, index) => (
-          <TextField onChange={e => editItem(index, e.target.value)} className={classes.textinput} id="standard-basic" label={text}/>
+          <TextField value={getItem(index)} onChange={e => editItem(index, e.target.value)} className={classes.textinput} id="standard-basic" label={text} variant="outlined"/>
         ))}
       </List>
       </form>
@@ -160,44 +176,49 @@ const Edit = ({getPortfolio, portfolio, getPage, page}) => {
       })}
     >
       <Typography variant="h1">{portfolio.name}</Typography>
-      <List className="portfolioList">
-      {items.map((object) => card(classes, handleDrawerOpen, object._id, object.title, object.subtitle, object.paragraph, object.linkText)
+      <Grid container spacing={3}>
+      {items.map((object) => card(classes, rowLengths, portfolio._id, object, history, handleDrawerOpen)
         )}        
-      </List>
+      </Grid>
     </main>
   </div>
-      
     </Fragment>
   );
 }
 
-const card = (classes, handleDrawerOpen, itemID, title, subtitle, paragraph, linkText) => {
+const card = (classes, rowLengths, portfolioID, object, history, handleDrawerOpen) => {
   return (
+    <Grid item xs={12/rowLengths[object.row]}>
     <Card className={classes.cardRoot} variant="outlined">
+      {object.mediaType === "image" && <CardMedia
+          className={classes.media}
+          image={object.mediaLink}
+        />}
        <CardHeader
-        classes={{action:classes.unflex}}
+        classes={{title:classes.titleText, action:classes.unflex}}
+        title={object.title}
         action={
-          <IconButton aria-label="settings" onClick={() => handleDrawerOpen(itemID)}>
+          <IconButton aria-label="settings" onClick={() => handleDrawerOpen(object._id)}>
             <EditIcon />
           </IconButton>
         }
-        title={title}
-        
       />
       <CardContent>
         <Typography className={classes.pos} color="textSecondary">
-            {subtitle}
+            {object.subtitle}
         </Typography>
         <Typography variant="body2" component="p">
-          {paragraph}
+          {object.paragraph}
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small">{linkText}</Button>
+        <Button size="small" onClick={()=> {if(!/^(f|ht)tps?:\/\//i.test(object.linkAddress)){ history.push('/view/' + portfolioID + '/' + object.linkAddress);}else{ window.location.href = object.linkAddress;}window.location.reload(false);}}>{object.linkText}</Button>
       </CardActions>
     </Card>
+    </Grid>
   )
 }
+
 
 Edit.propTypes = {
   getPage: PropTypes.func.isRequired,
