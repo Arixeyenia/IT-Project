@@ -102,7 +102,7 @@ function IndividualMenu(props) {
   const openPopover = (event, id) => {
     setPopoverAnchor(event.currentTarget);
     var index = window.location.href.lastIndexOf('/');
-    setUrl(window.location.href.slice(0, index)+ '/' + id);
+    setUrl(window.location.href.slice(0, index)+ '/' + 'view/' + id);
     console.log(url);
   };
 
