@@ -85,7 +85,6 @@ function DisplayPortfolioItem(arrayOfPortfolioObjects, deletePortfolio) {
 }
 
 // Currently using this component for the button and drop down menu
-// Issue: Menu is not appearing, may be because of anchorEl
 function IndividualMenu(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -111,7 +110,7 @@ function IndividualMenu(props) {
             onClose={handleClose}
             className="PortfolioCard-Menu">
         <MenuItem onClick={handleClose}>Edit</MenuItem>
-        <MenuItem onClick={() => {props.deletePortfolio(props.object.portfolio._id)}}>Delete {props.i}</MenuItem>
+        <MenuItem onClick={() => {props.deletePortfolio(props.object.portfolio._id)}}>Delete</MenuItem>
         <MenuItem onClick={handleClose}>Get link</MenuItem>
       </Menu></React.Fragment>
   );
