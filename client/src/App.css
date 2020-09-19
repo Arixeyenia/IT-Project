@@ -171,10 +171,6 @@
   display: flex;
 }
 
-.MuiCard-root {
-  height: 100%;
-}
-
 .MuiCardHeader-root {
   padding: 0px;
   margin-bottom: -72px;
@@ -195,6 +191,10 @@
 
 .portfolioCard {
   box-shadow: initial;
+}
+
+.PortfolioCard-Menu {
+  width: 20%
 }
 
 .addPortfolio {

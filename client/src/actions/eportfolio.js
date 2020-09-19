@@ -8,7 +8,9 @@ import {
     GET_EPORTFOLIO_THUMBNAILS,
     CREATE_PORTFOLIO_NAME,
     RESET_CREATEPORTFOLIO_NAME,
-    CREATE_PORTFOLIO
+    CREATE_PORTFOLIO,
+    DELETE_PORTFOLIO,
+    DELETE_PORTFOLIO_SETID
 } from './types';
 
 export const getUserEPortfolios = () => async dispatch => {
@@ -62,6 +64,35 @@ export const createPortfolio = (name) => async dispatch => {
         const res = await api.post('/portfolio', {name: name});
         dispatch({
             type: CREATE_PORTFOLIO
+        });
+    } catch (err) {
+        dispatch({
+            type: EPORTFOLIOS_ERROR,
+            payload: { msg: err.msg }
+        });
+    }
+}
+
+export const deletePortfolio = (id) => async dispatch => {
+    try {
+        console.log(id);
+        const res = await api.delete('/portfolio/delete', {id: id});
+        dispatch({
+            type: DELETE_PORTFOLIO
+        });
+    } catch (err) {
+        dispatch({
+            type: EPORTFOLIOS_ERROR,
+            payload: { msg: err.msg }
+        });
+    }
+}
+
+export const setDeletePortfolioID = (id) => async dispatch => {
+    try {
+        dispatch({
+            type: DELETE_PORTFOLIO_SETID,
+            payload: id
         });
     } catch (err) {
         dispatch({

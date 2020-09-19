@@ -2,7 +2,7 @@ import React, { Component, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Typography, Box, Button, TextField } from '@material-ui/core';
-import { creatingPortfolioName, resetCreatingPortfolioName } from '../../actions/eportoflio'
+import { creatingPortfolioName, resetCreatingPortfolioName } from '../../actions/eportfolio'
 import { Link } from 'react-router-dom';
 
 class CreateEPortfolio extends Component  {
