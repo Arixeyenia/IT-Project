@@ -7,13 +7,7 @@ import AddIcon from '@material-ui/icons/Add'
 import {getUserEPortfolios, getEPortfolioThumbnail, deletePortfolio, setDeletePortfolioID} from '../../actions/eportfolio';
 import { Link } from 'react-router-dom';
 
-const Dashboard = ({getUserEPortfolios, userEPortfolios, getEPortfolioThumbnail, eportfolioThumbnails, deletePortfolio, setDeletePortfolioID, deleteThisPortfolio}) => {
-  
-
-  const DeleteThisPortfolio = (id) => {
-    console.log(id);
-    deletePortfolio(id);
-  }
+const Dashboard = ({getUserEPortfolios, userEPortfolios, getEPortfolioThumbnail, eportfolioThumbnails, deletePortfolio}) => {
 
   useEffect(() => {
     if (userEPortfolios.length == 0){
@@ -22,12 +16,7 @@ const Dashboard = ({getUserEPortfolios, userEPortfolios, getEPortfolioThumbnail,
     ePortfolioIDs.forEach(id => {
       getEPortfolioThumbnail(id);
     });
-    if (deleteThisPortfolio != null){
-      deletePortfolio(deleteThisPortfolio);
-    }
-  }, [getUserEPortfolios, getEPortfolioThumbnail, userEPortfolios, deleteThisPortfolio]);
-  console.log(userEPortfolios);
-  console.log(eportfolioThumbnails);
+  }, [getUserEPortfolios, getEPortfolioThumbnail, userEPortfolios]);
   
   var ePortfolioIDs = [];
   userEPortfolios.forEach(portfolio => {
@@ -47,7 +36,7 @@ const Dashboard = ({getUserEPortfolios, userEPortfolios, getEPortfolioThumbnail,
       <Typography variant="h1">Welcome to your dashboard</Typography>
       <Category title="Your existing ePortfolios"></Category>
       <GridList className="portfolioList">
-        {DisplayPortfolioItem(arrayOfPortfolioObjects, setDeletePortfolioID)}
+        {DisplayPortfolioItem(arrayOfPortfolioObjects, deletePortfolio)}
         <GridListTile className="portfolioListItem" key="last">
             <Card raised={true} className="portfolioCard MuiButton-root">
               <CardActionArea><Link to="/create-eportfolio">
@@ -77,13 +66,13 @@ function Category(props) {
 }
 
 // Component to map each tile
-function DisplayPortfolioItem(arrayOfPortfolioObjects, setDeletePortfolioID) {
+function DisplayPortfolioItem(arrayOfPortfolioObjects, deletePortfolio) {
   
   return(
     arrayOfPortfolioObjects.map((object, i) => (
       <GridListTile className="portfolioListItem" key={object.portfolio._id}>
         <Card raised={true} className="portfolioCard">
-          <IndividualMenu i={i} object={object}/>
+          <IndividualMenu i={i} object={object} deletePortfolio={deletePortfolio}/>
           <img src={object.thumbnail} alt="Portfolio Thumbnail" className="cardThumbnail"></img>
           <CardContent className="overlayPortfolioItem">
             <Typography variant="body1" className="fontg6">{object.portfolio.name}</Typography>
@@ -93,42 +82,6 @@ function DisplayPortfolioItem(arrayOfPortfolioObjects, setDeletePortfolioID) {
       </GridListTile>
     ))
   );
-}
-
-// Test component for the button and menu
-class IndividualMenutest extends React.Component{
-  constructor(props) {
-    super(props);
-    this.state={
-      anchorEl: null,
-    }
-  }
-  handleClick = (event) => {
-    this.setState({anchorEl: event.currentTarget});
-  };
-  handleClose = () => {
-    this.setState({anchorEl: null});
-  };
-  render(){
-  return(
-    <React.Fragment>
-    <CardHeader action={
-      <IconButton aria-label="settings" aria-controls={"menu-"+this.props.object.portfolio._id} onClick={this.handleClick}>
-        <MoreVertIcon />
-      </IconButton>
-    }>
-      <Menu id={"menu-"+this.props.i}
-            anchorEl={this.state.anchorEl}
-            keepMounted
-            open={Boolean(this.state.anchorEl)}
-            onClose={this.handleClose}
-            className="PortfolioCard-Menu">
-        <MenuItem onClick={this.handleClose}>Edit</MenuItem>
-        <MenuItem onClick={() => {searchArray(this.props.i)}}>Delete {this.props.i}</MenuItem>
-        <MenuItem onClick={this.handleClose}>Get link</MenuItem>
-      </Menu>
-    </CardHeader></React.Fragment>
-  );}
 }
 
 // Currently using this component for the button and drop down menu
@@ -150,38 +103,31 @@ function IndividualMenu(props) {
         <MoreVertIcon />
       </IconButton>
     }>
-      <Menu id={"menu-"+props.i}
+    </CardHeader>
+    <Menu id={"menu-"+props.i}
             anchorEl={anchorEl}
             keepMounted
             open={Boolean(anchorEl)}
             onClose={handleClose}
             className="PortfolioCard-Menu">
         <MenuItem onClick={handleClose}>Edit</MenuItem>
-        <MenuItem onClick={() => {searchArray(props.i)}}>Delete {props.i}</MenuItem>
+        <MenuItem onClick={() => {props.deletePortfolio(props.object.portfolio._id)}}>Delete {props.i}</MenuItem>
         <MenuItem onClick={handleClose}>Get link</MenuItem>
-      </Menu>
-    </CardHeader></React.Fragment>
+      </Menu></React.Fragment>
   );
 
-}
-
-function searchArray(array, index){
-    console.log(index);
 }
 
 Dashboard.propTypes = {
   getUserEPortfolios: PropTypes.func.isRequired,
   userEPortfolios: PropTypes.arrayOf(PropTypes.object).isRequired,
   eportfolioThumbnails: PropTypes.arrayOf(PropTypes.string).isRequired,
-  deletePortfolio: PropTypes.func.isRequired,
-  deleteThisPortfolio: PropTypes.string,
-  setDeletePortfolioID: PropTypes.func.isRequired
+  deletePortfolio: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state) => ({
   userEPortfolios: state.eportfolio.userEPortfolios,
-  eportfolioThumbnails: state.eportfolio.eportfolioThumbnails,
-  deleteThisPortfolio: state.eportfolio.deleteThisPortfolio,
+  eportfolioThumbnails: state.eportfolio.eportfolioThumbnails
 });
 
-export default connect(mapStateToProps, { getUserEPortfolios, getEPortfolioThumbnail, deletePortfolio, setDeletePortfolioID })(Dashboard);
+export default connect(mapStateToProps, { getUserEPortfolios, getEPortfolioThumbnail, deletePortfolio })(Dashboard);

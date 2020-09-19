@@ -6,14 +6,12 @@ import {
     RESET_CREATEPORTFOLIO_NAME,
     CREATE_PORTFOLIO,
     DELETE_PORTFOLIO,
-    DELETE_PORTFOLIO_SETID
   } from '../actions/types';
 
 const initialState = {
     userEPortfolios: [],
     eportfolioThumbnails: [],
     createPortfolioName: '',
-    deleteThisPortfolio: null,
     loading: true,
     error: {}
 };
@@ -60,13 +58,6 @@ export default function (state = initialState, action) {
                 loading: false,
                 eportfolioThumbnails: [],
                 userEPortfolios: [],
-                deleteThisPortfolio: null,
-            }
-        case DELETE_PORTFOLIO_SETID:
-            return{
-                ...state,
-                loading: false,
-                deleteThisPortfolio: payload,
             }
         case EPORTFOLIOS_ERROR:
             return {
