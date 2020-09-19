@@ -4,7 +4,7 @@ import { Box, Typography } from '@material-ui/core';
 function Footer() {
   return (
     <Box className='footer gray2 fontg6'>
-      <Box>Insert logo here</Box>
+      <Box><Typography variant='h3'>Quaranteam</Typography></Box>
       <Box className='content half'>
         <Box className='left'>
           <Typography variant='body1'>Proudly made by Quaranteam</Typography>
