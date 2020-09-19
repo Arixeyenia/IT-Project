@@ -4,11 +4,15 @@ import {
     GET_EPORTFOLIO_THUMBNAILS,
     CREATE_PORTFOLIO_NAME,
     RESET_CREATEPORTFOLIO_NAME,
-    CREATE_PORTFOLIO,
+    CREATE_PORTFOLIO, 
+    GET_PORTFOLIO, 
+    GET_PAGE,
     DELETE_PORTFOLIO,
   } from '../actions/types';
 
 const initialState = {
+    portfolio : {},
+    page: {},
     userEPortfolios: [],
     eportfolioThumbnails: [],
     createPortfolioName: '',
@@ -59,12 +63,25 @@ export default function (state = initialState, action) {
                 eportfolioThumbnails: [],
                 userEPortfolios: [],
             }
+        case GET_PORTFOLIO:
+            return {
+                ...state,
+                portfolio: payload,
+                loading: false,
+            };
+        case GET_PAGE:
+            return {
+                ...state,
+                page: payload,
+                loading: false,
+            };
         case EPORTFOLIOS_ERROR:
             return {
                 ...state,
                 error: payload,
                 loading: false,
             };
+
       default:
         return state;
     }
