@@ -83,12 +83,10 @@ Express
 ## Backend Structure  
 <p align="left">	
   <img src="client/src/images/BackendStructure.PNG"  width="300" >	
-</p>
-## Backend API Documentation
-https://documenter.getpostman.com/view/12626526/TVK5cgbD
+</p>  
 
-
-
+## Backend API Documentation  
+https://documenter.getpostman.com/view/12626526/TVK5cgbD   
 
 
 ## Backend Calls  
