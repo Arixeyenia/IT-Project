@@ -1,20 +1,20 @@
 # Quaranteam Documentation  
 ## Table of contents  
-- [User Documentation](#user documentation)  
-  - [About Us](#about us)  
-  - [Technologies Used](#technologies used)  
+- [User Documentation](#user-documentation)  
+  - [About Us](#about-us)  
+  - [Technologies Used](#technologies-used) 
   - [Features](#features)  
   - [Design](#design)  
-- [Frontend Documentation](#frontend documentation)  
+- [Frontend Documentation](#frontend-documentation)  
   - [Setup](#setup)  
   - [Technologies](#technologies)  
-  - [Frontend Structure](#frontend structure)  
-  - [Frontend Routes](#frontend routes)  
-- [Backend Documentation](#backend documentation)  
+  - [Frontend Structure](#frontend-structure)  
+  - [Frontend Routes](#frontend-routes)  
+- [Backend Documentation](#backend-documentation)  
   - [Setup](#setup)  
   - [Technologies](#technologies)  
-  - [Backend Structure](#backend structure)  
-  - [Backend API Documentation](#backend API documentation)  
+  - [Backend Structure](#backend-structure)  
+  - [Backend API Documentation](#backend-api-documentation)  
   
   
 # User Documentation  
