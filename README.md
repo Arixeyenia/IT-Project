@@ -35,14 +35,16 @@ In the dashboard, users have the option to create new ePortfolios by clicking '+
 We provide several templates for the convenience of users. In addition to that, a completely blank templates is available if users prefer designing their own ePortfolios.   
    
 ### Edit ePortfolios
-Each ePortfolio contains lots of items. Users could edit each items using tools available in the sidebar. Texts, images, links....could be put in the items.  
+Each ePortfolio contains lots of items. Users could edit each items using tools available in the sidebar. Texts, images, links....could be put in the items.  to be continue.....  
    
 ### Save favourite ePortfolios
+not available yet...
 
 ### Share ePortfolio links
-
+By clicking 'get link' from each ePortfolio in the dashboard, users could share their ePortfolios with others.  
 ## Design  
-
+Material UI was used to facilitate the design of interface.  
+to be continue...
   
   
 # Frontend Documentation  
