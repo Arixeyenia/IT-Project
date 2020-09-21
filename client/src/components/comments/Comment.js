@@ -48,11 +48,11 @@ const Comment = ({ getComments, comments, itemID }) => {
   const classes = useStyles();
   const [openPopup, setOpenPopup] = useState(false);
   useEffect(() => {
-    if (comments === null){
+    if (! Object.keys(comments).includes(itemID)){
       getComments(itemID);
     }
   }, [getComments, comments, itemID]);
-  console.log(comments);
+  console.log(comments[itemID]);
 
   return (
     <>
@@ -72,7 +72,7 @@ const Comment = ({ getComments, comments, itemID }) => {
         <Card className={classes.root}>
           <Card className={classes.card}>
             <List className={classes.root}>
-              {(comments !== null) ? comments.map((comment) => {
+              {(Object.keys(comments).includes(itemID)) ? comments[itemID].map((comment) => {
                 return (
                   <React.Fragment key={comment.id}>
                     <ListItem key={comment.id} alignItems='flex-start'>
@@ -132,7 +132,7 @@ const Comment = ({ getComments, comments, itemID }) => {
 
 Comment.propTypes = {
   getComments: PropTypes.func.isRequired,
-  comments: PropTypes.array
+  comments: PropTypes.object.isRequired
 };
 
 

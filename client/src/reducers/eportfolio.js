@@ -20,7 +20,7 @@ const initialState = {
   createPortfolioName: '',
   loading: true,
   error: {},
-  comments: null,
+  comments: {},
 };
 
 export default function (state = initialState, action) {
@@ -87,7 +87,7 @@ export default function (state = initialState, action) {
     case GET_COMMENTS:
       return {
         ...state,
-        comments: payload,
+        comments : {...state.comments, ...payload},
         loading: false,
       };
     case COMMENTS_ERROR:

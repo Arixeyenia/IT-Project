@@ -126,7 +126,7 @@ export const getComments = (itemID) => async (dispatch) => {
     const res = await api.get('/comment/' + itemID);
     dispatch({
       type: GET_COMMENTS,
-      payload: res.data,
+      payload: {[itemID]: res.data},
     });
   } catch (err) {
     dispatch({
