@@ -44,6 +44,7 @@ not available yet...
 By clicking 'get link' from each ePortfolio in the dashboard, users could share their ePortfolios with others.  
 ## Design  
 Material UI was used to facilitate the design of interface.  
+The purpose of design is to make Quanranteam App look professional and easy to use.  
 to be continue...
   
   
@@ -64,7 +65,7 @@ React & Redux
 ## Frontend Structure  
 <p align="left">	
   <img src="client/src/images/FrontendStructure.PNG"  width="300" >	
-</p>
+</p>  
 
 ## Frontend Routes
 http://localhost:3000/home  
