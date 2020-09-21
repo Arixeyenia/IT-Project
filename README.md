@@ -16,32 +16,42 @@
   - [Backend API Documentation](#backend-api-documentation) 
   - [Backend Calls](#backend-calls) 
   
-  
+               
 # User Documentation  
 ## About Us  
-
-## Technologies Used  
-
+Qauranteam ePortfolio Platform helps create highly customisable ePortfolios for every purpose.   
+    
 ## Features  
+### Google Authentication
+Google authentication was used for the convenience of users.   
+With existing account, users don't need to walk through the process of registration.  
+  
+### Create ePortfolios
+
+### Edit ePortfolios
+
+### Save favourite ePortfolios
+
+### Share ePortfolio links
 
 ## Design  
 
-
-
+  
+  
 # Frontend Documentation  
 ## Setup  
 1.cd client   
-2.npm install (this will automatically install all dependencies from client/package.json)   
-  or npm i material-ui/core jest-dom react user-event axios bootstrap react-dom react-router-dom react-scripts react-validation reactstrap validator ttf-loader file-loader  
+2.npm install (automatically install all dependencies from client/package.json)   
 
-How to run both server and client:
+
+**How to run both server and client:**
 1. go out of client folder by "cd .."  
    (make sure you are at root folder)   
 2. do "npm run dev"   
-   (then you don't need to type npm run server again)   
+
   
 ## Technologies  
-
+React & Redux  
 ## Frontend Structure  
 
 
@@ -53,24 +63,22 @@ http://localhost:3000/login
 http://localhost:3000/home
 
 
-
-
-
+   
+  
+   
 # Backend Documentation  
 ## Setup  
 1. Download Node.js  
 2. Download Postman (to make requests to backend for testing)  
-3. npm i express express-validator config jsonwebtoken mongoose  
-4. npm i -D nodemon concurrently  
+3. npm install
 
-How to run both server and client:
+**How to run both server and client:**
 1. go out of client folder by "cd .."  
    (make sure you are at root folder)   
-2. do "npm run dev"   
-   (then you don't need to type npm run server again)  
+2. do "npm run dev"    
 
 ## Technologies  
-
+Express
 ## Backend Structure  
 
 ## Backend API Documentation
