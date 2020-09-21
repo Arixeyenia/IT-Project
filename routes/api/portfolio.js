@@ -154,7 +154,7 @@ router.get('/thumbnail/:id', auth, async (req, res) => {
     });
     //TODO: replace with link to site
     await page.goto(
-      'http://localhost:3000/api/portfolio/guest/' + req.params.id
+      'http://localhost:3000/view/' + req.params.id
     );
     const image = await page.screenshot();
     await browser.close();

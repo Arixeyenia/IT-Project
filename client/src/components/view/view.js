@@ -2,9 +2,9 @@ import React, { useEffect, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { Typography, Divider, Box, List, ListItem, Card, CardContent, CardHeader, IconButton, Icon, CardActions, Button } from '@material-ui/core';
+import { Typography, Grid, Divider, Box, List, ListItem, Card, CardContent, CardHeader, CardMedia, Icon, CardActions, Button } from '@material-ui/core';
 import {getPortfolio, getPage} from '../../actions/eportfolio';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useHistory } from 'react-router-dom';
 import store from '../../store'
 
 const useStyles = makeStyles((theme) => ({
@@ -12,7 +12,14 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 275,
   },
   pos: {
+    marginTop: '2em',
     marginBottom: 12,
+  },
+  media: {
+    padding:'20vh'
+  },
+  titleText:{
+    fontSize: '1.5rem'
   }
 }));
 
@@ -20,6 +27,7 @@ const View = ({getPortfolio, portfolio, getPage, page}) => {
   const classes = useStyles();
   const theme = useTheme();
   const params = useParams();
+  const history = useHistory();
   useEffect(() => {
     if (Object.keys(portfolio).length === 0){
       getPortfolio(params.id);
@@ -29,37 +37,51 @@ const View = ({getPortfolio, portfolio, getPage, page}) => {
     }
   }, [getPortfolio, portfolio, getPage, page]);
   const items = (Object.keys(page).length !== 0) ? page.items : [];
-  console.log(portfolio);
-  console.log(page);
+  const rowLengths = {};
+  items.forEach(element => {
+    if ([element.row] in Object.keys(rowLengths)){
+      rowLengths[element.row]++; 
+    }
+    else{
+      rowLengths[element.row] = 1;
+    }
+  });
     
   return (
     <Fragment>
       <Typography variant="h1">{portfolio.name}</Typography>
-      <List className="portfolioList">
-           {items.map((object) => card(classes, object._id, object.title, object.subtitle, object.paragraph, object.linkText))}  
-      </List>
+      <Grid container spacing={3}>
+      {items.map((object) => card(classes, rowLengths, params.id, object, history))}  
+      </Grid>
     </Fragment>
   );
 }
 
-const card = (classes, itemID, title, subtitle, paragraph, linkText) => {
+const card = (classes, rowLengths, portfolioID, object, history) => {
   return (
+    <Grid item xs={12/rowLengths[object.row]}>
     <Card className={classes.cardRoot} variant="outlined">
+      {object.mediaType === "image" && <CardMedia
+          className={classes.media}
+          image={object.mediaLink}
+        />}
        <CardHeader
-        title={title}
+        classes={{title:classes.titleText}}
+        title={object.title}
       />
       <CardContent>
         <Typography className={classes.pos} color="textSecondary">
-            {subtitle}
+            {object.subtitle}
         </Typography>
         <Typography variant="body2" component="p">
-          {paragraph}
+          {object.paragraph}
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small">{linkText}</Button>
+           <Button size="small" onClick={()=> {if(!/^(f|ht)tps?:\/\//i.test(object.linkAddress)){ history.push('/view/' + portfolioID + '/' + object.linkAddress);}else{ window.location.href = object.linkAddress;}window.location.reload(false);}}>{object.linkText}</Button>
       </CardActions>
     </Card>
+    </Grid>
   )
 }
 
