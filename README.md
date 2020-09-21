@@ -53,7 +53,9 @@ With existing account, users don't need to walk through the process of registrat
 ## Technologies  
 React & Redux  
 ## Frontend Structure  
-
+<p align="left">	
+  <img src="client/src/images/FrontendStructure.PNG"  width="300" >	
+</p>
 
 ## Frontend Routes
 http://localhost:3000/dashboard
