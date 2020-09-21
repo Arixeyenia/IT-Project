@@ -17,6 +17,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ChatIcon from '@material-ui/icons/Chat';
 import Helpers from './helpers/Helpers';
+import getComments from '../../actions/eportfolio';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,9 +42,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Comment = ({ comments, item_id }) => {
+const Comment = ({ getComments, itemId }) => {
   const classes = useStyles();
   const [openPopup, setOpenPopup] = useState(false);
+  const comments = getComments(itemId);
 
   return (
     <>
@@ -64,7 +66,6 @@ const Comment = ({ comments, item_id }) => {
           <Card className={classes.card}>
             <List className={classes.root}>
               {comments.map((comment) => {
-                console.log('Comment', comment);
                 return (
                   <React.Fragment key={comment.id}>
                     <ListItem key={comment.id} alignItems='flex-start'>
@@ -109,21 +110,7 @@ const Comment = ({ comments, item_id }) => {
               width='100%'
               InputProps={{
                 endAdornment: (
-                  <IconButton
-                    edge='end'
-                    aria-label='submit'
-                    onClick={() => {
-                      fetch(`/api/comment/${item_id}`, {
-                        method: 'POST',
-                        headers: {
-                          'Content-Type': 'application/json',
-                        },
-                        body: {
-                          text: this.refs.inputComment.getValue(),
-                        },
-                      });
-                    }}
-                  >
+                  <IconButton edge='end' aria-label='submit'>
                     <ArrowUpwardIcon />
                   </IconButton>
                 ),
@@ -136,4 +123,8 @@ const Comment = ({ comments, item_id }) => {
   );
 };
 
-export default Comment;
+const mapStateToProps = (state) => ({
+  comments: state.eportfolio.comments,
+});
+
+export default connect(mapStateToProps, { getComments, itemId })(Comment);

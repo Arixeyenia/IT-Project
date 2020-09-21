@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Comment from './Comment';
 
+
 export default class Comments extends Component {
   state = {
     comments: [],
@@ -59,3 +60,4 @@ export default class Comments extends Component {
     return isFetching ? 'Loading...' : <Comment comments={comments, item_id} />;
   }
 }
+
