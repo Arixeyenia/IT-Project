@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   List,
@@ -17,7 +19,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ChatIcon from '@material-ui/icons/Chat';
 import Helpers from './helpers/Helpers';
-import getComments from '../../actions/eportfolio';
+import {getComments} from '../../actions/eportfolio';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,10 +44,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Comment = ({ getComments, itemId }) => {
+const Comment = ({ getComments, comments, itemID }) => {
   const classes = useStyles();
   const [openPopup, setOpenPopup] = useState(false);
-  const comments = getComments(itemId);
+  useEffect(() => {
+    if (comments === null){
+      getComments(itemID);
+    }
+  }, [getComments, comments, itemID]);
+  console.log(comments);
 
   return (
     <>
@@ -65,7 +72,7 @@ const Comment = ({ getComments, itemId }) => {
         <Card className={classes.root}>
           <Card className={classes.card}>
             <List className={classes.root}>
-              {comments.map((comment) => {
+              {(comments !== null) ? comments.map((comment) => {
                 return (
                   <React.Fragment key={comment.id}>
                     <ListItem key={comment.id} alignItems='flex-start'>
@@ -92,7 +99,7 @@ const Comment = ({ getComments, itemId }) => {
                     <Divider Light />
                   </React.Fragment>
                 );
-              })}
+              }) : <div/>}
             </List>
           </Card>
           <form className={classes.form} noValidate autoComplete='off'>
@@ -123,8 +130,15 @@ const Comment = ({ getComments, itemId }) => {
   );
 };
 
-const mapStateToProps = (state) => ({
+Comment.propTypes = {
+  getComments: PropTypes.func.isRequired,
+  comments: PropTypes.array
+};
+
+
+const mapStateToProps = (state, props) => ({
   comments: state.eportfolio.comments,
+  itemID : props.itemID
 });
 
-export default connect(mapStateToProps, { getComments, itemId })(Comment);
+export default connect(mapStateToProps, { getComments })(Comment);

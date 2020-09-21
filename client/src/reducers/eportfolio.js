@@ -20,6 +20,7 @@ const initialState = {
   createPortfolioName: '',
   loading: true,
   error: {},
+  comments: null,
 };
 
 export default function (state = initialState, action) {

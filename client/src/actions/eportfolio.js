@@ -123,7 +123,7 @@ export const getPage = (eportfolioID, pageName) => async (dispatch) => {
 
 export const getComments = (itemID) => async (dispatch) => {
   try {
-    const res = await api.get('/comments/' + itemID);
+    const res = await api.get('/comment/' + itemID);
     dispatch({
       type: GET_COMMENTS,
       payload: res.data,

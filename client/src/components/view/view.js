@@ -6,6 +6,7 @@ import { Typography, Grid, Divider, Box, List, ListItem, Card, CardContent, Card
 import {getPortfolio, getPage} from '../../actions/eportfolio';
 import { Link, useParams, useHistory } from 'react-router-dom';
 import store from '../../store'
+import Comment from '../comments/Comment'
 
 const useStyles = makeStyles((theme) => ({
   cardRoot: {
@@ -35,7 +36,7 @@ const View = ({getPortfolio, portfolio, getPage, page}) => {
     if (Object.keys(page).length === 0){
       getPage(params.id, params.pagename);
     }
-  }, [getPortfolio, portfolio, getPage, page]);
+  }, [getPortfolio, portfolio, getPage, page, params]);
   const items = (Object.keys(page).length !== 0) ? page.items : [];
   const rowLengths = {};
   items.forEach(element => {
@@ -80,6 +81,7 @@ const card = (classes, rowLengths, portfolioID, object, history) => {
       <CardActions>
            <Button size="small" onClick={()=> {if(!/^(f|ht)tps?:\/\//i.test(object.linkAddress)){ history.push('/view/' + portfolioID + '/' + object.linkAddress);}else{ window.location.href = object.linkAddress;}window.location.reload(false);}}>{object.linkText}</Button>
       </CardActions>
+      <Comment itemID={object._id}/>
     </Card>
     </Grid>
   )
