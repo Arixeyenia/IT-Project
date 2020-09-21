@@ -2,7 +2,6 @@
 ## Table of contents  
 - [User Documentation](#user-documentation)  
   - [About Us](#about-us)  
-  - [Technologies Used](#technologies-used) 
   - [Features](#features)  
   - [Design](#design)  
 - [Frontend Documentation](#frontend-documentation)  
