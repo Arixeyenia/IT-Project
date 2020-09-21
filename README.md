@@ -1,39 +1,85 @@
-# Quaranteam
-
-IT Project
-
-## Setup for Backend
-
-1. Download Node.js
-2. Download Postman (to make requests to backend for testing)
-3. npm i express express-validator config jsonwebtoken mongoose
-4. npm i -D nodemon concurrently
-
-## Setup for Frontend
-
-1.cd client
-2.npm install (this will automatically install all dependencies from client/package.json)
-  or npm i material-ui/core jest-dom react user-event axios bootstrap react-dom react-router-dom react-scripts react-validation reactstrap validator ttf-loader file-loader
+# Quaranteam Documentation  
+## Table of contents  
+- [User Documentation](#user documentation)  
+  - [About Us](#about us)  
+  - [Technologies Used](#technologies used)  
+  - [Features](#features)  
+  - [Design](#design)  
+- [Frontend Documentation](#frontend documentation)  
+  - [Setup](#setup)  
+  - [Technologies](#technologies)  
+  - [Frontend Structure](#frontend structure)  
+  - [Frontend Routes](#frontend routes)  
+- [Backend Documentation](#backend documentation)  
+  - [Setup](#setup)  
+  - [Technologies](#technologies)  
+  - [Backend Structure](#backend structure)  
+  - [Backend API Documentation](#backend API documentation)  
   
-## How to Run both Server and client
+  
+# User Documentation  
+## About Us  
 
-1. go out of client folder by "cd .."
-   (make sure you are at root folder)
-2. do "npm run dev"
-   (then you don't need to type npm run server again)
+## Technologies Used  
 
-## currently front end has
+## Features  
 
+## Design  
+
+
+
+# Frontend Documentation  
+## Setup  
+1.cd client   
+2.npm install (this will automatically install all dependencies from client/package.json)   
+  or npm i material-ui/core jest-dom react user-event axios bootstrap react-dom react-router-dom react-scripts react-validation reactstrap validator ttf-loader file-loader  
+
+How to run both server and client:
+1. go out of client folder by "cd .."  
+   (make sure you are at root folder)   
+2. do "npm run dev"   
+   (then you don't need to type npm run server again)   
+  
+## Technologies  
+
+## Frontend Structure  
+
+
+## Frontend Routes
 http://localhost:3000/dashboard
 http://localhost:3000/profile
 http://localhost:3000/register
 http://localhost:3000/login
 http://localhost:3000/home
 
-while server is running:
+
+
+
+
+# Backend Documentation  
+## Setup  
+1. Download Node.js  
+2. Download Postman (to make requests to backend for testing)  
+3. npm i express express-validator config jsonwebtoken mongoose  
+4. npm i -D nodemon concurrently  
+
+How to run both server and client:
+1. go out of client folder by "cd .."  
+   (make sure you are at root folder)   
+2. do "npm run dev"   
+   (then you don't need to type npm run server again)  
+
+## Technologies  
+
+## Backend Structure  
 
 ## Backend API Documentation
 https://documenter.getpostman.com/view/12626526/TVK5cgbD
+
+
+
+
+
 
 ## Login
 
