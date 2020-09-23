@@ -19,7 +19,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ChatIcon from '@material-ui/icons/Chat';
 import Helpers from './helpers/Helpers';
-import {getComments} from '../../actions/eportfolio';
+import { getComments } from '../../actions/eportfolio';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,7 +48,7 @@ const Comment = ({ getComments, comments, itemID }) => {
   const classes = useStyles();
   const [openPopup, setOpenPopup] = useState(false);
   useEffect(() => {
-    if (! Object.keys(comments).includes(itemID)){
+    if (!Object.keys(comments).includes(itemID)) {
       getComments(itemID);
     }
   }, [getComments, comments, itemID]);
@@ -72,34 +72,38 @@ const Comment = ({ getComments, comments, itemID }) => {
         <Card className={classes.root}>
           <Card className={classes.card}>
             <List className={classes.root}>
-              {(Object.keys(comments).includes(itemID)) ? comments[itemID].map((comment) => {
-                return (
-                  <React.Fragment key={comment.id}>
-                    <ListItem key={comment.id} alignItems='flex-start'>
-                      <ListItemAvatar>
-                        <Avatar alt='avatar' src={Faker.image.avatar()} />
-                        {/* Will need to add avatars later on */}
-                      </ListItemAvatar>
+              {Object.keys(comments).includes(itemID) ? (
+                comments[itemID].map((comment) => {
+                  return (
+                    <React.Fragment key={comment.id}>
+                      <ListItem key={comment.id} alignItems='flex-start'>
+                        <ListItemAvatar>
+                          <Avatar alt='avatar' src={Faker.image.avatar()} />
+                          {/* Will need to add avatars later on */}
+                        </ListItemAvatar>
 
-                      <ListItemText
-                        primary={<Typography>{comment.name}</Typography>}
-                        secondary={comment.body}
-                      />
-                      <IconButton edge='end' aria-label='delete'>
-                        <MoreVertIcon />
-                        {/* 
+                        <ListItemText
+                          primary={<Typography>{comment.name}</Typography>}
+                          secondary={comment.text}
+                        />
+                        <IconButton edge='end' aria-label='more'>
+                          <MoreVertIcon />
+                          {/* 
                         A pop up to delete or edit comments
                         Icon sould only be visible if viewer is commenter
                         or owner of item. Owner should only be able to
                         delete commenter can delete or edit.
                         make appropriate api calls for edit/delete
                          */}
-                      </IconButton>
-                    </ListItem>
-                    <Divider Light />
-                  </React.Fragment>
-                );
-              }) : <div/>}
+                        </IconButton>
+                      </ListItem>
+                      <Divider light />
+                    </React.Fragment>
+                  );
+                })
+              ) : (
+                <div />
+              )}
             </List>
           </Card>
           <form className={classes.form} noValidate autoComplete='off'>
@@ -111,7 +115,6 @@ const Comment = ({ getComments, comments, itemID }) => {
               if no x-auth, prompt login
             */}
             <TextField
-              ref='inputComment'
               id='outlined-basic'
               variant='outlined'
               width='100%'
@@ -132,13 +135,12 @@ const Comment = ({ getComments, comments, itemID }) => {
 
 Comment.propTypes = {
   getComments: PropTypes.func.isRequired,
-  comments: PropTypes.object.isRequired
+  comments: PropTypes.object.isRequired,
 };
-
 
 const mapStateToProps = (state, props) => ({
   comments: state.eportfolio.comments,
-  itemID : props.itemID
+  itemID: props.itemID,
 });
 
 export default connect(mapStateToProps, { getComments })(Comment);
