@@ -1,4 +1,3 @@
-import { set } from 'mongoose';
 import api from '../utils/api';
 import { setAlert } from './alert';
 
