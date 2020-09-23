@@ -107,8 +107,8 @@ const card = (classes, rowLengths, portfolioID, object, history) => {
             {object.linkText}
           </Button>
         </CardActions>
+        <Comment itemID={object._id} />
       </Card>
-      <Comment itemID={object._id} />
     </Grid>
   );
 };
