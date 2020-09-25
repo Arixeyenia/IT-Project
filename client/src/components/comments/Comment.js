@@ -120,13 +120,6 @@ const Comment = ({
             </List>
           </Card>
           <form className={classes.form} noValidate autoComplete='off'>
-            {/* 
-              When button is pushed
-              Get contents of text field
-              make a post request to api/comments
-              need to figure out how to use x-auth-token with redux
-              if no x-auth, prompt login
-            */}
             <TextField
               value={textValue}
               id='outlined-basic'
