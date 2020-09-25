@@ -13,6 +13,8 @@ import {
   Card,
   IconButton,
   TextField,
+  Menu,
+  MenuItem,
 } from '@material-ui/core';
 import Faker from 'faker'; // Making random avatar appear for now
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -67,6 +69,16 @@ const Comment = ({
   }, [getComments, comments, itemID]);
   console.log(comments[itemID]);
 
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <>
       <Helpers.Button
@@ -99,7 +111,11 @@ const Comment = ({
                           primary={<Typography>{comment.name}</Typography>}
                           secondary={comment.text}
                         />
-                        <IconButton edge='end' aria-label='more'>
+                        <IconButton
+                          edge='end'
+                          aria-label='more'
+                          onClick={handleClick}
+                        >
                           <MoreVertIcon />
                           {/* 
                         A pop up to delete or edit comments
@@ -109,6 +125,16 @@ const Comment = ({
                         make appropriate api calls for edit/delete
                          */}
                         </IconButton>
+                        <Menu
+                          id='simple-menu'
+                          anchorEl={anchorEl}
+                          keepMounted
+                          open={Boolean(anchorEl)}
+                          onClose={handleClose}
+                        >
+                          <MenuItem onClick={handleClose}>Edit</MenuItem>
+                          <MenuItem onClick={handleClose}>Delete</MenuItem>
+                        </Menu>
                       </ListItem>
                       <Divider light />
                     </React.Fragment>
