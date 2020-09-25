@@ -10,6 +10,9 @@ import {
   DELETE_PORTFOLIO,
   GET_COMMENTS,
   COMMENTS_ERROR,
+  POST_COMMENT,
+  EDIT_COMMENT,
+  DELETE_COMMENT,
 } from '../actions/types';
 
 const initialState = {
@@ -87,13 +90,31 @@ export default function (state = initialState, action) {
     case GET_COMMENTS:
       return {
         ...state,
-        comments : {...state.comments, ...payload},
+        comments: { ...state.comments, ...payload },
         loading: false,
       };
     case COMMENTS_ERROR:
       return {
         ...state,
         error: payload,
+        loading: false,
+      };
+
+    case POST_COMMENT:
+      return {
+        ...state,
+        loading: false,
+      };
+
+    case DELETE_COMMENT:
+      return {
+        ...state,
+        loading: false,
+      };
+
+    case EDIT_COMMENT:
+      return {
+        ...state,
         loading: false,
       };
 

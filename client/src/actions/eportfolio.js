@@ -14,6 +14,9 @@ import {
   DELETE_PORTFOLIO,
   GET_COMMENTS,
   COMMENTS_ERROR,
+  POST_COMMENT,
+  DELETE_COMMENT,
+  EDIT_COMMENT,
 } from './types';
 
 export const getUserEPortfolios = () => async (dispatch) => {
@@ -126,7 +129,21 @@ export const getComments = (itemID) => async (dispatch) => {
     const res = await api.get('/comment/' + itemID);
     dispatch({
       type: GET_COMMENTS,
-      payload: {[itemID]: res.data},
+      payload: { [itemID]: res.data },
+    });
+  } catch (err) {
+    dispatch({
+      type: COMMENTS_ERROR,
+      payload: { msg: err.message },
+    });
+  }
+};
+
+export const postComment = (itemID, text) => async (dispatch) => {
+  try {
+    const res = await api.post('/comment/' + itemID, { text: text });
+    dispatch({
+      type: POST_COMMENT,
     });
   } catch (err) {
     dispatch({
