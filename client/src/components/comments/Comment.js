@@ -19,7 +19,12 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ChatIcon from '@material-ui/icons/Chat';
 import Helpers from './helpers/Helpers';
-import { getComments } from '../../actions/eportfolio';
+import {
+  getComments,
+  postComment,
+  deleteComment,
+  editComment,
+} from '../../actions/eportfolio';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,9 +49,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Comment = ({ getComments, comments, itemID }) => {
+const Comment = ({
+  getComments,
+  postComment,
+  deleteComment,
+  editComment,
+  comments,
+  itemID,
+}) => {
   const classes = useStyles();
   const [openPopup, setOpenPopup] = useState(false);
+  const [textValue, setValue] = useState('');
   useEffect(() => {
     if (!Object.keys(comments).includes(itemID)) {
       getComments(itemID);
@@ -115,12 +128,22 @@ const Comment = ({ getComments, comments, itemID }) => {
               if no x-auth, prompt login
             */}
             <TextField
+              value={textValue}
               id='outlined-basic'
               variant='outlined'
               width='100%'
+              onChange={(e) => setValue(e.target.value)}
               InputProps={{
                 endAdornment: (
-                  <IconButton edge='end' aria-label='submit'>
+                  <IconButton
+                    edge='end'
+                    aria-label='submit'
+                    onClick={() => {
+                      postComment(itemID, textValue);
+                      // reset the text field
+                      // update the comment box so new comment is shown
+                    }}
+                  >
                     <ArrowUpwardIcon />
                   </IconButton>
                 ),
@@ -143,4 +166,9 @@ const mapStateToProps = (state, props) => ({
   itemID: props.itemID,
 });
 
-export default connect(mapStateToProps, { getComments })(Comment);
+export default connect(mapStateToProps, {
+  getComments,
+  postComment,
+  deleteComment,
+  editComment,
+})(Comment);
