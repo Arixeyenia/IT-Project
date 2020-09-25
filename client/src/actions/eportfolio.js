@@ -152,3 +152,33 @@ export const postComment = (itemID, text) => async (dispatch) => {
     });
   }
 };
+
+export const deleteComment = (itemID, commentID) => async (dispatch) => {
+  try {
+    const res = await api.delete('/comment/' + itemID + '/' + commentID);
+    dispatch({
+      type: DELETE_COMMENT,
+    });
+  } catch (err) {
+    dispatch({
+      type: COMMENTS_ERROR,
+      payload: { msg: err.message },
+    });
+  }
+};
+
+export const editComment = (itemID, commentID, text) => async (dispatch) => {
+  try {
+    const res = await api.delete('/comment/' + itemID + '/' + commentID, {
+      text: text,
+    });
+    dispatch({
+      type: EDIT_COMMENT,
+    });
+  } catch (err) {
+    dispatch({
+      type: COMMENTS_ERROR,
+      payload: { msg: err.message },
+    });
+  }
+};
