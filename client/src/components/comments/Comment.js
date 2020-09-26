@@ -15,6 +15,12 @@ import {
   TextField,
   Menu,
   MenuItem,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button,
 } from '@material-ui/core';
 import Faker from 'faker'; // Making random avatar appear for now
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -66,17 +72,13 @@ const Comment = ({
     if (!Object.keys(comments).includes(itemID)) {
       getComments(itemID);
     }
-  }, [getComments, comments, itemID]);
+  }, [getComments, postComment, deleteComment, comments, itemID]);
   console.log(comments[itemID]);
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
-
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
+  const postCommentWrapper = (itemID, textField) => {
+    postComment(itemID, textField);
+    setValue('');
+    getComments(itemID);
   };
 
   return (
@@ -111,30 +113,12 @@ const Comment = ({
                           primary={<Typography>{comment.name}</Typography>}
                           secondary={comment.text}
                         />
-                        <IconButton
-                          edge='end'
-                          aria-label='more'
-                          onClick={handleClick}
-                        >
-                          <MoreVertIcon />
-                          {/* 
-                        A pop up to delete or edit comments
-                        Icon sould only be visible if viewer is commenter
-                        or owner of item. Owner should only be able to
-                        delete commenter can delete or edit.
-                        make appropriate api calls for edit/delete
-                         */}
-                        </IconButton>
-                        <Menu
-                          id='simple-menu'
-                          anchorEl={anchorEl}
-                          keepMounted
-                          open={Boolean(anchorEl)}
-                          onClose={handleClose}
-                        >
-                          <MenuItem onClick={handleClose}>Edit</MenuItem>
-                          <MenuItem onClick={handleClose}>Delete</MenuItem>
-                        </Menu>
+                        <CommentMenu
+                          comment={comment}
+                          deleteComment={deleteComment}
+                          editComment={editComment}
+                          itemID={itemID}
+                        />
                       </ListItem>
                       <Divider light />
                     </React.Fragment>
@@ -158,7 +142,7 @@ const Comment = ({
                     edge='end'
                     aria-label='submit'
                     onClick={() => {
-                      postComment(itemID, textValue);
+                      postCommentWrapper(itemID, textValue);
                       // reset the text field
                       // update the comment box so new comment is shown
                     }}
@@ -175,9 +159,95 @@ const Comment = ({
   );
 };
 
+function CommentMenu(props) {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleEditOpen = () => {
+    setOpen(true);
+    setAnchorEl(null);
+  };
+
+  const handleEditClose = () => {
+    setOpen(false);
+  };
+  const [commentValue, setCommentValue] = useState(props.comment.text);
+  return (
+    <div>
+      <IconButton edge='end' aria-label='more' onClick={handleClick}>
+        <MoreVertIcon />
+        {/* 
+    A pop up to delete or edit comments
+    Icon sould only be visible if viewer is commenter
+    or owner of item. Owner should only be able to
+    delete, commenter can delete or edit.
+    make appropriate api calls for edit/delete
+      */}
+      </IconButton>
+      <Menu
+        id='simple-menu'
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        <MenuItem onClick={handleEditOpen}>Edit</MenuItem>
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          aria-labelledby='form-dialog-title'
+        >
+          <DialogTitle id='form-dialog-title'>Edit Your Comment</DialogTitle>
+          <DialogContent>
+            <TextField
+              value={commentValue}
+              onChange={(e) => setCommentValue(e.target.value)}
+              id='comment'
+              defaultValue={props.comment.text}
+              fullWidth
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => {
+                editComment(props.editComment(props.comment._id, commentValue));
+                setOpen(false);
+              }}
+              color='primary'
+            >
+              Edit Comment
+            </Button>
+            <Button onClick={handleEditClose} color='primary'>
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <MenuItem
+          onClick={() => {
+            props.deleteComment(props.comment._id);
+            setAnchorEl(null);
+          }}
+        >
+          Delete
+        </MenuItem>
+      </Menu>
+    </div>
+  );
+}
+
 Comment.propTypes = {
   getComments: PropTypes.func.isRequired,
   comments: PropTypes.object.isRequired,
+  deleteComment: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state, props) => ({

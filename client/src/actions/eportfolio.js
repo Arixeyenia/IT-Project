@@ -153,9 +153,9 @@ export const postComment = (itemID, text) => async (dispatch) => {
   }
 };
 
-export const deleteComment = (itemID, commentID) => async (dispatch) => {
+export const deleteComment = (commentID) => async (dispatch) => {
   try {
-    const res = await api.delete('/comment/' + itemID + '/' + commentID);
+    const res = await api.delete('/comment/edit/' + commentID);
     dispatch({
       type: DELETE_COMMENT,
     });
@@ -167,9 +167,9 @@ export const deleteComment = (itemID, commentID) => async (dispatch) => {
   }
 };
 
-export const editComment = (itemID, commentID, text) => async (dispatch) => {
+export const editComment = (commentID, text) => async (dispatch) => {
   try {
-    const res = await api.delete('/comment/' + itemID + '/' + commentID, {
+    const res = await api.post('/comment/edit/' + commentID, {
       text: text,
     });
     dispatch({
