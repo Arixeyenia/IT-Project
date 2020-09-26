@@ -8,6 +8,8 @@ import {
     GET_PORTFOLIO, 
     GET_PAGE,
     DELETE_PORTFOLIO,
+    CREATE_ITEM,
+    EDIT_ITEM
   } from '../actions/types';
 
 const initialState = {
@@ -75,13 +77,18 @@ export default function (state = initialState, action) {
                 page: payload,
                 loading: false,
             };
+        case EDIT_ITEM:
+            state.page.items[state.page.items.findIndex(item => item._id === payload._id)] = payload;
+            return {
+                ...state,
+                loading: false,
+            }
         case EPORTFOLIOS_ERROR:
             return {
                 ...state,
                 error: payload,
                 loading: false,
             };
-
       default:
         return state;
     }

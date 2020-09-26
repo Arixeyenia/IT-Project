@@ -11,6 +11,8 @@ import {
     GET_PORTFOLIO,
     GET_PAGE,
     DELETE_PORTFOLIO,
+    CREATE_ITEM,
+    EDIT_ITEM,
 } from './types';
 
 export const getUserEPortfolios = () => async dispatch => {
@@ -109,6 +111,22 @@ export const getPage = (eportfolioID, pageName) => async dispatch => {
         const res = await api.get('/page/' + eportfolioID + link);
         dispatch({
             type: GET_PAGE,
+            payload: res.data
+        });
+    } catch (err) {
+        dispatch({
+            type: EPORTFOLIOS_ERROR,
+            payload: { msg: err.message }
+        });
+    }
+}
+
+
+export const editItem = (newItem) => async dispatch => {
+    try {
+        const res = await api.put('/item', newItem);
+        dispatch({
+            type: EDIT_ITEM,
             payload: res.data
         });
     } catch (err) {

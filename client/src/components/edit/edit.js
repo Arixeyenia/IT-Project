@@ -2,8 +2,9 @@ import React, { useEffect, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Typography, Drawer, Grid, Button, CardMedia, TextField, Divider, Box, List, ListItem, Card, CardContent, CardHeader, IconButton, Icon, CardActionArea, CardActions } from '@material-ui/core';
-import {getPortfolio, getPage} from '../../actions/eportfolio';
+import {getPortfolio, getPage, editItem} from '../../actions/eportfolio';
 import { Link, useHistory, useParams } from 'react-router-dom';
+import { useForm } from "react-hook-form";
 import store from '../../store'
 
 
@@ -94,16 +95,23 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Edit = ({getPortfolio, portfolio, getPage, page}) => {
+const Edit = ({getPortfolio, portfolio, getPage, page, editItem}) => {
   const classes = useStyles();
   const theme = useTheme();
   const history = useHistory();
+  const { handleSubmit, register, reset } = useForm();
   const [open, setOpen] = React.useState(false);
   const [currID, setCurrID] = React.useState('');
+
+  const onSubmit = (values) => {
+    values.item = currID;
+    editItem(values);
+  }
 
   const handleDrawerOpen = (id) => {
     setCurrID(id);
     setOpen(true);
+    reset(getItem(id));
   };
 
   const handleDrawerClose = () => {
@@ -111,16 +119,14 @@ const Edit = ({getPortfolio, portfolio, getPage, page}) => {
   };
 
   const getField = (index) => {
-    return ["title", "subtitle", "paragraph", "mediaLink", "mediaType", "linkText", "linkAddress"][index];
+    return ["title", "subtitle", "paragraph", "mediaLink", "mediaType", "linkText", "linkAddress", "private", "row", "column"][index];
   }
-  const getItem = (index) => {
-    const curr = items.filter(item => item._id === currID);
-    const test = (curr.length > 0 && Object.keys(curr[0]).includes(getField(index))) ? curr[0][getField(index)] : '';
-    console.log(test);
-    return test;
-  }
-  const editItem = (index, newValue) => {
-    items.filter(item => item._id === currID)[0][getField(index)] = newValue;
+
+  const getItem = (id) => {
+    const curr = items.filter(item => item._id === id);
+    let item = {};
+    ["title", "subtitle", "paragraph", "mediaLink", "mediaType", "linkText", "linkAddress", "private", "row", "column"].forEach(field => {if (curr.length > 0 && Object.keys(curr[0]).includes(field)) item[field] = curr[0][field];});
+    return item;
   }
 
   const params = useParams();
@@ -131,7 +137,7 @@ const Edit = ({getPortfolio, portfolio, getPage, page}) => {
     if (Object.keys(page).length === 0){
       getPage(params.id, params.pagename);
     }
-  }, [getPortfolio, portfolio, getPage, page]);
+  }, [portfolio, page]);
   const items = (Object.keys(page).length !== 0) ? page.items : [];
   const rowLengths = {};
   items.forEach(element => {
@@ -142,6 +148,8 @@ const Edit = ({getPortfolio, portfolio, getPage, page}) => {
       rowLengths[element.row] = 1;
     }
   });
+  console.log(page);
+  
     
   return (    
     <Fragment>
@@ -162,12 +170,13 @@ const Edit = ({getPortfolio, portfolio, getPage, page}) => {
         </IconButton>
       </div>
       <Divider />
-      <form className={classes.root} noValidate autoComplete="off">
+      <form className={classes.root} noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
       <List>
-        {['Title', 'Subtitle', 'Paragraph', 'Media Link', 'Media Type', 'Link Text', 'Link Address'].map((text, index) => (
-          <TextField value={getItem(index)} onChange={e => editItem(index, e.target.value)} className={classes.textinput} id="standard-basic" label={text} variant="outlined"/>
+        {['Title', 'Subtitle', 'Paragraph', 'Media Link', 'Media Type', 'Link Text', 'Link Address', "private", "row", "column"].map((text, index) => (
+          <TextField key={getField(index)} className={classes.textinput} id="standard-basic" label={text} variant="outlined" name={getField(index)} inputRef={register}/>
         ))}
-      </List>
+        <Button variant="outlined" color="primary" className={classes.textinput} type="submit">Save</Button>
+      </List>      
       </form>
     </Drawer>
     <main
@@ -224,7 +233,8 @@ Edit.propTypes = {
   getPage: PropTypes.func.isRequired,
   page: PropTypes.object.isRequired,
   getPortfolio: PropTypes.func.isRequired,
-  portfolio: PropTypes.object.isRequired
+  portfolio: PropTypes.object.isRequired,
+  editItem: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -232,4 +242,4 @@ const mapStateToProps = (state) => ({
   portfolio: state.eportfolio.portfolio
 });
 
-export default connect(mapStateToProps, {getPage, getPortfolio})(Edit);
+export default connect(mapStateToProps, {getPage, getPortfolio, editItem})(Edit);
