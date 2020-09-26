@@ -205,6 +205,8 @@ function CommentMenu(props) {
           open={open}
           onClose={handleClose}
           aria-labelledby='form-dialog-title'
+          maxWidth='sm'
+          fullWidth
         >
           <DialogTitle id='form-dialog-title'>Edit Your Comment</DialogTitle>
           <DialogContent>
@@ -212,7 +214,6 @@ function CommentMenu(props) {
               value={commentValue}
               onChange={(e) => setCommentValue(e.target.value)}
               id='comment'
-              defaultValue={props.comment.text}
               fullWidth
             />
           </DialogContent>
