@@ -64,6 +64,7 @@ const Comment = ({
   comments,
   itemID,
   currentUserID,
+  owner,
 }) => {
   const classes = useStyles();
   const [openPopup, setOpenPopup] = useState(false);
@@ -112,15 +113,19 @@ const Comment = ({
                           primary={<Typography>{comment.name}</Typography>}
                           secondary={comment.text}
                         />
-                        {/* Check if user is owner of comment or item to display commentMenu 
-                            if userID === item.user || userID === comment.from */}
-                        <CommentMenu
-                          comment={comment}
-                          deleteComment={deleteComment}
-                          editComment={editComment}
-                          itemID={itemID}
-                          currentUserID={currentUserID}
-                        />
+                        {/* Check if user is owner of comment or item to display commentMenu */}
+                        {currentUserID === owner ||
+                        currentUserID === comment.from ? (
+                          <CommentMenu
+                            comment={comment}
+                            deleteComment={deleteComment}
+                            editComment={editComment}
+                            itemID={itemID}
+                            currentUserID={currentUserID}
+                          />
+                        ) : (
+                          <div />
+                        )}
                       </ListItem>
                       <Divider light />
                     </React.Fragment>
@@ -263,6 +268,7 @@ const mapStateToProps = (state, props) => ({
   comments: state.eportfolio.comments,
   currentUserID: state.auth.user._id,
   itemID: props.itemID,
+  owner: props.owner,
 });
 
 export default connect(mapStateToProps, {
