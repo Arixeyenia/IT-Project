@@ -9,7 +9,8 @@ import {
     GET_PAGE,
     DELETE_PORTFOLIO,
     ADD_ITEM,
-    EDIT_ITEM
+    EDIT_ITEM,
+    DELETE_ITEM
   } from '../actions/types';
 
 const initialState = {
@@ -78,13 +79,18 @@ export default function (state = initialState, action) {
                 loading: false,
             };
         case EDIT_ITEM:
-            state.page.items[state.page.items.findIndex(item => item._id === payload._id)] = payload;
             return {
                 ...state,
+                page: {...state.page, items: state.page.items.map(item => (item._id === payload._id) ? payload : item)},
                 loading: false,
             }
         case ADD_ITEM:
-            state.page.items[state.page.items.findIndex(item => item._id === payload._id)] = payload;
+            return {
+                ...state,
+                page: {...state.page, items: state.page.items.map(item => (item._id === payload._id) ? payload : item)},
+                loading: false,
+            }
+        case DELETE_ITEM:
             return {
                 ...state,
                 loading: false,

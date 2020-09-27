@@ -2,7 +2,7 @@ import React, { useEffect, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Typography, Drawer, Grid, Button, CardMedia, TextField, Divider, Box, List, ListItem, Card, CardContent, CardHeader, IconButton, Icon, CardActionArea, CardActions } from '@material-ui/core';
-import {getPortfolio, getPage, editItem, addItem} from '../../actions/eportfolio';
+import {getPortfolio, getPage, editItem, addItem, deleteItem} from '../../actions/eportfolio';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { useForm } from "react-hook-form";
 import store from '../../store'
@@ -15,6 +15,12 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import EditIcon from '@material-ui/icons/Edit';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import DeleteIcon from '@material-ui/icons/Delete';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 const drawerWidth = 300;
 
@@ -82,7 +88,7 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 275,
   },
   unflex: {
-    flex: 0,
+    flex: '0 1 11em',
   },
   pos: {
     marginTop: '2em',
@@ -113,17 +119,20 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem}) => {
+const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, deleteItem}) => {
   const classes = useStyles();
   const theme = useTheme();
   const history = useHistory();
   const { handleSubmit, register, reset } = useForm();
-  const [open, setOpen] = React.useState(false);
-  const [currID, setCurrID] = React.useState('');
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [editID, setEditID] = React.useState('');
+  const [deleteID, setDeleteID] = React.useState('');
 
   const onSubmit = (values) => {
-    values.item = currID;
+    values.item = editID;
     editItem(values);
+    handleDrawerClose(); 
   }
 
   const addItemWrapper = (row, column) => {
@@ -136,14 +145,25 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem}) => {
     });
   }
 
+  const handleDialogOpen = (id) => {
+    setDeleteID(id);
+    setDialogOpen(true);
+  };
+
+  const handleDialogClose = (accepted) => {
+    if (accepted) deleteItem(deleteID);
+    setDeleteID('');
+    setDialogOpen(false);
+  };
+
   const handleDrawerOpen = (id) => {
-    setCurrID(id);
-    setOpen(true);
+    setEditID(id);
+    setDrawerOpen(true);
     reset(getItem(id));
   };
 
   const handleDrawerClose = () => {
-    setOpen(false);
+    setDrawerOpen(false);
   };
 
   const getField = (index) => {
@@ -166,6 +186,7 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem}) => {
       getPage(params.id, params.pagename);
     }
   }, [portfolio, page]);
+  console.log(page);
   const items = (Object.keys(page).length !== 0) ? page.items.sort((a, b) => a.row - b.row || a.column - b.column) : [];
   const rowLengths = {};
   items.forEach(element => {
@@ -176,8 +197,6 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem}) => {
       rowLengths[element.row] = 1;
     }
   });
-  console.log(page);
-  
     
   return (    
     <Fragment>
@@ -187,13 +206,13 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem}) => {
       className={classes.drawer}
       variant="persistent"
       anchor="left"
-      open={open}
+      open={drawerOpen}
       classes={{
         paper: classes.drawerPaper,
       }}
     >
       <div className={classes.drawerHeader}>
-        <IconButton onClick={handleDrawerClose}>
+        <IconButton onClick={() => handleDrawerClose()}>
           {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
         </IconButton>
       </div>
@@ -209,12 +228,12 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem}) => {
     </Drawer>
     <main
       className={clsx(classes.content, {
-        [classes.contentShift]: open,
+        [classes.contentShift]: drawerOpen,
       })}
     >
       <Typography variant="h1">{portfolio.name}</Typography>
       <Grid container spacing={3}>
-      {items.map((object) => card(classes, rowLengths, portfolio._id, object, history, handleDrawerOpen, addItemWrapper)
+      {items.map((object) => card(classes, rowLengths, portfolio._id, object, history, handleDrawerOpen, handleDialogOpen, addItemWrapper)
         )}
 
         <IconButton
@@ -226,13 +245,34 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem}) => {
       </Grid>
     </main>
   </div>
+  <Dialog
+        open={dialogOpen}
+        onClose={() => handleDialogClose(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Do you want to delete this item?"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Once deleted, this item will not be able to be restored.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => handleDialogClose(false)} color="primary" autoFocus>
+            No
+          </Button>
+          <Button onClick={() =>handleDialogClose(true)} color="primary">
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Fragment>
   );
 }
 
-const card = (classes, rowLengths, portfolioID, object, history, handleDrawerOpen, addItemWrapper) => {
+const card = (classes, rowLengths, portfolioID, object, history, handleDrawerOpen, handleDialogOpen, addItemWrapper) => {
   return (
-    <Grid item xs={12/rowLengths[object.row]}>
+    <Grid item xs={12/rowLengths[object.row]} key={object._id}>
     <Card className={classes.cardRoot} variant="outlined">
       {object.mediaType === "image" && <CardMedia
           className={classes.media}
@@ -242,9 +282,14 @@ const card = (classes, rowLengths, portfolioID, object, history, handleDrawerOpe
         classes={{title:classes.titleText, action:classes.unflex}}
         title={object.title}
         action={
-          <IconButton aria-label="settings" onClick={() => handleDrawerOpen(object._id)}>
+          <div>
+          <IconButton aria-label="edit" onClick={() => handleDrawerOpen(object._id)}>
             <EditIcon />
           </IconButton>
+          <IconButton aria-label="delete" onClick={() => handleDialogOpen(object._id)}>
+          <DeleteIcon />
+        </IconButton>
+        </div>
         }
       />
       <CardContent>
@@ -279,7 +324,8 @@ Edit.propTypes = {
   getPortfolio: PropTypes.func.isRequired,
   portfolio: PropTypes.object.isRequired,
   editItem: PropTypes.func.isRequired,
-  addItem: PropTypes.func.isRequired
+  addItem: PropTypes.func.isRequired,
+  deleteItem: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -287,4 +333,4 @@ const mapStateToProps = (state) => ({
   portfolio: state.eportfolio.portfolio
 });
 
-export default connect(mapStateToProps, {getPage, getPortfolio, editItem, addItem})(Edit);
+export default connect(mapStateToProps, {getPage, getPortfolio, editItem, addItem, deleteItem})(Edit);

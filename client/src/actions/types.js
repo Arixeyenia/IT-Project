@@ -23,3 +23,4 @@ export const GET_PORTFOLIO = 'GET_PORTFOLIO'
 export const DELETE_PORTFOLIO = 'DELETE_PORTFOLIO';
 export const ADD_ITEM = 'ADD_ITEM';
 export const EDIT_ITEM = 'EDIT_ITEM';
+export const DELETE_ITEM = 'DELETE_ITEM';

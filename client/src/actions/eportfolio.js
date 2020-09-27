@@ -13,6 +13,7 @@ import {
     DELETE_PORTFOLIO,
     ADD_ITEM,
     EDIT_ITEM,
+    DELETE_ITEM
 } from './types';
 
 export const getUserEPortfolios = () => async dispatch => {
@@ -143,6 +144,21 @@ export const addItem = (newItem) => async dispatch => {
         const res = await api.post('/item', newItem);
         dispatch({
             type: ADD_ITEM,
+            payload: res.data
+        });
+    } catch (err) {
+        dispatch({
+            type: EPORTFOLIOS_ERROR,
+            payload: { msg: err.message }
+        });
+    }
+}
+
+export const deleteItem = (itemID) => async dispatch => {
+    try {
+        const res = await api.delete('/item', {data: {item : itemID}});
+        dispatch({
+            type: DELETE_ITEM,
             payload: res.data
         });
     } catch (err) {
