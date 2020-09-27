@@ -111,7 +111,8 @@ const Comment = ({
                           primary={<Typography>{comment.name}</Typography>}
                           secondary={comment.text}
                         />
-                        {/* Check if user is owner of comment or item to display commentMenu */}
+                        {/* Check if user is owner of comment or item to display commentMenu 
+                            if userID === item.user || userID === comment.from */}
                         <CommentMenu
                           comment={comment}
                           deleteComment={deleteComment}
@@ -191,7 +192,8 @@ function CommentMenu(props) {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        {/* Check if user is the person who left this comment */}
+        {/* Check if user is the person who left this comment 
+            if userID === props.comment.from */}
         <MenuItem onClick={handleEditOpen}>Edit</MenuItem>
         <Dialog
           open={open}
