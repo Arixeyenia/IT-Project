@@ -63,6 +63,7 @@ const Comment = ({
   editComment,
   comments,
   itemID,
+  currentUserID,
 }) => {
   const classes = useStyles();
   const [openPopup, setOpenPopup] = useState(false);
@@ -72,7 +73,7 @@ const Comment = ({
       getComments(itemID);
     }
   }, [getComments, postComment, deleteComment, comments, itemID]);
-  console.log(comments[itemID]);
+  console.log(currentUserID);
 
   const postCommentWrapper = (itemID, textField) => {
     postComment(itemID, textField);
@@ -118,6 +119,7 @@ const Comment = ({
                           deleteComment={deleteComment}
                           editComment={editComment}
                           itemID={itemID}
+                          currentUserID={currentUserID}
                         />
                       </ListItem>
                       <Divider light />
@@ -142,6 +144,9 @@ const Comment = ({
                     edge='end'
                     aria-label='submit'
                     onClick={() => {
+                      {
+                        /* If currentUserID == null direct to login */
+                      }
                       postCommentWrapper(itemID, textValue);
                       // update the comment box so new comment is shown
                     }}
@@ -192,40 +197,49 @@ function CommentMenu(props) {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        {/* Check if user is the person who left this comment 
-            if userID === props.comment.from */}
-        <MenuItem onClick={handleEditOpen}>Edit</MenuItem>
-        <Dialog
-          open={open}
-          onClose={handleClose}
-          aria-labelledby='form-dialog-title'
-          maxWidth='sm'
-          fullWidth
-        >
-          <DialogTitle id='form-dialog-title'>Edit Your Comment</DialogTitle>
-          <DialogContent>
-            <TextField
-              value={commentValue}
-              onChange={(e) => setCommentValue(e.target.value)}
-              id='comment'
+        {props.currentUserID === props.comment.from ? (
+          <div>
+            <MenuItem onClick={handleEditOpen}>Edit</MenuItem>
+            <Dialog
+              open={open}
+              onClose={handleClose}
+              aria-labelledby='form-dialog-title'
+              maxWidth='sm'
               fullWidth
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={() => {
-                editComment(props.editComment(props.comment._id, commentValue));
-                setOpen(false);
-              }}
-              color='primary'
             >
-              Edit Comment
-            </Button>
-            <Button onClick={handleEditClose} color='primary'>
-              Cancel
-            </Button>
-          </DialogActions>
-        </Dialog>
+              <DialogTitle id='form-dialog-title'>
+                Edit Your Comment
+              </DialogTitle>
+              <DialogContent>
+                <TextField
+                  value={commentValue}
+                  onChange={(e) => setCommentValue(e.target.value)}
+                  id='comment'
+                  fullWidth
+                />
+              </DialogContent>
+              <DialogActions>
+                <Button
+                  onClick={() => {
+                    editComment(
+                      props.editComment(props.comment._id, commentValue)
+                    );
+                    setOpen(false);
+                  }}
+                  color='primary'
+                >
+                  Edit Comment
+                </Button>
+                <Button onClick={handleEditClose} color='primary'>
+                  Cancel
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </div>
+        ) : (
+          <div />
+        )}
+
         <MenuItem
           onClick={() => {
             props.deleteComment(props.comment._id);
@@ -247,6 +261,7 @@ Comment.propTypes = {
 
 const mapStateToProps = (state, props) => ({
   comments: state.eportfolio.comments,
+  currentUserID: state.auth.user._id,
   itemID: props.itemID,
 });
 
