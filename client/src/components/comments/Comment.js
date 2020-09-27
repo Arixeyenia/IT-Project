@@ -18,7 +18,6 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText,
   DialogActions,
   Button,
 } from '@material-ui/core';
@@ -78,7 +77,6 @@ const Comment = ({
   const postCommentWrapper = (itemID, textField) => {
     postComment(itemID, textField);
     setValue('');
-    getComments(itemID);
   };
 
   return (
@@ -113,6 +111,7 @@ const Comment = ({
                           primary={<Typography>{comment.name}</Typography>}
                           secondary={comment.text}
                         />
+                        {/* Check if user is owner of comment or item to display commentMenu */}
                         <CommentMenu
                           comment={comment}
                           deleteComment={deleteComment}
@@ -143,7 +142,6 @@ const Comment = ({
                     aria-label='submit'
                     onClick={() => {
                       postCommentWrapper(itemID, textValue);
-                      // reset the text field
                       // update the comment box so new comment is shown
                     }}
                   >
@@ -185,13 +183,6 @@ function CommentMenu(props) {
     <div>
       <IconButton edge='end' aria-label='more' onClick={handleClick}>
         <MoreVertIcon />
-        {/* 
-    A pop up to delete or edit comments
-    Icon sould only be visible if viewer is commenter
-    or owner of item. Owner should only be able to
-    delete, commenter can delete or edit.
-    make appropriate api calls for edit/delete
-      */}
       </IconButton>
       <Menu
         id='simple-menu'
@@ -200,6 +191,7 @@ function CommentMenu(props) {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
+        {/* Check if user is the person who left this comment */}
         <MenuItem onClick={handleEditOpen}>Edit</MenuItem>
         <Dialog
           open={open}
