@@ -8,7 +8,7 @@ import {
     GET_PORTFOLIO, 
     GET_PAGE,
     DELETE_PORTFOLIO,
-    CREATE_ITEM,
+    ADD_ITEM,
     EDIT_ITEM
   } from '../actions/types';
 
@@ -78,6 +78,12 @@ export default function (state = initialState, action) {
                 loading: false,
             };
         case EDIT_ITEM:
+            state.page.items[state.page.items.findIndex(item => item._id === payload._id)] = payload;
+            return {
+                ...state,
+                loading: false,
+            }
+        case ADD_ITEM:
             state.page.items[state.page.items.findIndex(item => item._id === payload._id)] = payload;
             return {
                 ...state,

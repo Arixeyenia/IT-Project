@@ -11,7 +11,7 @@ import {
     GET_PORTFOLIO,
     GET_PAGE,
     DELETE_PORTFOLIO,
-    CREATE_ITEM,
+    ADD_ITEM,
     EDIT_ITEM,
 } from './types';
 
@@ -136,3 +136,20 @@ export const editItem = (newItem) => async dispatch => {
         });
     }
 }
+
+
+export const addItem = (newItem) => async dispatch => {
+    try {
+        const res = await api.post('/item', newItem);
+        dispatch({
+            type: ADD_ITEM,
+            payload: res.data
+        });
+    } catch (err) {
+        dispatch({
+            type: EPORTFOLIOS_ERROR,
+            payload: { msg: err.message }
+        });
+    }
+}
+

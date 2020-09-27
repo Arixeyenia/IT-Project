@@ -2,7 +2,7 @@ import React, { useEffect, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Typography, Drawer, Grid, Button, CardMedia, TextField, Divider, Box, List, ListItem, Card, CardContent, CardHeader, IconButton, Icon, CardActionArea, CardActions } from '@material-ui/core';
-import {getPortfolio, getPage, editItem} from '../../actions/eportfolio';
+import {getPortfolio, getPage, editItem, addItem} from '../../actions/eportfolio';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { useForm } from "react-hook-form";
 import store from '../../store'
@@ -14,6 +14,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import EditIcon from '@material-ui/icons/Edit';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 
 const drawerWidth = 300;
 
@@ -92,10 +93,27 @@ const useStyles = makeStyles((theme) => ({
   },
   titleText:{
     fontSize: '1.5rem'
+  },
+  addRow:{
+    marginLeft: 'auto',
+    marginRight: 'auto'
+  },
+  addCol:{
+    position: 'absolute',
+    top: '-50%',
+    right: '-5em',
+  },
+  wrapper:{
+    position: 'relative',
+    height: '100%', 
+    width: '100%'
+  },
+  addIcon:{
+    fontSize: '3.5rem'  
   }
 }));
 
-const Edit = ({getPortfolio, portfolio, getPage, page, editItem}) => {
+const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem}) => {
   const classes = useStyles();
   const theme = useTheme();
   const history = useHistory();
@@ -106,6 +124,16 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem}) => {
   const onSubmit = (values) => {
     values.item = currID;
     editItem(values);
+  }
+
+  const addItemWrapper = (row, column) => {
+    addItem({
+      "portfolio": portfolio._id,
+      "pagename": page.name,
+      "row": row,
+      "column": column,
+      "title": "Empty Item"
+    });
   }
 
   const handleDrawerOpen = (id) => {
@@ -138,7 +166,7 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem}) => {
       getPage(params.id, params.pagename);
     }
   }, [portfolio, page]);
-  const items = (Object.keys(page).length !== 0) ? page.items : [];
+  const items = (Object.keys(page).length !== 0) ? page.items.sort((a, b) => a.row - b.row || a.column - b.column) : [];
   const rowLengths = {};
   items.forEach(element => {
     if ([element.row] in Object.keys(rowLengths)){
@@ -186,8 +214,15 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem}) => {
     >
       <Typography variant="h1">{portfolio.name}</Typography>
       <Grid container spacing={3}>
-      {items.map((object) => card(classes, rowLengths, portfolio._id, object, history, handleDrawerOpen)
-        )}        
+      {items.map((object) => card(classes, rowLengths, portfolio._id, object, history, handleDrawerOpen, addItemWrapper)
+        )}
+
+        <IconButton
+        color="primary"   
+        onClick = {() => addItemWrapper(Object.keys(rowLengths).length, 0)}
+        children={<AddCircleOutlineIcon classes={{root:classes.addIcon}}/>}
+        className={classes.addRow}>
+        </IconButton>        
       </Grid>
     </main>
   </div>
@@ -195,7 +230,7 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem}) => {
   );
 }
 
-const card = (classes, rowLengths, portfolioID, object, history, handleDrawerOpen) => {
+const card = (classes, rowLengths, portfolioID, object, history, handleDrawerOpen, addItemWrapper) => {
   return (
     <Grid item xs={12/rowLengths[object.row]}>
     <Card className={classes.cardRoot} variant="outlined">
@@ -224,6 +259,15 @@ const card = (classes, rowLengths, portfolioID, object, history, handleDrawerOpe
         <Button size="small" onClick={()=> {if(!/^(f|ht)tps?:\/\//i.test(object.linkAddress)){ history.push('/view/' + portfolioID + '/' + object.linkAddress);}else{ window.location.href = object.linkAddress;}window.location.reload(false);}}>{object.linkText}</Button>
       </CardActions>
     </Card>
+    {(rowLengths[object.row]===object.column+1) ?
+    <div className={classes.wrapper}> 
+    <IconButton
+      color="primary"
+      onClick = {() => addItemWrapper(object.row, object.column+1)}
+      className={classes.addCol}        
+      children={<AddCircleOutlineIcon classes={{root:classes.addIcon}}/>}
+      >
+      </IconButton></div> : <div/>}
     </Grid>
   )
 }
@@ -234,7 +278,8 @@ Edit.propTypes = {
   page: PropTypes.object.isRequired,
   getPortfolio: PropTypes.func.isRequired,
   portfolio: PropTypes.object.isRequired,
-  editItem: PropTypes.func.isRequired
+  editItem: PropTypes.func.isRequired,
+  addItem: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -242,4 +287,4 @@ const mapStateToProps = (state) => ({
   portfolio: state.eportfolio.portfolio
 });
 
-export default connect(mapStateToProps, {getPage, getPortfolio, editItem})(Edit);
+export default connect(mapStateToProps, {getPage, getPortfolio, editItem, addItem})(Edit);

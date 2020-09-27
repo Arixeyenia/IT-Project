@@ -21,5 +21,5 @@ export const CREATE_PORTFOLIO = 'CREATE_PORTFOLIO';
 export const GET_PAGE = 'GET_PAGE';
 export const GET_PORTFOLIO = 'GET_PORTFOLIO'
 export const DELETE_PORTFOLIO = 'DELETE_PORTFOLIO';
-export const CREATE_ITEM = 'CREATE_ITEM';
+export const ADD_ITEM = 'ADD_ITEM';
 export const EDIT_ITEM = 'EDIT_ITEM';
