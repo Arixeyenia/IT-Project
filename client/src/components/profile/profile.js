@@ -1,4 +1,5 @@
 import React, { Fragment, useEffect } from 'react';
+import { Box } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -13,7 +14,7 @@ const Profile = ({ getProfileById, profile: { profile }, auth, match }) => {
   }, [getProfileById, match.params.id]);
 
   return (
-    <Fragment>
+    <Box className="content">
       {profile === null ? (
         <Spinner />
       ) : (
@@ -34,7 +35,7 @@ const Profile = ({ getProfileById, profile: { profile }, auth, match }) => {
           </div>
         </Fragment>
       )}
-    </Fragment>
+    </Box>
   );
 };
 

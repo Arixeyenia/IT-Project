@@ -162,6 +162,10 @@
   display: table-cell;
 }
 
+.category .MuiBox-root {
+  width: 100%;
+}
+
 .category .categoryLine {
   margin-bottom: 5px;
 }
@@ -169,14 +173,15 @@
 /** Styles for portfolio card */
 .portfolioList {
   display: flex;
+  padding: 5px !important;
 }
 
-.MuiCardHeader-root {
+.portfolio-card-header {
   padding: 0px;
   margin-bottom: -72px;
 }
 
-.MuiCardHeader-action {
+.portfolio-card-header .MuiCardHeader-action {
   text-align: right;
 }
 
@@ -195,6 +200,10 @@
 
 .PortfolioCard-Menu {
   width: 20%
+}
+
+.PortfolioCard-Menu .MuiPaper-root {
+  width: 100%;
 }
 
 .addPortfolio {
@@ -247,6 +256,33 @@
 /** Styles for create portfolio page */
 .portfolio-name-input {
   padding-bottom: 20px !important;
+  width: 100%;
+  padding-left: 10px !important;
+}
+
+.portfolio-name-input *{
+  padding-left: 10px !important;
+}
+
+/** Styles for view page */
+.view-card-actions {
+  padding-left: 20px !important;
+}
+
+.view-grid-item {
+  display: grid;
+}
+
+.view-grid-item .MuiCardHeader-root {
+  padding-bottom: 0px !important;
+}
+
+.view-grid-item .MuiPaper-root {
+  padding-bottom: 20px;
+}
+
+.view-card-content {
+  padding-bottom: 0px !important;
 }
 
 /** Styles for img tag */
@@ -260,11 +296,6 @@ img {
 /** All text using Material UI Typography component styles */
 .MuiTypography-root {
   padding: 10px;
-}
-
-/** Styles for all div */
-div {
-  width: 100%;
 }
 
 /** Styles for MaterialUI Grid at the root (the whole box) */

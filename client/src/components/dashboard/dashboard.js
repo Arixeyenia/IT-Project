@@ -32,7 +32,7 @@ const Dashboard = ({getUserEPortfolios, userEPortfolios, getEPortfolioThumbnail,
   }
     
   return (
-    <Fragment>
+    <Box className="content">
       <Typography variant="h1">Welcome to your dashboard</Typography>
       <Category title="Your existing ePortfolios"></Category>
       <GridList className="portfolioList">
@@ -51,7 +51,7 @@ const Dashboard = ({getUserEPortfolios, userEPortfolios, getEPortfolioThumbnail,
       </GridList>
       <Category title="Your favourited ePortfolios"></Category>
       <List ></List>
-    </Fragment>
+    </Box>
   );
 }
 function Category(props) {
@@ -125,7 +125,7 @@ function IndividualMenu(props) {
 
   return(
     <Box className="card-action-section">
-      <CardHeader action={
+      <CardHeader className="portfolio-card-header" action={
         <IconButton aria-label="settings" aria-controls={"menu-"+props.object.portfolio._id} onClick={handleClick}>
           <MoreVertIcon />
         </IconButton>

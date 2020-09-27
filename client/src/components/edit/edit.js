@@ -144,7 +144,7 @@ const Edit = ({getPortfolio, portfolio, getPage, page}) => {
   });
     
   return (    
-    <Fragment>
+    <Box className="content">
     <div className={classes.root}>
     <CssBaseline />
     <Drawer
@@ -182,7 +182,7 @@ const Edit = ({getPortfolio, portfolio, getPage, page}) => {
       </Grid>
     </main>
   </div>
-    </Fragment>
+    </Box>
   );
 }
 

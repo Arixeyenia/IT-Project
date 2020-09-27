@@ -3,6 +3,7 @@ import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { login } from '../../actions/auth';
+import { Box } from '@material-ui/core';
 
 const Login = ({ login, isAuthenticated }) => {
   const [formData, setFormData] = useState({
@@ -25,7 +26,7 @@ const Login = ({ login, isAuthenticated }) => {
   }
 
   return (
-    <Fragment>
+    <Box className="content">
       <h1 className='large text-primary'>Sign In</h1>
       <p className='lead'>
         <i className='fas fa-user' /> Sign Into Your Account
@@ -56,7 +57,7 @@ const Login = ({ login, isAuthenticated }) => {
       <p className='my-1'>
         Don't have an account? <Link to='/register'>Sign Up</Link>
       </p>
-    </Fragment>
+    </Box>
   );
 };
 

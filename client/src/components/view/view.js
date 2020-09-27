@@ -10,10 +10,10 @@ import store from '../../store'
 const useStyles = makeStyles((theme) => ({
   cardRoot: {
     minWidth: 275,
+    boxShadow: 'none',
+    borderRadius: 0,
   },
   pos: {
-    marginTop: '2em',
-    marginBottom: 12,
   },
   media: {
     padding:'20vh'
@@ -40,46 +40,55 @@ const View = ({getPortfolio, portfolio, getPage, page}) => {
   const rowLengths = {};
   items.forEach(element => {
     if ([element.row] in Object.keys(rowLengths)){
-      rowLengths[element.row]++; 
+      rowLengths[element.row]++;
+      console.log(element.row);
     }
     else{
       rowLengths[element.row] = 1;
+      console.log(element.row);
     }
   });
-    
+  items.sort(function(a, b){
+    if (a.row > b.row){
+      return 1;
+    }
+    if (a.row < b.row){
+      return -1;
+    }
+    else return 0;
+  })
+  console.log(items);
   return (
-    <Fragment>
+    <Box className="content">
       <Typography variant="h1">{portfolio.name}</Typography>
-      <Grid container spacing={3}>
+      <Grid container spacing={3} className="view-grid-container">
       {items.map((object) => card(classes, rowLengths, params.id, object, history))}  
       </Grid>
-    </Fragment>
+    </Box>
   );
 }
 
 const card = (classes, rowLengths, portfolioID, object, history) => {
   return (
-    <Grid item xs={12/rowLengths[object.row]}>
-    <Card className={classes.cardRoot} variant="outlined">
+    <Grid item xs={12/rowLengths[object.row]} className="view-grid-item">
+    <Card className={classes.cardRoot}>
       {object.mediaType === "image" && <CardMedia
           className={classes.media}
           image={object.mediaLink}
         />}
-       <CardHeader
+       {object.title && <CardHeader
         classes={{title:classes.titleText}}
         title={object.title}
-      />
-      <CardContent>
-        <Typography className={classes.pos} color="textSecondary">
-            {object.subtitle}
-        </Typography>
-        <Typography variant="body2" component="p">
+        subheader={object.subtitle}
+      />}
+      {object.paragraph&& <CardContent className="view-card-content">
+        {object.paragraph && <Typography variant="body2" component="p">
           {object.paragraph}
-        </Typography>
-      </CardContent>
-      <CardActions>
+        </Typography>}
+      </CardContent>}
+      {object.linkAddress && <CardActions className="view-card-actions">
            <Button size="small" onClick={()=> {if(!/^(f|ht)tps?:\/\//i.test(object.linkAddress)){ history.push('/view/' + portfolioID + '/' + object.linkAddress);}else{ window.location.href = object.linkAddress;}window.location.reload(false);}}>{object.linkText}</Button>
-      </CardActions>
+      </CardActions>}
     </Card>
     </Grid>
   )
