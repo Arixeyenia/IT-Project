@@ -74,7 +74,6 @@ const Comment = ({
       getComments(itemID);
     }
   }, [getComments, postComment, deleteComment, comments, itemID]);
-  console.log(currentUserID);
 
   const postCommentWrapper = (itemID, textField) => {
     postComment(itemID, textField);

@@ -66,14 +66,14 @@ const View = ({ getPortfolio, portfolio, getPage, page }) => {
       <Typography variant='h1'>{portfolio.name}</Typography>
       <Grid container spacing={3}>
         {items.map((object) =>
-          card(classes, rowLengths, params.id, object, history)
+          card(classes, rowLengths, params.id, object, history, portfolio.user)
         )}
       </Grid>
     </Fragment>
   );
 };
 
-const card = (classes, rowLengths, portfolioID, object, history) => {
+const card = (classes, rowLengths, portfolioID, object, history, owner) => {
   return (
     <Grid item xs={12 / rowLengths[object.row]}>
       <Card className={classes.cardRoot} variant='outlined'>
@@ -107,7 +107,7 @@ const card = (classes, rowLengths, portfolioID, object, history) => {
             {object.linkText}
           </Button>
         </CardActions>
-        <Comment itemID={object._id} />
+        <Comment itemID={object._id} owner={owner} />
       </Card>
     </Grid>
   );
