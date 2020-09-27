@@ -7,6 +7,7 @@ import {
     CREATE_PORTFOLIO, 
     GET_PORTFOLIO, 
     GET_PAGE,
+    CREATE_PAGE,
     DELETE_PORTFOLIO,
   } from '../actions/types';
 
@@ -17,6 +18,7 @@ const initialState = {
     eportfolioThumbnails: [],
     createPortfolioName: '',
     loading: true,
+    createPageName: '',
     error: {}
 };
 
@@ -24,6 +26,12 @@ export default function (state = initialState, action) {
     const { type, payload } = action;
   
     switch (type) {
+        case CREATE_PAGE:
+            return {
+                ...state,
+                loading: false,
+                createPageName: state.createPageName,
+            }
         case GET_USER_EPORTFOLIOS:
             return {
                 ...state,

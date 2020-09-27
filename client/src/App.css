@@ -758,3 +758,109 @@ button {
     padding: 0.3rem 0.4rem;
   }
 }
+
+.sidebar {
+  height: 100%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #333333;
+  overflow-x: hidden;
+  padding-top: 60px; 
+  transition: 0.5s; 
+}
+
+.sidebar a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+.sidebar h1 {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  cursor: pointer;
+  font-size: 35px;
+  color: #CCCCCC;
+  display: block;
+  transition: 0.3s;
+}
+
+.sidebar a:hover {
+  color: #CCCCCC;
+}
+
+.sidebar div{
+  display: none;
+}
+
+.sidebar .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+.sidebar input[type=submit] {
+  margin-top: 15px;
+  margin-left: 25px;
+  width: 225px;
+  font-size: 20px;
+  cursor: pointer;
+  background-color: #333333;
+  color: #f2f2f2;
+  padding: 10px 15px;
+  border: 2px solid #f2f2f2;
+}
+
+.sidebar input[type=submit]:hover {
+  background-color: #f2f2f2;
+  color: #333333;
+}
+
+.sidebar input[type=text] {
+  width: 225px;
+  padding: 12px 20px;
+  margin-top: 25px;
+  margin-left: 25px;
+  background-color: #333333;
+  color: #f2f2f2;
+  border: none;
+  outline: none;
+  border-bottom: 2px solid #f2f2f2
+}
+
+.openbtn {
+  font-size: 20px;
+  margin-top: 15px;
+  cursor: pointer;
+  background-color: #333333;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+}
+
+.openbtn:hover {
+  background-color: #444;
+}
+
+.sociallinks {      
+  display: flex;
+  align-items: center;
+}
+
+.socialMedia {
+  display: block;
+  margin-top: 25px;
+  margin-right: 25px;
+  font-size: 20px;
+  cursor: pointer;
+  color: white;
+  padding: 10px 50px;
+  border: none;
+}

@@ -7,6 +7,7 @@ import {
     GET_EPORTFOLIO_THUMBNAILS,
     CREATE_PORTFOLIO_NAME,
     RESET_CREATEPORTFOLIO_NAME,
+    CREATE_PAGE,
     CREATE_PORTFOLIO,
     GET_PORTFOLIO,
     GET_PAGE,
@@ -57,6 +58,20 @@ export const resetCreatingPortfolioName = () => async dispatch => {
         type: RESET_CREATEPORTFOLIO_NAME,
         payload: ''
     });
+}
+
+export const createPage = (name) => async dispatch => {
+    try {
+        const res = await api.post('/portfolio', {name:name});
+        dispatch({
+            type: CREATE_PAGE
+        });
+    } catch (err) {
+        dispatch({
+            type: EPORTFOLIOS_ERROR,
+            payload: {msg: err.msg}
+        });
+    }
 }
 
 export const createPortfolio = (name) => async dispatch => {

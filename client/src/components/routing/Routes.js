@@ -6,6 +6,7 @@ import Alert from '../layout/Alert';
 import Dashboard from '../dashboard/dashboard';
 import CreateEPortfolio from '../eportfolio/createPortfolio'
 import PickTemplate from '../eportfolio/PickTemplate'
+import PortfolioTemplate from '../eportfolio/portfolioTemplate'
 import ProfileForm from '../profile/ProfileForm';
 import Profile from '../profile/profile';
 import PrivateRoute from '../routing/PrivateRoute';
@@ -22,6 +23,7 @@ const Routes = (props) => {
         <Route exact path='/profile/:id' component={Profile} />
         <Route exact path='/view/:id/:pagename?' component={View} />
         <Route exact path='/edit/:id/:pagename?' component={Edit} />
+        <Route exact path='/template' component={PortfolioTemplate} />
         <PrivateRoute exact path='/dashboard' component={Dashboard} />
         <PrivateRoute exact path='/create-eportfolio' component={CreateEPortfolio} />
         <PrivateRoute exact path='/pick-template' component={PickTemplate} />
