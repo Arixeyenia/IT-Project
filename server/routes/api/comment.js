@@ -91,7 +91,7 @@ router.get('/:item_id', async (req, res) => {
 // @route   DELETE api/comment/edit/:comment_id
 // @desc    Remove a comment (commenter & receiver)
 // @access  Private
-router.delete('/edit/:comment_id', auth, async (req, res) => {
+router.delete('/:comment_id', auth, async (req, res) => {
   try {
     // find the comment, item, portfolio
     const comment = await Comment.findById(req.params.comment_id);
@@ -114,7 +114,7 @@ router.delete('/edit/:comment_id', auth, async (req, res) => {
     await comment.remove();
 
     // return commend deleted message
-    res.json({ msg: 'Comment removed' });
+    res.json({ _id: req.params.comment_id });
   } catch (err) {
     console.error(err.message);
     if (err.kind === 'ObjectId') {

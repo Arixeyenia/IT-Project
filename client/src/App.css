@@ -162,6 +162,10 @@
   display: table-cell;
 }
 
+.category .MuiBox-root {
+  width: 100%;
+}
+
 .category .categoryLine {
   margin-bottom: 5px;
 }
@@ -195,6 +199,10 @@
 
 .PortfolioCard-Menu {
   width: 20%
+}
+
+.PortfolioCard-Menu .MuiPaper-root {
+  width: 100%;
 }
 
 .addPortfolio {
@@ -260,11 +268,6 @@ img {
 /** All text using Material UI Typography component styles */
 .MuiTypography-root {
   padding: 10px;
-}
-
-/** Styles for all div */
-div {
-  width: 100%;
 }
 
 /** Styles for MaterialUI Grid at the root (the whole box) */

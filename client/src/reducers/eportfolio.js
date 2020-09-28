@@ -10,7 +10,12 @@ import {
     DELETE_PORTFOLIO,
     ADD_ITEM,
     EDIT_ITEM,
-    DELETE_ITEM
+    DELETE_ITEM,
+    GET_COMMENTS,
+    COMMENTS_ERROR,
+    POST_COMMENT,
+    EDIT_COMMENT,
+    DELETE_COMMENT,
   } from '../actions/types';
 
 const initialState = {
@@ -20,6 +25,7 @@ const initialState = {
     eportfolioThumbnails: [],
     createPortfolioName: '',
     loading: true,
+    comments: {},
     error: {}
 };
 
@@ -102,7 +108,37 @@ export default function (state = initialState, action) {
                 error: payload,
                 loading: false,
             };
-      default:
-        return state;
+        case GET_COMMENTS:
+            return {
+                ...state,
+                comments: {...state.comments, ...payload},
+                loading: false,
+            };
+        case COMMENTS_ERROR:
+            return {
+                ...state,
+                error: payload,
+                loading: false,
+            };
+        case POST_COMMENT:
+            return {
+                ...state,
+                comments: {...state.comments, [payload.item]: [...state.comments[payload.item], payload]},
+                loading: false,
+            };
+        case DELETE_COMMENT:
+            return {
+                ...state,
+                comments: {...state.comments, [payload.item]: state.comments[payload.item].filter(comment => comment._id !== payload._id)},
+                loading: false,
+            };
+        case EDIT_COMMENT:
+            return {
+                ...state,
+                comments: {...state.comments, [payload.item]: state.comments[payload.item].map((comment) => (comment._id == payload._id) ? payload : comment)},
+                loading: false,
+            };          
+        default:
+            return state;
     }
 }

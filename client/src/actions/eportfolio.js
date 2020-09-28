@@ -1,3 +1,4 @@
+import { red } from '@material-ui/core/colors';
 import api from '../utils/api';
 import { setAlert } from './alert';
 
@@ -13,7 +14,12 @@ import {
     DELETE_PORTFOLIO,
     ADD_ITEM,
     EDIT_ITEM,
-    DELETE_ITEM
+    DELETE_ITEM,
+    GET_COMMENTS,
+    COMMENTS_ERROR,
+    POST_COMMENT,
+    DELETE_COMMENT,
+    EDIT_COMMENT,
 } from './types';
 
 export const getUserEPortfolios = () => async dispatch => {
@@ -169,3 +175,66 @@ export const deleteItem = (itemID) => async dispatch => {
     }
 }
 
+
+export const getComments = (itemID) => async (dispatch) => {
+    try {
+      const res = await api.get('/comment/' + itemID);
+      dispatch({
+        type: GET_COMMENTS,
+        payload: { [itemID]: res.data },
+      });
+    } catch (err) {
+      dispatch({
+        type: COMMENTS_ERROR,
+        payload: { msg: err.message },
+      });
+    }
+  };
+  
+  export const postComment = (itemID, text) => async (dispatch) => {
+    try {
+      const res = await api.post('/comment/' + itemID, { text: text });
+      dispatch({
+        type: POST_COMMENT,
+        payload: res.data,
+      });
+    } catch (err) {
+      dispatch({
+        type: COMMENTS_ERROR,
+        payload: { msg: err.message },
+      });
+    }
+  };
+  
+  export const deleteComment = (commentID) => async (dispatch) => {
+    try {
+      const res = await api.delete('/comment/' + commentID);
+      dispatch({
+        type: DELETE_COMMENT,
+        payload: red.data,
+      });
+    } catch (err) {
+      dispatch({
+        type: COMMENTS_ERROR,
+        payload: { msg: err.message },
+      });
+    }
+  };
+  
+  export const editComment = (commentID, text) => async (dispatch) => {
+    try {
+      const res = await api.post('/comment/edit/' + commentID, {
+        text: text,
+      });
+      dispatch({
+        type: EDIT_COMMENT,
+        payload: res.data,
+      });
+    } catch (err) {
+      dispatch({
+        type: COMMENTS_ERROR,
+        payload: { msg: err.message },
+      });
+    }
+  };
+  
