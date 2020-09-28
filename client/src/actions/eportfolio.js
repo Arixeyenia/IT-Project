@@ -1,3 +1,4 @@
+import { red } from '@material-ui/core/colors';
 import { set } from 'mongoose';
 import api from '../utils/api';
 import { setAlert } from './alert';
@@ -144,6 +145,7 @@ export const postComment = (itemID, text) => async (dispatch) => {
     const res = await api.post('/comment/' + itemID, { text: text });
     dispatch({
       type: POST_COMMENT,
+      payload: res.data,
     });
   } catch (err) {
     dispatch({
@@ -158,6 +160,7 @@ export const deleteComment = (commentID) => async (dispatch) => {
     const res = await api.delete('/comment/edit/' + commentID);
     dispatch({
       type: DELETE_COMMENT,
+      payload: red.data,
     });
   } catch (err) {
     dispatch({
@@ -174,6 +177,7 @@ export const editComment = (commentID, text) => async (dispatch) => {
     });
     dispatch({
       type: EDIT_COMMENT,
+      payload: res.data,
     });
   } catch (err) {
     dispatch({

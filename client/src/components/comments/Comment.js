@@ -80,6 +80,8 @@ const Comment = ({
     setValue('');
   };
 
+  console.log(comments);
+
   return (
     <>
       <Helpers.Button

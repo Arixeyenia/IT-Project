@@ -103,6 +103,9 @@ export default function (state = initialState, action) {
     case POST_COMMENT:
       return {
         ...state,
+        comments: state.comments.map((comment) =>
+          comment._id === payload._id ? payload : comment
+        ),
         loading: false,
       };
 
