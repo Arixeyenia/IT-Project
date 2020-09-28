@@ -51,8 +51,8 @@ router.post('/', auth, async (req, res) => {
     const item = await newItem.save();
     const update = {$push: { "pages.$[elem].items": item}};
     const options =  {new : true, arrayFilters : [{ 'elem._id': page[0]._id }]};
-    const result = await Portfolio.findByIdAndUpdate( req.body.portfolio, update, options);
-    res.json(result);
+    await Portfolio.findByIdAndUpdate( req.body.portfolio, update, options);
+    res.json(item);
   } catch (err) {
     console.error(err.message);
     if (err.kind === 'ObjectId') {
@@ -99,17 +99,21 @@ router.put('/', auth, async (req, res) => {
 // @route   DELETE api/item
 // @desc    Deletes an existing item
 // @access  Private
-router.delete('/', auth, async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
   try {
-    const item = await Item.findById(req.body.item);
+    const item = await Item.findById(req.params.id);
     // retrieve portfolio
     const portfolio = await Portfolio.findById(item.portfolio);
     // Check portfolio exists
     if (!portfolio) return res.status(404).json({ msg: 'Portfolio not found' });
     // Check user permission
     if (portfolio.user.toString() !== req.user.id) return res.status(401).json({ msg: 'User not authorized' });
-    await Item.findByIdAndDelete(req.body.item);
-    return res.status(202).json({msg: 'Item deleted successfully'});
+    await Item.findByIdAndDelete(req.params.item);
+    // Delete item from portfolio
+    const update = {$pull: { "pages.$[elem].items": { _id : item}}};
+    const options =  {new : true, arrayFilters : [{ 'elem._id': item.pageid }]};
+    const newPortfolio = await Portfolio.findByIdAndUpdate(portfolio._id, update, options);
+    res.json({'_id':req.params.id});
   } catch (err) {
     console.error(err.message);
     if (err.kind === 'ObjectId') {

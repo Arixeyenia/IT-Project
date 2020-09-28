@@ -172,9 +172,9 @@ router.get('/thumbnail/:id', auth, async (req, res) => {
 // @route   DELETE api/portfolio
 // @desc    Remove a portfolio
 // @access  Private
-router.delete('/delete', auth, async (req, res) => {
+router.delete('/delete/:id', auth, async (req, res) => {
   try {
-    const portfolio = await Portfolio.findById(req.body.id);
+    const portfolio = await Portfolio.findById(req.params.id);
     // check if portfolio exists
     if (!portfolio) return res.status(404).json({ msg: 'Portfolio not found' });
     // check if user is authorized

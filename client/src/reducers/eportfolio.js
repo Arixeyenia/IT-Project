@@ -87,12 +87,13 @@ export default function (state = initialState, action) {
         case ADD_ITEM:
             return {
                 ...state,
-                page: {...state.page, items: state.page.items.map(item => (item._id === payload._id) ? payload : item)},
+                page: {...state.page, items: [...state.page.items, payload]},
                 loading: false,
             }
         case DELETE_ITEM:
             return {
                 ...state,
+                page: {...state.page, items: state.page.items.filter(item => (item._id !== payload._id))},
                 loading: false,
             }
         case EPORTFOLIOS_ERROR:

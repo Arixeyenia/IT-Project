@@ -78,7 +78,7 @@ export const createPortfolio = (name) => async dispatch => {
 
 export const deletePortfolio = (id) => async dispatch => {
     try {
-        const res = await api.delete('/portfolio/delete', { data: {id: id}});
+        const res = await api.delete('/portfolio/delete/'+id);
         dispatch({
             type: DELETE_PORTFOLIO
         });
@@ -156,7 +156,7 @@ export const addItem = (newItem) => async dispatch => {
 
 export const deleteItem = (itemID) => async dispatch => {
     try {
-        const res = await api.delete('/item', {data: {item : itemID}});
+        const res = await api.delete('/item/' + itemID);
         dispatch({
             type: DELETE_ITEM,
             payload: res.data
