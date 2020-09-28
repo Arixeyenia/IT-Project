@@ -36,7 +36,7 @@ const View = ({getPortfolio, portfolio, getPage, page}) => {
       getPage(params.id, params.pagename);
     }
   }, [getPortfolio, portfolio, getPage, page]);
-  const items = (Object.keys(page).length !== 0) ? page.items : [];
+  const items = (Object.keys(page).length !== 0) ? page.items.sort((a, b) => a.row - b.row || a.column - b.column) : [];
   const rowLengths = {};
   items.forEach(element => {
     if ([element.row] in Object.keys(rowLengths)){

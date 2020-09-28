@@ -11,6 +11,9 @@ import {
     GET_PORTFOLIO,
     GET_PAGE,
     DELETE_PORTFOLIO,
+    ADD_ITEM,
+    EDIT_ITEM,
+    DELETE_ITEM
 } from './types';
 
 export const getUserEPortfolios = () => async dispatch => {
@@ -75,7 +78,7 @@ export const createPortfolio = (name) => async dispatch => {
 
 export const deletePortfolio = (id) => async dispatch => {
     try {
-        const res = await api.delete('/portfolio/delete', { data: {id: id}});
+        const res = await api.delete('/portfolio/delete/'+id);
         dispatch({
             type: DELETE_PORTFOLIO
         });
@@ -118,3 +121,51 @@ export const getPage = (eportfolioID, pageName) => async dispatch => {
         });
     }
 }
+
+
+export const editItem = (newItem) => async dispatch => {
+    try {
+        const res = await api.put('/item', newItem);
+        dispatch({
+            type: EDIT_ITEM,
+            payload: res.data
+        });
+    } catch (err) {
+        dispatch({
+            type: EPORTFOLIOS_ERROR,
+            payload: { msg: err.message }
+        });
+    }
+}
+
+
+export const addItem = (newItem) => async dispatch => {
+    try {
+        const res = await api.post('/item', newItem);
+        dispatch({
+            type: ADD_ITEM,
+            payload: res.data
+        });
+    } catch (err) {
+        dispatch({
+            type: EPORTFOLIOS_ERROR,
+            payload: { msg: err.message }
+        });
+    }
+}
+
+export const deleteItem = (itemID) => async dispatch => {
+    try {
+        const res = await api.delete('/item/' + itemID);
+        dispatch({
+            type: DELETE_ITEM,
+            payload: res.data
+        });
+    } catch (err) {
+        dispatch({
+            type: EPORTFOLIOS_ERROR,
+            payload: { msg: err.message }
+        });
+    }
+}
+
