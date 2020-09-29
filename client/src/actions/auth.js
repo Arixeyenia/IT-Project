@@ -29,15 +29,16 @@ export const loadUser = () => async (dispatch) => {
 };
 
 //google sign in
-export const signIn = (user) => async (dispatch) => {
+export const signIn = (user, token) => async (dispatch) => {
   console.log('actions/sign in is called________________________');
   try {
     console.log('inside try________________________');
     const res = api.post('/auth/verifyUser', null, {
-      params: { user: user },
+      params: { user: user, token: token },
     });
 
-    console.log('api.post verify res returned________________________');
+    console.log('res is?????________________________');
+    console.log(res);
     dispatch({
       type: SIGN_IN,
       //change NEEDED-TOKEN

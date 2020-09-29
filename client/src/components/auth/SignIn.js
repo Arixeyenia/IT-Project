@@ -29,13 +29,14 @@ const SignIn = ({ signIn, isAuthenticated }) => {
           'this is result from component/auth/SignIn.js_______________'
         );
         console.log(result);
-        var token = result.credential.accessToken;
+        var token = result.credential.idToken;
         api.defaults.headers.common['x-auth-token'] = token;
         localStorage.setItem('token', token);
         // The signed-in user info.
         user = result.user;
-        signIn(user);
+        signIn(user, token);
       });
+
     if (isAuthenticated) {
       return <Redirect to='/' />;
     }
