@@ -7,6 +7,8 @@ import {
   //LOGIN_FAIL,
   LOGOUT,
   ACCOUNT_DELETED,
+  SIGN_IN,
+  SIGN_OUT,
 } from '../actions/types';
 
 //initial state --an object
@@ -45,6 +47,7 @@ export default function (state = initialState, action) {
         loading: false,
       };
     case LOGIN_SUCCESS:
+    case SIGN_IN:
       return {
         ...state,
         ...payload,
@@ -62,6 +65,7 @@ export default function (state = initialState, action) {
     //remove token from localstorage, set things to null or false
     case AUTH_ERROR:
     case LOGOUT:
+    case SIGN_OUT:
       return {
         ...state,
         token: null,

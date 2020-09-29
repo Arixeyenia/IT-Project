@@ -10,15 +10,29 @@ admin.initializeApp({
   databaseURL: 'quaranteam-290713.firebaseio.com',
 });
 
+// @route   GET api/auth
+// @desc    get user
+// @access  Public
+router.get('/getUser', async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 // @route   POST api/auth
 // @desc    Register/login user
 // @access  Public
-
 router.post('/verifyUser', (req, res, next) => {
   console.log('/api/auth/verifyUser is being called');
   const { user } = req.query;
   verifyAccount(req, function (callback) {
-    res.json(callback);
+    //CHANGE: NEED TOKEN ID_TOKEN??
+    token = JSON.parse(user).stsTokenManager.accessToken;
+    res.json({ data: token });
   });
 });
 
@@ -29,8 +43,8 @@ verifyAccount = (req, callback) => {
 
     userJson = JSON.parse(user);
 
-    console.log('userJson__________');
-    console.log(userJson);
+    //    console.log('userJson__________');
+    //    console.log(userJson);
 
     admin
       .auth()
@@ -39,6 +53,7 @@ verifyAccount = (req, callback) => {
         console.log('verify token__________');
         console.log('user token verified');
         userModel.findOne({ googleId: userJson.uid }).then(function (user) {
+          console.log('user found in DB__________');
           if (!user) {
             mUserModel = new userModel({
               name: userJson.displayName,
@@ -47,7 +62,7 @@ verifyAccount = (req, callback) => {
             })
               .save()
               .then(function (error, user) {
-                console.log('saved user__________');
+                //                console.log('saved user__________');
                 if (error) {
                   reject({
                     code: 400,
