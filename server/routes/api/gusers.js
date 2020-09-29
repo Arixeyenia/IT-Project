@@ -29,15 +29,15 @@ verifyAccount = (req, callback) => {
 
     userJson = JSON.parse(user);
 
-    console.log('__________');
+    console.log('userJson__________');
     console.log(userJson);
 
     admin
       .auth()
       .verifyIdToken(userJson.stsTokenManager.accessToken)
       .then(function (decodedToken) {
-        console.log('__________');
-        console.log('user verified');
+        console.log('verify token__________');
+        console.log('user token verified');
         userModel.findOne({ googleId: userJson.uid }).then(function (user) {
           if (!user) {
             mUserModel = new userModel({
@@ -47,6 +47,7 @@ verifyAccount = (req, callback) => {
             })
               .save()
               .then(function (error, user) {
+                console.log('saved user__________');
                 if (error) {
                   reject({
                     code: 400,
