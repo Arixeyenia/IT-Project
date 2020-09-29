@@ -104,11 +104,10 @@ router.delete('/:comment_id', auth, async (req, res) => {
     }
 
     // make sure user is either comment sender or receiver
-    if (
-      comment.from.toString() !== req.user.id ||
-      portfolio.user.toString() !== req.user.id
-    ) {
-      return res.status(401).json({ msg: 'User not authorized' });
+    if (comment.from.toString() !== req.user.id) {
+      if (portfolio.user.toString() !== req.user.id) {
+        return res.status(401).json({ msg: 'User not authorized' });
+      }
     }
     // remove comment
     await comment.remove();
