@@ -36,6 +36,12 @@ const Navbar = ({
           </Link>
         </li>
         <li>
+          <Link to='/signIn'>
+            <i className='fas fa-user' />{' '}
+            <span className='hide-sm'>SIGN IN</span>
+          </Link>
+        </li>
+        <li>
           <a onClick={logout} href='#!'>
             <i className='fas fa-sign-out-alt' />{' '}
             <span className='hide-sm'>Logout</span>
@@ -53,6 +59,13 @@ const Navbar = ({
         </Link>
       </h1>
       <ul>
+        <li>
+          <Link to='/signIn'>
+            <Button variant='contained' color='primary'>
+              SIGN IN
+            </Button>
+          </Link>
+        </li>
         <li>
           <Link to='/register'>
             <Button variant='contained' color='primary'>
