@@ -1,10 +1,9 @@
-import React, { useEffect, Fragment } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Typography, Drawer, Grid, Button, CardMedia, TextField, Divider, Box, List, ListItem, Card, CardContent, CardHeader, IconButton, Icon, CardActionArea, CardActions } from '@material-ui/core';
+import { Typography, Drawer, Grid, Button, CardMedia, TextField, Divider, Box, List, Card, CardContent, CardHeader, IconButton, CardActions } from '@material-ui/core';
 import {getPortfolio, getPage} from '../../actions/eportfolio';
-import { Link, useHistory, useParams } from 'react-router-dom';
-import store from '../../store'
+import { useHistory, useParams } from 'react-router-dom';
 
 
 import clsx from 'clsx';

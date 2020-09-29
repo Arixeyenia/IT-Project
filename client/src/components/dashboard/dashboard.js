@@ -1,12 +1,11 @@
-import React, { useEffect, Fragment } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Typography, Divider, Box, List, Card, CardContent, CardHeader, IconButton, Icon, CardActionArea, Menu, MenuItem, GridList, GridListTile, Popover, Button, TextField } from '@material-ui/core';
+import { Typography, Divider, Box, List, Card, CardContent, CardHeader, IconButton, Icon, CardActionArea, Menu, MenuItem, GridList, GridListTile, Popover, Button } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import AddIcon from '@material-ui/icons/Add'
-import {getUserEPortfolios, getEPortfolioThumbnail, deletePortfolio, setDeletePortfolioID} from '../../actions/eportfolio';
-import { Link, useLocation, useHistory } from 'react-router-dom';
-import { setAlert } from '../../actions/alert';
+import {getUserEPortfolios, getEPortfolioThumbnail, deletePortfolio} from '../../actions/eportfolio';
+import { Link, useHistory } from 'react-router-dom';
 
 const Dashboard = ({getUserEPortfolios, userEPortfolios, getEPortfolioThumbnail, eportfolioThumbnails, deletePortfolio}) => {
   useEffect(() => {
@@ -17,7 +16,6 @@ const Dashboard = ({getUserEPortfolios, userEPortfolios, getEPortfolioThumbnail,
       getEPortfolioThumbnail(id);
     });
   }, [getUserEPortfolios, getEPortfolioThumbnail, userEPortfolios]);
-  console.log(userEPortfolios);
   var ePortfolioIDs = [];
   userEPortfolios.forEach(portfolio => {
     ePortfolioIDs.push(portfolio._id);
@@ -103,7 +101,6 @@ function IndividualMenu(props) {
     setPopoverAnchor(event.currentTarget);
     var index = window.location.href.lastIndexOf('/');
     setUrl(window.location.href.slice(0, index)+ '/' + 'view/' + id);
-    console.log(url);
   };
 
   const popoverClose = () => {

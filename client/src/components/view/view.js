@@ -1,11 +1,10 @@
-import React, { useEffect, Fragment } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { Typography, Grid, Divider, Box, List, ListItem, Card, CardContent, CardHeader, CardMedia, Icon, CardActions, Button } from '@material-ui/core';
+import { Typography, Grid, Box, Card, CardContent, CardHeader, CardMedia, CardActions, Button } from '@material-ui/core';
 import {getPortfolio, getPage} from '../../actions/eportfolio';
-import { Link, useParams, useHistory } from 'react-router-dom';
-import store from '../../store'
+import { useParams, useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   cardRoot: {
@@ -36,34 +35,29 @@ const View = ({getPortfolio, portfolio, getPage, page}) => {
       getPage(params.id, params.pagename);
     }
   }, [getPortfolio, portfolio, getPage, page]);
+
   const items = (Object.keys(page).length !== 0) ? page.items : [];
   const rowLengths = {};
+  const groupedItems = [];
+
   items.forEach(element => {
     if ([element.row] in Object.keys(rowLengths)){
       rowLengths[element.row]++;
-      console.log(element.row);
+      groupedItems[element.row].push(element);
     }
     else{
       rowLengths[element.row] = 1;
-      console.log(element.row);
+      groupedItems[element.row] = [element];
     }
   });
-  items.sort(function(a, b){
-    if (a.row > b.row){
-      return 1;
-    }
-    if (a.row < b.row){
-      return -1;
-    }
-    else return 0;
-  })
-  console.log(items);
+
   return (
     <Box className="content">
       <Typography variant="h1">{portfolio.name}</Typography>
+      {groupedItems.map((item)=>
       <Grid container spacing={3} className="view-grid-container">
-      {items.map((object) => card(classes, rowLengths, params.id, object, history))}  
-      </Grid>
+      {item.map((object) => card(classes, rowLengths, params.id, object, history))}  
+      </Grid>)}
     </Box>
   );
 }
