@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Typography, Drawer, Grid, Button, CardMedia, TextField, Divider, Box, List, ListItem, Card, CardContent, CardHeader, IconButton, Icon, CardActionArea, CardActions } from '@material-ui/core';
+import { Typography, Drawer, Grid, Button, CardMedia, TextField, Divider, Box, List, ListItem, ListItemText, ListItemIcon, CardHeader, IconButton, Icon, CardActionArea, CardActions } from '@material-ui/core';
 import {getPortfolio, getPage, editItem, addItem, deleteItem} from '../../actions/eportfolio';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { useForm } from "react-hook-form";
@@ -22,6 +22,10 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import card from './card';
+import MenuIcon from '@material-ui/icons/Menu';
+import HomeIcon from '@material-ui/icons/Home';
+import {Instagram, Facebook, LinkedIn, Twitter} from '@material-ui/icons';
+
 
 const drawerWidth = 300;
 
@@ -62,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
   },
   content: {
     flexGrow: 1,
@@ -89,7 +93,7 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 275,
   },
   unflex: {
-    flex: '0 1 11em',
+    flex: '0 1 7em',
   },
   pos: {
     marginTop: '2em',
@@ -117,7 +121,24 @@ const useStyles = makeStyles((theme) => ({
   },
   addIcon:{
     fontSize: '3.5rem'  
-  }
+  },
+  inline:{
+    display:'inline-flex'
+  },
+  inlineTextInput:{
+    margin: theme.spacing(1)
+  },
+  socialLinks:{      
+    display: 'flex',
+    alignItems: 'center'
+  },
+  socialMedia:{
+    marginTop: theme.spacing(2),
+    marginRight: theme.spacing(2),
+    fontSize: '20px',
+    color: 'white',
+    padding: theme.spacing(2),
+  } 
 }));
 
 const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, deleteItem}) => {
@@ -187,7 +208,7 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
       getPage(params.id, params.pagename);
     }
   }, [portfolio, page]);
-  console.log(page);
+  console.log(portfolio);
   const items = (Object.keys(page).length !== 0) ? page.items.sort((a, b) => a.row - b.row || a.column - b.column) : [];
   const rowLengths = {};
   items.forEach(element => {
@@ -213,11 +234,30 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
       }}
     >
       <div className={classes.drawerHeader}>
+        <Typography variant='h4' className={classes.drawerTitle}>{editID === '' ? 'Options' : 'Edit'}</Typography>
         <IconButton onClick={() => handleDrawerClose()}>
           {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
         </IconButton>
       </div>
       <Divider />
+      {editID === '' && Object.keys(portfolio).length !== 0 &&
+        <div>
+        <Typography variant='h5'>Pages</Typography>
+        <List>
+            {portfolio.pages.map(page => (<ListItem button onClick={() => {history.push('/edit/' + portfolio._id + '/' + page.url);history.go(0);}} key={page.url}>
+            <ListItemText primary={page.name} />
+            {page.main && <ListItemIcon><HomeIcon></HomeIcon></ListItemIcon>}            
+          </ListItem>))}
+          <span className={classes.inline}><TextField className={classes.inlineTextInput} label='New Page' variant="outlined"/><Button variant="outlined" color="primary" className={classes.inlineTextInput} type="submit">Add</Button></span>
+        </List>
+        <Typography variant='h5'>Social Media</Typography>
+        <form>
+          {['instagram', 'facebook', 'twitter', 'linkedin'].map(name => (<TextField className={classes.textinput} label={name} variant="outlined"/>))}
+          <Button variant="outlined" color="primary" className={classes.textinput} type="submit">Save</Button>
+        </form>
+        </div>
+      }
+      {editID !== '' &&
       <form className={classes.root} noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
       <List>
         {['Title', 'Subtitle', 'Paragraph', 'Media Link', 'Media Type', 'Link Text', 'Link Address', "private", "row", "column"].map((text, index) => (
@@ -226,6 +266,7 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
         <Button variant="outlined" color="primary" className={classes.textinput} type="submit">Save</Button>
       </List>      
       </form>
+      }
     </Drawer>
     <main
       className={clsx(classes.content, {
@@ -233,6 +274,15 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
       })}
     >
       <Typography variant="h1">{portfolio.name}</Typography>
+      <IconButton onClick={() => {if(drawerOpen){handleDrawerClose();}else{handleDrawerOpen('')}}}>
+          <MenuIcon/>&nbsp;Options
+        </IconButton>
+        <div className={classes.socialLinks}>
+            <Button className={classes.socialMedia} style={{backgroundColor:"#4267B2"}}><Facebook/></Button>
+            <Button className={classes.socialMedia} style={{backgroundColor:"#DD2A7B"}}><Instagram/></Button>
+            <Button className={classes.socialMedia} style={{backgroundColor:"#1DA1F2"}}><Twitter/></Button>
+            <Button className={classes.socialMedia} style={{backgroundColor:"#2867B2"}}><LinkedIn/></Button>
+        </div>
       <Grid container spacing={3}>
       {items.map((object) => card(classes, rowLengths, portfolio._id, object, history, handleDrawerOpen, handleDialogOpen, addItemWrapper)
         )}
