@@ -149,27 +149,6 @@
   margin-left: 10px;
 }
 
-/** Styles for category component */
-.category {
-  display: inline-table;
-}
-
-.category .MuiTypography-root {
-  display: table-cell;
-}
-
-.category div {
-  display: table-cell;
-}
-
-.category .MuiBox-root {
-  width: 100%;
-}
-
-.category .categoryLine {
-  margin-bottom: 5px;
-}
-
 /** Styles for create portfolio page */
 .portfolio-name-input {
   padding-bottom: 20px !important;
@@ -263,7 +242,6 @@ ul {
 .container {
   max-width: 1100px;
   margin: auto;
-  overflow: hidden;
   padding: 0 2rem;
   margin-top: 6rem;
   margin-bottom: 3rem;

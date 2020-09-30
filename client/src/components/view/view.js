@@ -4,7 +4,9 @@ import { connect } from 'react-redux';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { Typography, Grid, Box, Card, CardContent, CardHeader, CardMedia, CardActions, Button } from '@material-ui/core';
 import {getPortfolio, getPage} from '../../actions/eportfolio';
-import { useParams, useHistory } from 'react-router-dom';
+import { Link, useParams, useHistory } from 'react-router-dom';
+import store from '../../store'
+import Comment from '../comments/Comment';
 
 const useStyles = makeStyles((theme) => ({
   cardRoot: {
@@ -28,10 +30,10 @@ const View = ({getPortfolio, portfolio, getPage, page}) => {
   const params = useParams();
   const history = useHistory();
   useEffect(() => {
-    if (Object.keys(portfolio).length === 0){
+    if (Object.keys(portfolio).length === 0) {
       getPortfolio(params.id);
     }
-    if (Object.keys(page).length === 0){
+    if (Object.keys(page).length === 0) {
       getPage(params.id, params.pagename);
     }
   }, [getPortfolio, portfolio, getPage, page]);
@@ -62,7 +64,7 @@ const View = ({getPortfolio, portfolio, getPage, page}) => {
   );
 }
 
-const card = (classes, rowLengths, portfolioID, object, history) => {
+const card = (classes, rowLengths, portfolioID, object, history, owner) => {
   return (
     <Grid item xs={12/rowLengths[object.row]} className="view-grid-item">
     <Card className={classes.cardRoot}>
@@ -83,6 +85,7 @@ const card = (classes, rowLengths, portfolioID, object, history) => {
       {object.linkAddress && <CardActions className="view-card-actions">
            <Button size="small" onClick={()=> {if(!/^(f|ht)tps?:\/\//i.test(object.linkAddress)){ history.push('/view/' + portfolioID + '/' + object.linkAddress);}else{ window.location.href = object.linkAddress;}window.location.reload(false);}}>{object.linkText}</Button>
       </CardActions>}
+      <Comment itemID={object._id} owner={owner} />
     </Card>
     </Grid>
   )
