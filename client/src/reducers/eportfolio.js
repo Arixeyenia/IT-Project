@@ -140,12 +140,7 @@ export default function (state = initialState, action) {
     case DELETE_COMMENT:
       return {
         ...state,
-        comments: {
-          ...state.comments,
-          [payload.item]: state.comments[payload.item].filter(
-            (comment) => comment._id !== payload._id
-          ),
-        },
+        comments: { ...payload },
         loading: false,
       };
     case EDIT_COMMENT:

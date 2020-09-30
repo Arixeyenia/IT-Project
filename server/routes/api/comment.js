@@ -112,8 +112,17 @@ router.delete('/:comment_id', auth, async (req, res) => {
     // remove comment
     await comment.remove();
 
+    // find all comments with item_id
+    const comments = await Comment.find()
+      .where('item')
+      .in(item.id.toString())
+      .sort({ date: -1 })
+      .exec();
+
+    console.log(comments);
+
     // return commend deleted message
-    res.json({ _id: req.params.comment_id });
+    res.json(comments);
   } catch (err) {
     console.error(err.message);
     if (err.kind === 'ObjectId') {
