@@ -34,7 +34,7 @@ const Dashboard = ({getUserEPortfolios, userEPortfolios, getEPortfolioThumbnail,
     
   return (
     <Box className="content">
-      <Typography variant="h1">Welcome to your dashboard</Typography>
+      <Typography variant="h2">Welcome to your dashboard</Typography>
       <Category title="Your existing ePortfolios"></Category>
       <GridList className={classes.portfolioList}>
         {DisplayPortfolioItem(arrayOfPortfolioObjects, deletePortfolio)}
