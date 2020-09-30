@@ -5,6 +5,15 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { logout } from '../../actions/auth';
 import { getCurrentProfile, deleteAccount } from '../../actions/profile';
+import logo from '../../images/Quaranteam-textonly.png'
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme) => ({
+  logo: {
+    margin: 0,
+    width: '25%',
+  }
+}));
 
 const Navbar = ({
   auth: { isAuthenticated, loading, user },
@@ -13,16 +22,15 @@ const Navbar = ({
   deleteAccount,
   profile: { profile },
 }) => {
+  const classes = useStyles();
   useEffect(() => {
     getCurrentProfile();
   }, [getCurrentProfile]);
   const authLinks = (
     <nav className='navbar bg-dark'>
-      <h1>
-        <Link to='/'>
-          <i className='fad fa-user-secret' /> Quaranteam
-        </Link>
-      </h1>
+      <Link to='/'>
+        <img src={logo} alt="Quaranteam" className={classes.logo}></img>
+      </Link>
       <ul>
         <li>
           <Link to='/edit-profile'>

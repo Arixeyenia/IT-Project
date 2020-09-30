@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createProfile, getCurrentProfile } from '../../actions/profile';
+import { Box } from '@material-ui/core';
 
 const initialState = {
   company: '',
@@ -47,7 +48,7 @@ const ProfileForm = ({
   };
 
   return (
-    <Fragment>
+    <Box className="content">
       <h1 className='large text-primary'>Edit Your Profile</h1>
       <small>* = required field</small>
       <form className='form' onSubmit={onSubmit}>
@@ -123,7 +124,7 @@ const ProfileForm = ({
           Go Back
         </Link>
       </form>
-    </Fragment>
+    </Box>
   );
 };
 

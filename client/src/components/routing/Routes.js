@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Register from '../auth/register';
 import Login from '../auth/login';
@@ -14,7 +14,7 @@ import Edit from '../edit/edit'
 
 const Routes = (props) => {
   return (
-    <section className='container'>
+    <Fragment>
       <Alert />
       <Switch>
         <Route exact path='/register' component={Register} />
@@ -28,7 +28,7 @@ const Routes = (props) => {
         <PrivateRoute exact path='/create-profile' component={ProfileForm} />
         <PrivateRoute exact path='/edit-profile' component={ProfileForm} />
       </Switch>
-    </section>
+    </Fragment>
   );
 };
 

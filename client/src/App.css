@@ -149,112 +149,36 @@
   margin-left: 10px;
 }
 
-/** Styles for category component */
-.category {
-  display: inline-table;
-}
-
-.category .MuiTypography-root {
-  display: table-cell;
-}
-
-.category div {
-  display: table-cell;
-}
-
-.category .MuiBox-root {
-  width: 100%;
-}
-
-.category .categoryLine {
-  margin-bottom: 5px;
-}
-
-/** Styles for portfolio card */
-.portfolioList {
-  display: flex;
-}
-
-.MuiCardHeader-root {
-  padding: 0px;
-  margin-bottom: -72px;
-}
-
-.MuiCardHeader-action {
-  text-align: right;
-}
-
-.portfolioCard .MuiCardHeader-action .MuiButtonBase-root {
-  background-color: #333333;
-  opacity: 66%;
-}
-
-.portfolioListItem {
-  width: 30% !important;
-}
-
-.portfolioCard {
-  box-shadow: initial;
-}
-
-.PortfolioCard-Menu {
-  width: 20%
-}
-
-.PortfolioCard-Menu .MuiPaper-root {
-  width: 100%;
-}
-
-.addPortfolio {
-  padding: 18%;
-}
-
-.addPortfolioIcon {
-  display: table !important;
-  margin: auto !important;
-}
-
-.cardThumbnail {
-  width: 100%;
-  margin-bottom: -20%;
-}
-
-.MuiCardMedia-root {
-  height: 10px;
-  padding: 100%;
-}
-
-.overlayPortfolioItem {
-  opacity: 66%;
-  text-align: right;
-  background-color: #333333;
-  border-bottom-left-radius: inherit;
-  border-bottom-right-radius: inherit;
-  padding: 0 !important;
-}
-
-.copylink-popover .MuiPaper-root {
-  width: 40%;
-  padding: 50px 20px;
-  margin: auto;
-  position: absolute;
-  top: 35% !important;
-  left: 32% !important;
-}
-
-.copylink-popover .MuiPaper-root .MuiButton-contained, textarea {
-  display: block;
-  margin: auto;
-  margin-top: 20px;
-}
-
-.copylink-popover .MuiPaper-root textarea {
-  width: 85% !important;
-}
-
 /** Styles for create portfolio page */
 .portfolio-name-input {
   padding-bottom: 20px !important;
+  width: 100%;
+  padding-left: 10px !important;
+}
+
+.portfolio-name-input *{
+  padding-left: 10px !important;
+}
+
+/** Styles for view page */
+.view-card-actions {
+  padding-left: 20px !important;
+}
+
+.view-grid-item {
+  display: grid;
+}
+
+.view-grid-item .MuiCardHeader-root {
+  padding-bottom: 0px !important;
+}
+
+.view-grid-item .MuiPaper-root {
+  padding-bottom: 20px;
+}
+
+.view-card-content {
+  padding-bottom: 0px !important;
 }
 
 /** Styles for img tag */

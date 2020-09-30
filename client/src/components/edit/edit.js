@@ -1,4 +1,4 @@
-import React, { useEffect, Fragment } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Typography, Drawer, Grid, Button, CardMedia, TextField, Divider, Box, List, ListItem, Card, CardContent, CardHeader, IconButton, Icon, CardActionArea, CardActions } from '@material-ui/core';
@@ -200,7 +200,7 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
   });
     
   return (    
-    <Fragment>
+    <Box className="content">
     <div className={classes.root}>
     <CssBaseline />
     <Drawer
@@ -267,7 +267,7 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
           </Button>
         </DialogActions>
       </Dialog>
-    </Fragment>
+    </Box>
   );
 }
 
