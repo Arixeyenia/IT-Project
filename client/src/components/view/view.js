@@ -13,6 +13,7 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 275,
     boxShadow: 'none',
     borderRadius: 0,
+    backgroundColor: 'inherit',
   },
   pos: {
   },
@@ -67,26 +68,26 @@ const View = ({getPortfolio, portfolio, getPage, page}) => {
 const card = (classes, rowLengths, portfolioID, object, history, owner) => {
   return (
     <Grid item xs={12/rowLengths[object.row]} className="view-grid-item">
-    <Card className={classes.cardRoot}>
-      {object.mediaType === "image" && <CardMedia
-          className={classes.media}
-          image={object.mediaLink}
+      <Card className={classes.cardRoot}>
+        {object.mediaType === "image" && <CardMedia
+            className={classes.media}
+            image={object.mediaLink}
+          />}
+        {object.title && <CardHeader
+          classes={{title:classes.titleText}}
+          title={object.title}
+          subheader={object.subtitle}
         />}
-       {object.title && <CardHeader
-        classes={{title:classes.titleText}}
-        title={object.title}
-        subheader={object.subtitle}
-      />}
-      {object.paragraph&& <CardContent className="view-card-content">
-        {object.paragraph && <Typography variant="body2" component="p">
-          {object.paragraph}
-        </Typography>}
-      </CardContent>}
-      {object.linkAddress && <CardActions className="view-card-actions">
-           <Button size="small" onClick={()=> {if(!/^(f|ht)tps?:\/\//i.test(object.linkAddress)){ history.push('/view/' + portfolioID + '/' + object.linkAddress);}else{ window.location.href = object.linkAddress;}window.location.reload(false);}}>{object.linkText}</Button>
-      </CardActions>}
-      <Comment itemID={object._id} owner={owner} />
-    </Card>
+        {object.paragraph&& <CardContent className="view-card-content">
+          {object.paragraph && <Typography variant="body2" component="p">
+            {object.paragraph}
+          </Typography>}
+        </CardContent>}
+        {object.linkAddress && <CardActions className="view-card-actions">
+            <Button size="small" onClick={()=> {if(!/^(f|ht)tps?:\/\//i.test(object.linkAddress)){ history.push('/view/' + portfolioID + '/' + object.linkAddress);}else{ window.location.href = object.linkAddress;}window.location.reload(false);}}>{object.linkText}</Button>
+        </CardActions>}
+        <Comment itemID={object._id} owner={owner} />
+      </Card>
     </Grid>
   )
 }
