@@ -68,6 +68,8 @@ router.post(
         { expiresIn: config.get('expiresIn') }, //should probably expire in 3600 (an hour) but kept it longer for testing
         (err, token) => {
           if (err) throw err;
+          // console.log('token in POST login_________________________________');
+          // console.log(token);
           res.json({ token });
         }
       );

@@ -26,22 +26,24 @@ router.get('/getUser', async (req, res) => {
 // @route   POST api/auth
 // @desc    Register/login user
 // @access  Public
-router.post('/verifyUser', (req, res, next) => {
-  console.log('/api/auth/verifyUser is being called');
-  verifyAccount(req, res);
+router.post('/verifyUser', async (req, res, next) => {
+  //  console.log('/api/auth/verifyUser is being called');
+  const { token } = req.query;
+  verifyAccount(req);
+  res.json({ token });
 });
 
-verifyAccount = (req, res) => {
+verifyAccount = (req) => {
   const { query } = req;
   const { token } = query;
   const { user } = query;
-  console.log('token from client__________________aaaaaaaaaaaa');
-  console.log(token);
+  // console.log('token from client__________________aaaaaaaaaaaa');
+  // console.log(token);
 
   userJson = JSON.parse(user);
 
-  console.log('token from server__________________bbbbbbbbbbbbb');
-  console.log(userJson.stsTokenManager.accessToken);
+  // console.log('token from server__________________bbbbbbbbbbbbb');
+  // console.log(userJson.stsTokenManager.accessToken);
 
   //    console.log('userJson__________');
   //    console.log(userJson);
@@ -50,12 +52,12 @@ verifyAccount = (req, res) => {
     .auth()
     .verifyIdToken(token)
     .then(function (decodedToken) {
-      console.log(token);
-      console.log('verify token from client above__________');
-      console.log(userJson.stsTokenManager.accessToken);
-      console.log('user token verified same??_____________');
+      // console.log(token);
+      // console.log('verify token from client above__________');
+      // console.log(userJson.stsTokenManager.accessToken);
+      // console.log('user token verified same??_____________');
       userModel.findOne({ googleId: userJson.uid }).then(function (user) {
-        console.log('user found in DB__________');
+        //      console.log('user found in DB__________');
         if (!user) {
           mUserModel = new userModel({
             name: userJson.displayName,
@@ -63,7 +65,7 @@ verifyAccount = (req, res) => {
             googleId: userJson.uid,
           }).save();
         }
-        res.json(token);
+        //  res.json(token);
       });
     })
     .catch(function (error) {

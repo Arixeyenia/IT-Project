@@ -28,19 +28,22 @@ const SignIn = ({ signIn, isAuthenticated }) => {
         console.log(
           'this is result from component/auth/SignIn.js_______________'
         );
-        console.log(result.credential.idToken);
-        var token = result.credential.idToken;
-        api.defaults.headers.common['x-auth-token'] = token;
-        localStorage.setItem('token', token);
+        // console.log(result.credential.idToken);
+        // var token = result.credential.idToken;
+        // api.defaults.headers.common['x-auth-token'] = token;
+        // localStorage.setItem('token', token);
         // The signed-in user info.
         user = result.user;
-        firebase.auth().currentUser.getIdToken(true).then(function(idToken){
-          signIn(user, idToken);
-        }).catch(function(error) {
-          console.debug(error);
-        });
+        firebase
+          .auth()
+          .currentUser.getIdToken(true)
+          .then(function (idToken) {
+            signIn(user, idToken);
+          })
+          .catch(function (error) {
+            console.debug(error);
+          });
       });
-    
 
     if (isAuthenticated) {
       return <Redirect to='/' />;

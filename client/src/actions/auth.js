@@ -33,19 +33,19 @@ export const signIn = (user, token) => async (dispatch) => {
   console.log('actions/sign in is called________________________');
   try {
     console.log('inside try________________________');
-    const res = api.post('/auth/verifyUser', null, {
+    const res = await api.post('/auth/verifyUser', null, {
       params: { user: user, token: token },
     });
 
-    console.log('res is?????________________________');
-    console.log(res);
+    // console.log('res is?????________________________');
+    // console.log(res.data);
     dispatch({
       type: SIGN_IN,
       //change NEEDED-TOKEN
       payload: res.data,
     });
-    console.log('sign in returned token________________________');
-    console.log(res.data);
+    // console.log('sign in returned token________________________');
+    // console.log(res.data);
     //error in loadUser!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // dispatch(loadUser());
   } catch (err) {
@@ -93,7 +93,8 @@ export const login = (email, password) => async (dispatch) => {
 
   try {
     const res = await api.post('/auth', body);
-
+    console.log('token from old login ___________________');
+    console.log(res.data);
     dispatch({
       type: LOGIN_SUCCESS,
       payload: res.data,
