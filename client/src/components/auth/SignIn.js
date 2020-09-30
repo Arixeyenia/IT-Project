@@ -11,6 +11,7 @@ import axios from 'axios';
 import api from '../../utils/api';
 import { signIn } from '../../actions/auth';
 
+//initialize firebase google authentication
 const firebaseConfig = require('../../utils/firebaseConfig').firebaseConfig;
 firebase.initializeApp(firebaseConfig);
 var provider = new firebase.auth.GoogleAuthProvider();
@@ -18,6 +19,7 @@ provider.addScope('profile');
 provider.addScope('email');
 
 const SignIn = ({ signIn, isAuthenticated }) => {
+  //function for google sign in
   const GSignIn = () => {
     var user;
     firebase
@@ -25,9 +27,9 @@ const SignIn = ({ signIn, isAuthenticated }) => {
       .signInWithPopup(provider)
       .then(function (result) {
         // This gives you a Google Access Token.
-        console.log(
-          'this is result from component/auth/SignIn.js_______________'
-        );
+        // console.log(
+        //   'this is result from component/auth/SignIn.js_______________'
+        // );
         // console.log(result.credential.idToken);
         // var token = result.credential.idToken;
         // api.defaults.headers.common['x-auth-token'] = token;
@@ -38,7 +40,9 @@ const SignIn = ({ signIn, isAuthenticated }) => {
           .auth()
           .currentUser.getIdToken(true)
           .then(function (idToken) {
-            signIn(user, idToken);
+            api.defaults.headers.common['x-auth-token'] = idToken;
+            localStorage.setItem('token', idToken);
+            signIn();
           })
           .catch(function (error) {
             console.debug(error);
@@ -46,7 +50,7 @@ const SignIn = ({ signIn, isAuthenticated }) => {
       });
 
     if (isAuthenticated) {
-      return <Redirect to='/' />;
+      return <Redirect to='/dashboard' />;
     }
   };
 

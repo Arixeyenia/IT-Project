@@ -16,9 +16,11 @@ import {
 export const loadUser = () => async (dispatch) => {
   try {
     const res = await api.get('/auth');
-
+    console.log('load user_____________________________');
+    console.log(res.data);
     dispatch({
       type: USER_LOADED,
+      //payload is user data including email, googleId, name
       payload: res.data,
     });
   } catch (err) {
@@ -29,25 +31,17 @@ export const loadUser = () => async (dispatch) => {
 };
 
 //google sign in
-export const signIn = (user, token) => async (dispatch) => {
-  console.log('actions/sign in is called________________________');
+export const signIn = () => async (dispatch) => {
   try {
-    console.log('inside try________________________');
-    const res = await api.post('/auth/verifyUser', null, {
-      params: { user: user, token: token },
-    });
+    const res = await api.post('/auth/verifyUser');
 
-    // console.log('res is?????________________________');
-    // console.log(res.data);
     dispatch({
       type: SIGN_IN,
-      //change NEEDED-TOKEN
+      //payload is token
       payload: res.data,
     });
-    // console.log('sign in returned token________________________');
-    // console.log(res.data);
-    //error in loadUser!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // dispatch(loadUser());
+
+    dispatch(loadUser());
   } catch (err) {
     const errors = err.response.data.errors;
 
@@ -93,8 +87,6 @@ export const login = (email, password) => async (dispatch) => {
 
   try {
     const res = await api.post('/auth', body);
-    console.log('token from old login ___________________');
-    console.log(res.data);
     dispatch({
       type: LOGIN_SUCCESS,
       payload: res.data,

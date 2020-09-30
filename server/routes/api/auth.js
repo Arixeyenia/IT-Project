@@ -5,14 +5,14 @@ const jwt = require('jsonwebtoken');
 const config = require('config');
 const { check, validationResult } = require('express-validator');
 
-const User = require('../../models/User');
+const User = require('../../models/GUser');
 
 // @route   GET api/auth
 // @desc    Return user info (test)
 // @access  Public
 router.get('/', auth, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findOne({ googleId: req.user.uid });
     res.json(user);
   } catch (err) {
     console.error(err.message);
