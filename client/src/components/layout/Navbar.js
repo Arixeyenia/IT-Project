@@ -1,21 +1,45 @@
-import React, { Fragment, useEffect } from 'react';
-import { Box, Button, Typography, Grid } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import React, { Fragment } from 'react';
+import { Button } from '@material-ui/core';
+import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { logout } from '../../actions/auth';
-import { getCurrentProfile, deleteAccount } from '../../actions/profile';
+import firebase from 'firebase';
+import 'whatwg-fetch';
+import api from '../../utils/api';
+import { signIn, signOut } from '../../actions/auth';
+
+//initialize firebase google authentication
+const firebaseConfig = require('../../utils/firebaseConfig').firebaseConfig;
+firebase.initializeApp(firebaseConfig);
+var provider = new firebase.auth.GoogleAuthProvider();
+provider.addScope('profile');
+provider.addScope('email');
 
 const Navbar = ({
   auth: { isAuthenticated, loading, user },
-  logout,
-  getCurrentProfile,
-  deleteAccount,
-  profile: { profile },
+  signIn,
+  signOut,
 }) => {
-  useEffect(() => {
-    getCurrentProfile();
-  }, [getCurrentProfile]);
+  //function for google sign in
+  const GSignIn = () => {
+    firebase
+      .auth()
+      .signInWithPopup(provider)
+      .then(function (result) {
+        firebase
+          .auth()
+          .currentUser.getIdToken(true)
+          .then(function (idToken) {
+            api.defaults.headers.common['x-auth-token'] = idToken;
+            localStorage.setItem('token', idToken);
+            signIn();
+          })
+          .catch(function (error) {
+            console.debug(error);
+          });
+      });
+  };
+
   const authLinks = (
     <nav className='navbar bg-dark'>
       <h1>
@@ -25,9 +49,7 @@ const Navbar = ({
       </h1>
       <ul>
         <li>
-          <Link to='/edit-profile'>
-            <span className='hide-sm'>Hello, {user && user.name}!</span>
-          </Link>
+          <span className='hide-sm'>Hi, {user && user.name}!</span>
         </li>
         <li>
           <Link to='/dashboard'>
@@ -36,15 +58,9 @@ const Navbar = ({
           </Link>
         </li>
         <li>
-          <Link to='/signIn'>
-            <i className='fas fa-user' />{' '}
-            <span className='hide-sm'>SIGN IN</span>
-          </Link>
-        </li>
-        <li>
-          <a onClick={logout} href='#!'>
+          <a onClick={signOut} href='/'>
             <i className='fas fa-sign-out-alt' />{' '}
-            <span className='hide-sm'>Logout</span>
+            <span className='hide-sm'>sign out</span>
           </a>
         </li>
       </ul>
@@ -60,23 +76,9 @@ const Navbar = ({
       </h1>
       <ul>
         <li>
-          <Link to='/signIn'>
-            <Button variant='contained' color='primary'>
-              SIGN IN
-            </Button>
-          </Link>
-        </li>
-        <li>
-          <Link to='/register'>
-            <Button variant='contained' color='primary'>
-              REGISTER
-            </Button>
-          </Link>
-        </li>
-        <li>
-          <Link to='/login'>
-            <Button variant='contained' color='primary'>
-              LOG IN
+          <Link to='/'>
+            <Button onClick={GSignIn} variant='contained' color='primary'>
+              SIGN IN WITH GOOGLE
             </Button>
           </Link>
         </li>
@@ -94,20 +96,16 @@ const Navbar = ({
 };
 
 Navbar.propTypes = {
-  logout: PropTypes.func.isRequired,
+  signIn: PropTypes.func.isRequired,
+  signOut: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
-  getCurrentProfile: PropTypes.func.isRequired,
-  deleteAccount: PropTypes.func.isRequired,
-  profile: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
-  profile: state.profile,
 });
 
 export default connect(mapStateToProps, {
-  logout,
-  getCurrentProfile,
-  deleteAccount,
+  signOut,
+  signIn,
 })(Navbar);

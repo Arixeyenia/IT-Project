@@ -1,5 +1,3 @@
-const jwt = require('jsonwebtoken');
-const config = require('config');
 var admin = require('firebase-admin');
 const serviceAccount = require('../config/quaranteam-290713-firebase-adminsdk-owv3x-ece36557e1');
 
@@ -24,9 +22,6 @@ module.exports = function (req, res, next) {
     .auth()
     .verifyIdToken(token)
     .then(function (decodedToken) {
-      // console.log('decoded token__________________________');
-      // console.log(decodedToken);
-      //decoded token__________________________
       //now req.user has {name: 'xxx', picture:'httpxxxxx', email:'xxx', iss:'xxx', uid:'xxx'...........}
       req.user = decodedToken;
       next();
