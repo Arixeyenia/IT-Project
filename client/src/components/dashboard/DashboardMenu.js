@@ -69,9 +69,11 @@ export default function IndividualMenu(props) {
                 anchorEl={popoverAnchor}
                 onClose={popoverClose}
                 open={Boolean(popoverAnchor)}
-                className={classes.copyLinkPaperRoot}>
-          <textarea disabled id={"text-"+props.i} value={url}></textarea>
-          <Button variant="contained" color="primary" onClick={() => {copyClipboardLink("text-"+props.i)}}>Copy to clipboard</Button>
+                classes={{
+                  paper: classes.copyLinkPaperRoot
+                }}>
+          <textarea disabled id={"text-"+props.i} value={url} className={`${classes.textarea} ${classes.popoverContents}`}></textarea>
+          <Button className={classes.popoverContents} variant="contained" color="primary" onClick={() => {copyClipboardLink("text-"+props.i)}}>Copy to clipboard</Button>
         </Popover>
       </Box>
     );
