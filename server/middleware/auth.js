@@ -24,6 +24,8 @@ module.exports = function (req, res, next) {
     .then(function (decodedToken) {
       //now req.user has {name: 'xxx', picture:'httpxxxxx', email:'xxx', iss:'xxx', uid:'xxx'...........}
       req.user = decodedToken;
+      console.log('req.user.uid_________________________________');
+      console.log(req.user.uid);
       next();
     })
     .catch(function (error) {

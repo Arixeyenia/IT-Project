@@ -31,7 +31,7 @@ router.post(
     try {
       // Pull out item and user
       const item = await Item.findById(req.params.item_id);
-      const user = await User.findById(req.user.id).select('-password');
+      const user = await User.findById(req.user.uid).select('-password');
 
       // Make sure item exists
       if (!item) {
@@ -39,7 +39,7 @@ router.post(
       }
 
       const newComment = new Comment({
-        from: req.user.id,
+        from: req.user.uid,
         name: user.name,
         item: req.params.item_id,
         text: req.body.text,
@@ -105,8 +105,8 @@ router.delete('/edit/:comment_id', auth, async (req, res) => {
 
     // make sure user is either comment sender or receiver
     if (
-      comment.from.toString() !== req.user.id ||
-      portfolio.user.toString() !== req.user.id
+      comment.from.toString() !== req.user.uid ||
+      portfolio.user.toString() !== req.user.uid
     ) {
       return res.status(401).json({ msg: 'User not authorized' });
     }
@@ -145,7 +145,7 @@ router.post(
       }
 
       // make sure user is comment sender
-      if (comment.from.toString() !== req.user.id) {
+      if (comment.from.toString() !== req.user.uid) {
         return res.status(401).json({ msg: 'User not authorized' });
       }
       // copy comment info, update text
