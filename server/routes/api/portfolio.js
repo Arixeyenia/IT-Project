@@ -64,11 +64,12 @@ router.get('/single/:id', auth, async (req, res) => {
   try {
     const portfolio = await Portfolio.findById(req.params.id);
     if (!portfolio) return res.status(404).json({ msg: 'Portfolio not found' });
+    const user = await User.findOne({ googleId: req.user.uid });
     // check that user is authorized
     if (
       portfolio.private &&
       portfolio.user.toString() !== req.user.uid &&
-      !(req.user.uid in portfolio.allowedUsers)
+      !(user.id in portfolio.allowedUsers)
     ) {
       return res.status(401).json({ msg: 'User not authorized' });
     }
@@ -141,8 +142,9 @@ router.get('/thumbnail/:id', auth, async (req, res) => {
     if (!portfolio) {
       return res.status(404).json({ msg: 'Portfolio not found' });
     }
+    const user = await User.findOne({ googleId: req.user.uid });
     if (portfolio.private && portfolio.user.toString() !== req.user.uid) {
-      if (!(req.user.uid in portfolio.allowedUsers)) {
+      if (!(user.id in portfolio.allowedUsers)) {
         return res.status(401).json({ msg: 'User not authorized' });
       }
     }
