@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   List,
@@ -11,12 +13,25 @@ import {
   Card,
   IconButton,
   TextField,
+  Menu,
+  MenuItem,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
 } from '@material-ui/core';
 import Faker from 'faker'; // Making random avatar appear for now
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ChatIcon from '@material-ui/icons/Chat';
 import Helpers from './helpers/Helpers';
+import {
+  getComments,
+  postComment,
+  deleteComment,
+  editComment,
+} from '../../actions/eportfolio';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,14 +51,36 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   button: {
-    position: 'absolute',
+    float: 'right',
     right: '10px',
+    bottom: '0px',
   },
 }));
 
-const Comment = ({ comments, item_id }) => {
+const Comment = ({
+  getComments,
+  postComment,
+  deleteComment,
+  editComment,
+  comments,
+  itemID,
+  currentUserID,
+  owner,
+}) => {
   const classes = useStyles();
   const [openPopup, setOpenPopup] = useState(false);
+  const [textValue, setValue] = useState('');
+  useEffect(() => {
+    if (!Object.keys(comments).includes(itemID)) {
+      getComments(itemID);
+    }
+  }, [comments]);
+
+  const postCommentWrapper = (itemID, textField) => {
+    postComment(itemID, textField);
+    setValue('');
+  };
+  console.log(comments);
 
   return (
     <>
@@ -63,65 +100,61 @@ const Comment = ({ comments, item_id }) => {
         <Card className={classes.root}>
           <Card className={classes.card}>
             <List className={classes.root}>
-              {comments.map((comment) => {
-                console.log('Comment', comment);
-                return (
-                  <React.Fragment key={comment.id}>
-                    <ListItem key={comment.id} alignItems='flex-start'>
-                      <ListItemAvatar>
-                        <Avatar alt='avatar' src={Faker.image.avatar()} />
-                        {/* Will need to add avatars later on */}
-                      </ListItemAvatar>
+              {Object.keys(comments).includes(itemID) ? (
+                comments[itemID].map((comment) => {
+                  return (
+                    <React.Fragment key={comment.id}>
+                      <ListItem key={comment.id} alignItems='flex-start'>
+                        <ListItemAvatar>
+                          <Avatar alt='avatar' src={Faker.image.avatar()} />
+                          {/* Will need to add avatars later on */}
+                        </ListItemAvatar>
 
-                      <ListItemText
-                        primary={<Typography>{comment.name}</Typography>}
-                        secondary={comment.body}
-                      />
-                      <IconButton edge='end' aria-label='delete'>
-                        <MoreVertIcon />
-                        {/* 
-                        A pop up to delete or edit comments
-                        Icon sould only be visible if viewer is commenter
-                        or owner of item. Owner should only be able to
-                        delete commenter can delete or edit.
-                        make appropriate api calls for edit/delete
-                         */}
-                      </IconButton>
-                    </ListItem>
-                    <Divider Light />
-                  </React.Fragment>
-                );
-              })}
+                        <ListItemText
+                          primary={<Typography>{comment.name}</Typography>}
+                          secondary={comment.text}
+                        />
+                        {/* Check if user is owner of comment or item to display commentMenu */}
+                        {currentUserID === owner ||
+                        currentUserID === comment.from ? (
+                          <CommentMenu
+                            comment={comment}
+                            deleteComment={deleteComment}
+                            editComment={editComment}
+                            itemID={itemID}
+                            currentUserID={currentUserID}
+                          />
+                        ) : (
+                          <div />
+                        )}
+                      </ListItem>
+                      <Divider light />
+                    </React.Fragment>
+                  );
+                })
+              ) : (
+                <div />
+              )}
             </List>
           </Card>
           <form className={classes.form} noValidate autoComplete='off'>
-            {/* 
-              When button is pushed
-              Get contents of text field
-              make a post request to api/comments
-              need to figure out how to use x-auth-token with redux
-              if no x-auth, prompt login
-            */}
             <TextField
-              ref='inputComment'
+              value={textValue}
               id='outlined-basic'
               variant='outlined'
               width='100%'
+              onChange={(e) => setValue(e.target.value)}
               InputProps={{
                 endAdornment: (
                   <IconButton
                     edge='end'
                     aria-label='submit'
                     onClick={() => {
-                      fetch(`/api/comment/${item_id}`, {
-                        method: 'POST',
-                        headers: {
-                          'Content-Type': 'application/json',
-                        },
-                        body: {
-                          text: this.refs.inputComment.getValue(),
-                        },
-                      });
+                      {
+                        /* If currentUserID == null direct to login */
+                      }
+                      postCommentWrapper(itemID, textValue);
+                      // update the comment box so new comment is shown
                     }}
                   >
                     <ArrowUpwardIcon />
@@ -136,4 +169,112 @@ const Comment = ({ comments, item_id }) => {
   );
 };
 
-export default Comment;
+function CommentMenu(props) {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleEditOpen = () => {
+    setOpen(true);
+    setAnchorEl(null);
+  };
+
+  const handleEditClose = () => {
+    setOpen(false);
+  };
+  const [commentValue, setCommentValue] = useState(props.comment.text);
+  return (
+    <div>
+      <IconButton edge='end' aria-label='more' onClick={handleClick}>
+        <MoreVertIcon />
+      </IconButton>
+      <Menu
+        id='simple-menu'
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        {props.currentUserID === props.comment.from ? (
+          <div>
+            <MenuItem onClick={handleEditOpen}>Edit</MenuItem>
+            <Dialog
+              open={open}
+              onClose={handleClose}
+              aria-labelledby='form-dialog-title'
+              maxWidth='sm'
+              fullWidth
+            >
+              <DialogTitle id='form-dialog-title'>
+                Edit Your Comment
+              </DialogTitle>
+              <DialogContent>
+                <TextField
+                  value={commentValue}
+                  onChange={(e) => setCommentValue(e.target.value)}
+                  id='comment'
+                  fullWidth
+                />
+              </DialogContent>
+              <DialogActions>
+                <Button
+                  onClick={() => {
+                    editComment(
+                      props.editComment(props.comment._id, commentValue)
+                    );
+                    setOpen(false);
+                  }}
+                  color='primary'
+                >
+                  Edit Comment
+                </Button>
+                <Button onClick={handleEditClose} color='primary'>
+                  Cancel
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </div>
+        ) : (
+          <div />
+        )}
+
+        <MenuItem
+          onClick={() => {
+            props.deleteComment(props.comment._id);
+            setAnchorEl(null);
+          }}
+        >
+          Delete
+        </MenuItem>
+      </Menu>
+    </div>
+  );
+}
+
+Comment.propTypes = {
+  getComments: PropTypes.func.isRequired,
+  comments: PropTypes.object.isRequired,
+  deleteComment: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = (state, props) => ({
+  comments: state.eportfolio.comments,
+  currentUserID: state.auth.user._id,
+  itemID: props.itemID,
+  owner: props.owner,
+});
+
+export default connect(mapStateToProps, {
+  getComments,
+  postComment,
+  deleteComment,
+  editComment,
+})(Comment);

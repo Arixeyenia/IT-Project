@@ -1,10 +1,20 @@
 import React from 'react';
 import { Box, Typography } from '@material-ui/core';
+import logo from '../../images/Quaranteam.png'
+import { makeStyles } from '@material-ui/core/styles';
 
+const useStyles = makeStyles((theme) => ({
+  logo: {
+    margin: 0,
+    width: '25%',
+    padding: '10px'
+  }
+}));
 function Footer() {
+  const classes = useStyles();
   return (
     <Box className='footer gray2 fontg6'>
-      <Box><Typography variant='h3'>Quaranteam</Typography></Box>
+      <Box><img src={logo} className={classes.logo} alt="Quaranteam"></img></Box>
       <Box className='content half'>
         <Box className='left'>
           <Typography variant='body1'>Proudly made by Quaranteam</Typography>

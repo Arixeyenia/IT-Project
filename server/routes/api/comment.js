@@ -31,7 +31,7 @@ router.post(
     try {
       // Pull out item and user
       const item = await Item.findById(req.params.item_id);
-      const user = await User.findById(req.user.uid).select('-password');
+      const user = await User.findById(req.user.id).select('-password');
 
       // Make sure item exists
       if (!item) {
@@ -39,7 +39,7 @@ router.post(
       }
 
       const newComment = new Comment({
-        from: req.user.uid,
+        from: req.user.id,
         name: user.name,
         item: req.params.item_id,
         text: req.body.text,
@@ -91,7 +91,7 @@ router.get('/:item_id', async (req, res) => {
 // @route   DELETE api/comment/edit/:comment_id
 // @desc    Remove a comment (commenter & receiver)
 // @access  Private
-router.delete('/edit/:comment_id', auth, async (req, res) => {
+router.delete('/:comment_id', auth, async (req, res) => {
   try {
     // find the comment, item, portfolio
     const comment = await Comment.findById(req.params.comment_id);
@@ -104,17 +104,25 @@ router.delete('/edit/:comment_id', auth, async (req, res) => {
     }
 
     // make sure user is either comment sender or receiver
-    if (
-      comment.from.toString() !== req.user.uid ||
-      portfolio.user.toString() !== req.user.uid
-    ) {
-      return res.status(401).json({ msg: 'User not authorized' });
+    if (comment.from.toString() !== req.user.id) {
+      if (portfolio.user.toString() !== req.user.id) {
+        return res.status(401).json({ msg: 'User not authorized' });
+      }
     }
     // remove comment
     await comment.remove();
 
+    // find all comments with item_id
+    const comments = await Comment.find()
+      .where('item')
+      .in(item.id.toString())
+      .sort({ date: -1 })
+      .exec();
+
+    console.log(comments);
+
     // return commend deleted message
-    res.json({ msg: 'Comment removed' });
+    res.json(comments);
   } catch (err) {
     console.error(err.message);
     if (err.kind === 'ObjectId') {
@@ -145,7 +153,7 @@ router.post(
       }
 
       // make sure user is comment sender
-      if (comment.from.toString() !== req.user.uid) {
+      if (comment.from.toString() !== req.user.id) {
         return res.status(401).json({ msg: 'User not authorized' });
       }
       // copy comment info, update text

@@ -121,12 +121,12 @@ const theme = createMuiTheme({
     fontFamily: 'Roboto, SourceSansPro, Helvetica, Arial',
     h1: {
       fontFamily: 'Roboto',
-      fontWeight: 700,
+      fontWeight: 500,
       fontSize: '3rem',
     },
     h2: {
       fontFamily: 'Roboto',
-      fontWeight: 500,
+      fontWeight: 400,
       fontSize: '2.3rem',
     },
     h3: {
@@ -168,6 +168,9 @@ const theme = createMuiTheme({
         '@font-face': [
           robotoBold,
           robotoMedium,
+          robotoRegular,
+          robotoLight,
+          robotoExtraLight,
           sourceSansProRegular,
           sourceSansProLight,
           sourceSansProExtraLight,

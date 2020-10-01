@@ -1,19 +1,21 @@
-import React, { useEffect, Fragment } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { Typography, Grid, Divider, Box, List, ListItem, Card, CardContent, CardHeader, CardMedia, Icon, CardActions, Button } from '@material-ui/core';
+import { Typography, Grid, Box, Card, CardContent, CardHeader, CardMedia, CardActions, Button } from '@material-ui/core';
 import {getPortfolio, getPage} from '../../actions/eportfolio';
 import { Link, useParams, useHistory } from 'react-router-dom';
 import store from '../../store'
+import Comment from '../comments/Comment';
 
 const useStyles = makeStyles((theme) => ({
   cardRoot: {
     minWidth: 275,
+    boxShadow: 'none',
+    borderRadius: 0,
+    backgroundColor: 'inherit',
   },
   pos: {
-    marginTop: '2em',
-    marginBottom: 12,
   },
   media: {
     padding:'20vh'
@@ -29,58 +31,63 @@ const View = ({getPortfolio, portfolio, getPage, page}) => {
   const params = useParams();
   const history = useHistory();
   useEffect(() => {
-    if (Object.keys(portfolio).length === 0){
+    if (Object.keys(portfolio).length === 0) {
       getPortfolio(params.id);
     }
-    if (Object.keys(page).length === 0){
+    if (Object.keys(page).length === 0) {
       getPage(params.id, params.pagename);
     }
   }, [getPortfolio, portfolio, getPage, page]);
+
   const items = (Object.keys(page).length !== 0) ? page.items : [];
   const rowLengths = {};
+  const groupedItems = [];
+
   items.forEach(element => {
     if ([element.row] in Object.keys(rowLengths)){
-      rowLengths[element.row]++; 
+      rowLengths[element.row]++;
+      groupedItems[element.row].push(element);
     }
     else{
       rowLengths[element.row] = 1;
+      groupedItems[element.row] = [element];
     }
   });
-    
+
   return (
-    <Fragment>
+    <Box className="content">
       <Typography variant="h1">{portfolio.name}</Typography>
-      <Grid container spacing={3}>
-      {items.map((object) => card(classes, rowLengths, params.id, object, history))}  
-      </Grid>
-    </Fragment>
+      {groupedItems.map((item)=>
+      <Grid container spacing={3} className="view-grid-container">
+      {item.map((object) => card(classes, rowLengths, params.id, object, history))}  
+      </Grid>)}
+    </Box>
   );
 }
 
-const card = (classes, rowLengths, portfolioID, object, history) => {
+const card = (classes, rowLengths, portfolioID, object, history, owner) => {
   return (
-    <Grid item xs={12/rowLengths[object.row]}>
-    <Card className={classes.cardRoot} variant="outlined">
-      {object.mediaType === "image" && <CardMedia
-          className={classes.media}
-          image={object.mediaLink}
+    <Grid item xs={12/rowLengths[object.row]} className="view-grid-item">
+      <Card className={classes.cardRoot}>
+        {object.mediaType === "image" && <CardMedia
+            className={classes.media}
+            image={object.mediaLink}
+          />}
+        {object.title && <CardHeader
+          classes={{title:classes.titleText}}
+          title={object.title}
+          subheader={object.subtitle}
         />}
-       <CardHeader
-        classes={{title:classes.titleText}}
-        title={object.title}
-      />
-      <CardContent>
-        <Typography className={classes.pos} color="textSecondary">
-            {object.subtitle}
-        </Typography>
-        <Typography variant="body2" component="p">
-          {object.paragraph}
-        </Typography>
-      </CardContent>
-      <CardActions>
-           <Button size="small" onClick={()=> {if(!/^(f|ht)tps?:\/\//i.test(object.linkAddress)){ history.push('/view/' + portfolioID + '/' + object.linkAddress);}else{ window.location.href = object.linkAddress;}window.location.reload(false);}}>{object.linkText}</Button>
-      </CardActions>
-    </Card>
+        {object.paragraph&& <CardContent className="view-card-content">
+          {object.paragraph && <Typography variant="body2" component="p">
+            {object.paragraph}
+          </Typography>}
+        </CardContent>}
+        {object.linkAddress && <CardActions className="view-card-actions">
+            <Button size="small" onClick={()=> {if(!/^(f|ht)tps?:\/\//i.test(object.linkAddress)){ history.push('/view/' + portfolioID + '/' + object.linkAddress);}else{ window.location.href = object.linkAddress;}window.location.reload(false);}}>{object.linkText}</Button>
+        </CardActions>}
+        <Comment itemID={object._id} owner={owner} />
+      </Card>
     </Grid>
   )
 }
