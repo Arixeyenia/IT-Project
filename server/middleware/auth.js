@@ -9,10 +9,8 @@ admin.initializeApp({
 
 //export auth
 module.exports = function (req, res, next) {
-  // Get token from header
+  // Get token from header(google id token)
   const token = req.header('x-auth-token');
-  // console.log('here is google id token____________________________________');
-  // console.log(token);
 
   // Check if no token
   if (!token) {

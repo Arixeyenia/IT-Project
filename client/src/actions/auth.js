@@ -6,6 +6,7 @@ import {
   SIGN_IN,
   SIGN_OUT,
 } from './types';
+import setAuthToken from '../utils/setAuthToken';
 
 // Load User
 export const loadUser = () => async (dispatch) => {
@@ -43,4 +44,16 @@ export const signIn = () => async (dispatch) => {
 };
 
 //google sign out
-export const signOut = () => ({ type: SIGN_OUT });
+export const signOut = () => async (dispatch) => {
+  try {
+    //clear token
+    setAuthToken();
+    dispatch({
+      type: SIGN_OUT,
+    });
+  } catch (err) {
+    dispatch({
+      type: AUTH_ERROR,
+    });
+  }
+};

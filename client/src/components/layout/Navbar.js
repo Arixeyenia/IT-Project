@@ -15,6 +15,7 @@ var provider = new firebase.auth.GoogleAuthProvider();
 provider.addScope('profile');
 provider.addScope('email');
 
+//navbar includes home page, sign in with google and dashboard
 const Navbar = ({
   auth: { isAuthenticated, loading, user },
   signIn,
@@ -22,10 +23,12 @@ const Navbar = ({
 }) => {
   //function for google sign in
   const GSignIn = () => {
+    //sign in google with pop up window
     firebase
       .auth()
       .signInWithPopup(provider)
       .then(function (result) {
+        //get idToken from google server
         firebase
           .auth()
           .currentUser.getIdToken(true)
@@ -40,6 +43,7 @@ const Navbar = ({
       });
   };
 
+  //navbar for users signed in
   const authLinks = (
     <nav className='navbar bg-dark'>
       <h1>
@@ -67,6 +71,7 @@ const Navbar = ({
     </nav>
   );
 
+  //navbar for guests not signed in yet
   const guestLinks = (
     <nav className='navbar bg-dark'>
       <h1>
