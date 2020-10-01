@@ -11,6 +11,8 @@ admin.initializeApp({
 module.exports = function (req, res, next) {
   // Get token from header
   const token = req.header('x-auth-token');
+  // console.log('here is google id token____________________________________');
+  // console.log(token);
 
   // Check if no token
   if (!token) {
@@ -24,8 +26,6 @@ module.exports = function (req, res, next) {
     .then(function (decodedToken) {
       //now req.user has {name: 'xxx', uid:'xxx', picture:'httpxxxxx', email:'xxx', iss:'xxx'...........}
       req.user = decodedToken;
-      // console.log('req.user.uid_________________________________');
-      // console.log(req.user.uid);
       next();
     })
     .catch(function (error) {
