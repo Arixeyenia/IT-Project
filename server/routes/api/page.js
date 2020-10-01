@@ -198,11 +198,12 @@ router.get('/:id/:url?', auth, async (req, res) => {
     const portfolio = await Portfolio.findById(req.params.id);
     // check if portfolio exists
     if (!portfolio) return res.status(404).json({ msg: 'Portfolio not found' });
+    const user = await User.findOne({ googleId: req.user.uid });
     // check if user is authorized
     if (
       portfolio.private &&
       portfolio.user.toString() !== req.user.uid &&
-      !(req.user.uid in portfolio.allowedUsers)
+      !(user.id in portfolio.allowedUsers)
     ) {
       return res.status(401).json({ msg: 'User not authorized' });
     }
