@@ -22,10 +22,10 @@ module.exports = function (req, res, next) {
     .auth()
     .verifyIdToken(token)
     .then(function (decodedToken) {
-      //now req.user has {name: 'xxx', picture:'httpxxxxx', email:'xxx', iss:'xxx', uid:'xxx'...........}
+      //now req.user has {name: 'xxx', uid:'xxx', picture:'httpxxxxx', email:'xxx', iss:'xxx'...........}
       req.user = decodedToken;
-      console.log('req.user.uid_________________________________');
-      console.log(req.user.uid);
+      // console.log('req.user.uid_________________________________');
+      // console.log(req.user.uid);
       next();
     })
     .catch(function (error) {
