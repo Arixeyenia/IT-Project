@@ -149,38 +149,6 @@
   margin-left: 10px;
 }
 
-/** Styles for create portfolio page */
-.portfolio-name-input {
-  padding-bottom: 20px !important;
-  width: 100%;
-  padding-left: 10px !important;
-}
-
-.portfolio-name-input *{
-  padding-left: 10px !important;
-}
-
-/** Styles for view page */
-.view-card-actions {
-  padding-left: 20px !important;
-}
-
-.view-grid-item {
-  display: grid;
-}
-
-.view-grid-item .MuiCardHeader-root {
-  padding-bottom: 0px !important;
-}
-
-.view-grid-item .MuiPaper-root {
-  padding-bottom: 20px;
-}
-
-.view-card-content {
-  padding-bottom: 0px !important;
-}
-
 /** Styles for img tag */
 img {
   width: 80%;
@@ -506,24 +474,6 @@ button {
 
 .navbar .welcome span {
   margin-right: 0.6rem;
-}
-
-/* Landing Page */
-.landing {
-  position: relative;
-  height: 100vh;
-}
-
-.landing-inner {
-  color: #fff;
-  height: 100%;
-  width: 80%;
-  margin: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
 }
 
 /* Profile Page */
