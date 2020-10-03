@@ -7,11 +7,13 @@
 - [Frontend Documentation](#frontend-documentation)  
   - [Setup](#setup)  
   - [Technologies](#technologies)  
+  - [Dependencies](#dependencies) 
   - [Frontend Structure](#frontend-structure)  
   - [Frontend Routes](#frontend-routes)  
 - [Backend Documentation](#backend-documentation)  
   - [Setup](#setup)  
-  - [Technologies](#technologies)  
+  - [Technologies](#technologies) 
+  - [Dependencies](#dependencies)
   - [Backend Structure](#backend-structure)  
   - [Backend API Documentation](#backend-api-documentation) 
   - [Backend Calls](#backend-calls) 
@@ -115,6 +117,28 @@ TBA.....
 
 ## Technologies  
 Express
+
+## Dependencies
+```json
+ "dependencies": {
+    "axios": "^0.19.2",
+    "bcryptjs": "^2.4.3",
+    "client": "file:client",
+    "config": "^3.3.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-validator": "^6.6.1",
+    "firebase-admin": "^9.2.0",
+    "gravatar": "^1.8.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.10.3",
+    "normalize-url": "^5.0.0",
+    "puppeteer": "^5.3.0",
+    "react": "^16.13.1",
+    "react-router-dom": "^5.2.0",
+    "tough-cookie": "^4.0.0"
+  }
+  ```
 ## Backend Structure  
 <p align="left">	
   <img src="client/src/images/BackendStructure.PNG"  width="300" >	
