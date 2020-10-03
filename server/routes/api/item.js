@@ -30,10 +30,13 @@ router.post('/', auth, async (req, res) => {
     // Check portfolio exists
     if (!portfolio) return res.status(404).json({ msg: 'Portfolio not found' });
     // Check user permission
-    if (portfolio.user.toString() !== req.user.id) return res.status(401).json({ msg: 'User not authorized' });
+    if (portfolio.user.toString() !== req.user.uid)
+      return res.status(401).json({ msg: 'User not authorized' });
     // Check page exists and TODO: row/column make sense
-    const page = portfolio.pages.filter(page => page.url === encodeURI(req.body.pagename));
-    if (page.length === 0) res.status(404).json({msg: 'Page not found'});
+    const page = portfolio.pages.filter(
+      (page) => page.url === encodeURI(req.body.pagename)
+    );
+    if (page.length === 0) res.status(404).json({ msg: 'Page not found' });
     const newItem = new Item({
       portfolio: portfolio.id,
       pageid: page[0].id,
@@ -49,9 +52,9 @@ router.post('/', auth, async (req, res) => {
       column: req.body.column,
     });
     const item = await newItem.save();
-    const update = {$push: { "pages.$[elem].items": item}};
-    const options =  {new : true, arrayFilters : [{ 'elem._id': page[0]._id }]};
-    await Portfolio.findByIdAndUpdate( req.body.portfolio, update, options);
+    const update = { $push: { 'pages.$[elem].items': item } };
+    const options = { new: true, arrayFilters: [{ 'elem._id': page[0]._id }] };
+    await Portfolio.findByIdAndUpdate(req.body.portfolio, update, options);
     res.json(item);
   } catch (err) {
     console.error(err.message);
@@ -73,20 +76,28 @@ router.put('/', auth, async (req, res) => {
     // Check portfolio exists
     if (!portfolio) return res.status(404).json({ msg: 'Portfolio not found' });
     // Check user permission
-    if (portfolio.user.toString() !== req.user.id) return res.status(401).json({ msg: 'User not authorized' });
+    if (portfolio.user.toString() !== req.user.uid)
+      return res.status(401).json({ msg: 'User not authorized' });
     updates = {};
     // TODO validate row and column
-    if (req.body.private!==null) updates.private = req.body.private;
-    if (req.body.title!==null) updates.title = req.body.title;
-    if (req.body.subtitle!==null) updates.subtitle = req.body.subtitle;
-    if (req.body.paragraph!==null) updates.paragraph = req.body.paragraph;
-    if (req.body.mediaLink!==null) updates.mediaLink = req.body.mediaLink;
-    if (req.body.mediaType!==null) updates.mediaType = req.body.mediaType;
-    if (req.body.linkText!==null) updates.linkText = req.body.linkText;
-    if (req.body.linkAddress!==null) updates.linkAddress = req.body.linkAddress;
-    if (req.body.row!==null) updates.row = req.body.row;
-    if (req.body.column!==null) updates.column = req.body.column;
-    res.json(await Item.findByIdAndUpdate(req.body.item, {$set: updates}, {new:true}));
+    if (req.body.private !== null) updates.private = req.body.private;
+    if (req.body.title !== null) updates.title = req.body.title;
+    if (req.body.subtitle !== null) updates.subtitle = req.body.subtitle;
+    if (req.body.paragraph !== null) updates.paragraph = req.body.paragraph;
+    if (req.body.mediaLink !== null) updates.mediaLink = req.body.mediaLink;
+    if (req.body.mediaType !== null) updates.mediaType = req.body.mediaType;
+    if (req.body.linkText !== null) updates.linkText = req.body.linkText;
+    if (req.body.linkAddress !== null)
+      updates.linkAddress = req.body.linkAddress;
+    if (req.body.row !== null) updates.row = req.body.row;
+    if (req.body.column !== null) updates.column = req.body.column;
+    res.json(
+      await Item.findByIdAndUpdate(
+        req.body.item,
+        { $set: updates },
+        { new: true }
+      )
+    );
   } catch (err) {
     console.error(err.message);
     if (err.kind === 'ObjectId') {
@@ -107,13 +118,18 @@ router.delete('/:id', auth, async (req, res) => {
     // Check portfolio exists
     if (!portfolio) return res.status(404).json({ msg: 'Portfolio not found' });
     // Check user permission
-    if (portfolio.user.toString() !== req.user.id) return res.status(401).json({ msg: 'User not authorized' });
+    if (portfolio.user.toString() !== req.user.uid)
+      return res.status(401).json({ msg: 'User not authorized' });
     await Item.findByIdAndDelete(req.params.item);
     // Delete item from portfolio
-    const update = {$pull: { "pages.$[elem].items": { _id : item}}};
-    const options =  {new : true, arrayFilters : [{ 'elem._id': item.pageid }]};
-    const newPortfolio = await Portfolio.findByIdAndUpdate(portfolio._id, update, options);
-    res.json({'_id':req.params.id});
+    const update = { $pull: { 'pages.$[elem].items': { _id: item } } };
+    const options = { new: true, arrayFilters: [{ 'elem._id': item.pageid }] };
+    const newPortfolio = await Portfolio.findByIdAndUpdate(
+      portfolio._id,
+      update,
+      options
+    );
+    res.json({ _id: req.params.id });
   } catch (err) {
     console.error(err.message);
     if (err.kind === 'ObjectId') {
@@ -127,9 +143,9 @@ router.delete('/:id', auth, async (req, res) => {
 // @desc    Get a single item by its id TEST ROUTE
 // @access  Private
 router.get('/:id', auth, async (req, res) => {
-    // retrieve portfolio
-    const item = await Item.findById(req.params.id);
-    res.json(item);
+  // retrieve portfolio
+  const item = await Item.findById(req.params.id);
+  res.json(item);
 });
 
 module.exports = router;

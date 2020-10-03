@@ -31,15 +31,14 @@ router.post(
     try {
       // Pull out item and user
       const item = await Item.findById(req.params.item_id);
-      const user = await User.findById(req.user.id).select('-password');
-
+      const user = await User.findOne({ googleId: req.user.uid });
       // Make sure item exists
       if (!item) {
         return res.status(404).json({ msg: 'Item does not exist' });
       }
 
       const newComment = new Comment({
-        from: req.user.id,
+        from: user.id,
         name: user.name,
         item: req.params.item_id,
         text: req.body.text,
@@ -103,9 +102,11 @@ router.delete('/:comment_id', auth, async (req, res) => {
       return res.status(404).json({ msg: 'Comment not found' });
     }
 
+    const user = await User.findOne({ googleId: req.user.uid });
+
     // make sure user is either comment sender or receiver
-    if (comment.from.toString() !== req.user.id) {
-      if (portfolio.user.toString() !== req.user.id) {
+    if (comment.from.toString() !== user.id) {
+      if (portfolio.user.toString() !== req.user.uid) {
         return res.status(401).json({ msg: 'User not authorized' });
       }
     }
@@ -152,8 +153,10 @@ router.post(
         return res.status(404).json({ msg: 'Comment not found' });
       }
 
+      const user = await User.findOne({ googleId: req.user.uid });
+
       // make sure user is comment sender
-      if (comment.from.toString() !== req.user.id) {
+      if (comment.from.toString() !== user.id) {
         return res.status(401).json({ msg: 'User not authorized' });
       }
       // copy comment info, update text

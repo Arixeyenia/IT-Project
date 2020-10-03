@@ -34,7 +34,6 @@ router.post(
     }
 
     try {
-      const user = await User.findById(req.user.id).select('-password');
       const portfolio = await Portfolio.findById(req.params.id);
 
       // Check portfolio exists
@@ -43,7 +42,7 @@ router.post(
       }
 
       // Check user
-      if (portfolio.user.toString() !== req.user.id) {
+      if (portfolio.user.toString() !== req.user.uid) {
         return res.status(401).json({ msg: 'User not authorized' });
       }
       const newBlog = {
@@ -86,7 +85,7 @@ router.delete('/:id/:blog_id', auth, async (req, res) => {
     }
 
     // Check user
-    if (portfolio.user.toString() !== req.user.id) {
+    if (portfolio.user.toString() !== req.user.uid) {
       return res.status(401).json({ msg: 'User not authorized' });
     }
 
@@ -190,7 +189,7 @@ router.post('/:id/:blog_id', auth, async (req, res) => {
     }
 
     // Check user
-    if (portfolio.user.toString() !== req.user.id) {
+    if (portfolio.user.toString() !== req.user.uid) {
       return res.status(401).json({ msg: 'User not authorized' });
     }
 
