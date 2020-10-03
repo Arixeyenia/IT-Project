@@ -61,19 +61,44 @@ to be continue...
 
   
 ## Technologies  
-React & Redux  
+React & Redux   
+  
+## Dependencies  
+```javascript
+"dependencies": {
+    "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.9.1",
+    "axios": "^0.20.0",
+    "faker": "^5.1.0",
+    "firebase": "^7.21.1",
+    "firebaseui": "^4.6.1",
+    "moment": "^2.24.0",
+    "react": "^16.13.0",
+    "react-dom": "^16.13.0",
+    "react-firebaseui": "^4.1.0",
+    "react-hook-form": "^6.8.6",
+    "react-moment": "^0.9.7",
+    "react-redux": "^7.2.0",
+    "react-redux-firebase": "^3.7.0",
+    "react-router-dom": "^5.1.2",
+    "react-scripts": "^3.4.3",
+    "redux": "^4.0.5",
+    "redux-devtools-extension": "^2.13.8",
+    "redux-thunk": "^2.3.0",
+    "uuid": "^7.0.2"
+  }
+  ```
 ## Frontend Structure  
 <p align="left">	
   <img src="client/src/images/FrontendStructure.PNG"  width="300" >	
 </p>  
 
 ## Frontend Routes
-http://localhost:3000/home  
-http://localhost:3000/register  
-http://localhost:3000/login   
+http://localhost:3000/home   
 http://localhost:3000/dashboard   
-http://localhost:3000/profile   
-  
+http://localhost:3000/eportfolio   
+http://localhost:3000/eportfolio/page
+TBA.....
   
   
    
