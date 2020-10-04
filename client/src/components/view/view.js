@@ -5,8 +5,9 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { Typography, Grid, Box, Card, CardContent, CardHeader, CardMedia, CardActions, Button } from '@material-ui/core';
 import {getPortfolio, getPage} from '../../actions/eportfolio';
 import { Link, useParams, useHistory } from 'react-router-dom';
-import store from '../../store'
+import store from '../../store';
 import Comment from '../comments/Comment';
+import { useThemeStyle } from '../../styles/themes';
 
 const useStyles = makeStyles((theme) => ({
   cardRoot: {
@@ -36,12 +37,16 @@ const useStyles = makeStyles((theme) => ({
   viewCardContent: {
     paddingBottom: '0px !important',
   },
-
+  content: {
+    paddingTop: '20px !important',
+    paddingBottom: '20px !important',
+  }
 }));
 
 const View = ({getPortfolio, portfolio, getPage, page}) => {
   const classes = useStyles();
   const theme = useTheme();
+  const themeStyle = useThemeStyle();
   const params = useParams();
   const history = useHistory();
 
@@ -71,11 +76,11 @@ const View = ({getPortfolio, portfolio, getPage, page}) => {
 
   return (
     <Fragment>
-      <Box className='content'>
+      <Box className={`${themeStyle.content} ${classes.content}`}>
         <Typography variant='h1'>{portfolio.name}</Typography>
       </Box>
       {groupedItems.map((item)=>
-      <Grid container spacing={3} className='content'>
+      <Grid container spacing={3} className={`${themeStyle.content} ${classes.content}`}>
       {item.map((object) => card(classes, rowLengths, params.id, object, history))}  
       </Grid>)}
     </Fragment>

@@ -40,18 +40,18 @@ export default function IndividualMenu(props) {
       var selection = window.getSelection();
       selection.removeAllRanges();
       selection.addRange(range);
-      document.execCommand("copy");
+      document.execCommand('copy');
     }
   
     return(
       <Box>
         <CardHeader className={classes.portfolioCardHeader} action={
-          <IconButton className={classes.buttomBaseRoot} aria-label="settings" aria-controls={"menu-"+props.object.portfolio._id} onClick={handleClick}>
+          <IconButton className={classes.buttomBaseRoot} aria-label='settings' aria-controls={'menu-'+props.object.portfolio._id} onClick={handleClick}>
             <MoreVertIcon />
           </IconButton>
         }>
         </CardHeader>
-        <Menu id={"menu-"+props.i}
+        <Menu id={'menu-'+props.i}
                 anchorEl={anchorEl}
                 keepMounted
                 open={Boolean(anchorEl)}
@@ -65,15 +65,15 @@ export default function IndividualMenu(props) {
             <MenuItem onClick={() => {props.deletePortfolio(props.object.portfolio._id)}}>Delete</MenuItem>
             <MenuItem onClick={(event)=>openPopover(event, props.object.portfolio._id)}>Get link</MenuItem>
         </Menu>
-        <Popover id={"popover-"+props.i}
+        <Popover id={'popover-'+props.i}
                 anchorEl={popoverAnchor}
                 onClose={popoverClose}
                 open={Boolean(popoverAnchor)}
                 classes={{
                   paper: classes.copyLinkPaperRoot
                 }}>
-          <textarea disabled id={"text-"+props.i} value={url} className={`${classes.textarea} ${classes.popoverContents}`}></textarea>
-          <Button className={classes.popoverContents} variant="contained" color="primary" onClick={() => {copyClipboardLink("text-"+props.i)}}>Copy to clipboard</Button>
+          <textarea disabled id={'text-'+props.i} value={url} className={`${classes.textarea} ${classes.popoverContents}`}></textarea>
+          <Button className={classes.popoverContents} variant='contained' color='primary' onClick={() => {copyClipboardLink('text-'+props.i)}}>Copy to clipboard</Button>
         </Popover>
       </Box>
     );

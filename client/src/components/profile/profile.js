@@ -7,14 +7,17 @@ import Spinner from '../layout/Spinner';
 import ProfileTop from './ProfileTop';
 import ProfileAbout from './ProfileAbout';
 import { getProfileById } from '../../actions/profile';
+import { useThemeStyle } from '../../styles/themes';
 
 const Profile = ({ getProfileById, profile: { profile }, auth, match }) => {
+  const theme = useThemeStyle();
+
   useEffect(() => {
     getProfileById(match.params.id);
   }, [getProfileById, match.params.id]);
 
   return (
-    <Box className="content">
+    <Box className={theme.content}>
       {profile === null ? (
         <Spinner />
       ) : (

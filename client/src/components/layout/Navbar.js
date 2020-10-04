@@ -29,7 +29,7 @@ const Navbar = ({
   const authLinks = (
     <nav className='navbar bg-dark'>
       <Link to='/'>
-        <img src={logo} alt="Quaranteam" className={classes.logo}></img>
+        <img src={logo} alt='Quaranteam' className={classes.logo}></img>
       </Link>
       <ul>
         <li>

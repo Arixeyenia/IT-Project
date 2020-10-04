@@ -2,9 +2,10 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Typography, Box, Button, TextField } from '@material-ui/core';
-import { creatingPortfolioName, resetCreatingPortfolioName } from '../../actions/eportfolio'
+import { creatingPortfolioName, resetCreatingPortfolioName } from '../../actions/eportfolio';
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
+import { useThemeStyle } from '../../styles/themes';
 
 const useStyles = makeStyles((theme) => ({
   portfolioNameInput: {
@@ -19,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
 
 const CreateEPortfolio = ({creatingPortfolioName, resetCreatingPortfolioName}) => {
   const classes = useStyles();
+  const theme = useThemeStyle();
   
   const [name, setName] = React.useState('');
   const [label, setLabel] = React.useState('Name of Portfolio');
@@ -41,7 +43,7 @@ const CreateEPortfolio = ({creatingPortfolioName, resetCreatingPortfolioName}) =
   }
   
   return (
-    <Box className='content'>
+    <Box className={theme.content}>
       <Typography variant='h1'>Enter your portfolio name here</Typography>
       <form>
         <TextField error={error} 

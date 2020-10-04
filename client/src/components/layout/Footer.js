@@ -1,7 +1,8 @@
 import React from 'react';
 import { Box, Typography } from '@material-ui/core';
-import logo from '../../images/Quaranteam.png'
+import logo from '../../images/Quaranteam.png';
 import { makeStyles } from '@material-ui/core/styles';
+import { useThemeStyle } from '../../styles/themes';
 
 const useStyles = makeStyles((theme) => ({
   logo: {
@@ -12,11 +13,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 function Footer() {
   const classes = useStyles();
+  const theme = useThemeStyle();
   return (
-    <Box className='footer gray2 fontg6'>
-      <Box><img src={logo} className={classes.logo} alt="Quaranteam"></img></Box>
-      <Box className='content half'>
-        <Box className='left'>
+    <Box className={`${theme.content} ${theme.gray2} ${theme.fontg6}`}>
+      <Box><img src={logo} className={classes.logo} alt='Quaranteam'></img></Box>
+      <Box className={theme.half}>
+        <Box className={theme.leftright}>
           <Typography variant='body1'>Proudly made by Quaranteam</Typography>
           <Typography variant='body1'>
             COMP30022 IT Project 2020 Semester 2
@@ -33,7 +35,7 @@ function Footer() {
             Winnie Chen
           </Typography>
         </Box>
-        <Box className='right'>
+        <Box className={theme.leftright}>
           <Typography variant='body1'>Our Contacts</Typography>
           <br />
           <Typography variant='body1'>

@@ -4,13 +4,14 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { login } from '../../actions/auth';
 import { Box } from '@material-ui/core';
+import { useThemeStyle } from '../../styles/themes';
 
 const Login = ({ login, isAuthenticated }) => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
-
+  const theme = useThemeStyle();
   const { email, password } = formData;
 
   const onChange = (e) =>
@@ -26,7 +27,7 @@ const Login = ({ login, isAuthenticated }) => {
   }
 
   return (
-    <Box className="content">
+    <Box className={theme.content}>
       <h1 className='large text-primary'>Sign In</h1>
       <p className='lead'>
         <i className='fas fa-user' /> Sign Into Your Account

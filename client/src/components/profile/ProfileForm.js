@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createProfile, getCurrentProfile } from '../../actions/profile';
 import { Box } from '@material-ui/core';
+import { useThemeStyle, useThemeStyles } from '../../styles/themes';
 
 const initialState = {
   company: '',
@@ -23,6 +24,7 @@ const ProfileForm = ({
   const [formData, setFormData] = useState(initialState);
 
   // const [displaySocialInputs, toggleSocialInputs] = useState(false);
+  const theme = useThemeStyle();
 
   useEffect(() => {
     if (!profile) getCurrentProfile();
@@ -48,7 +50,7 @@ const ProfileForm = ({
   };
 
   return (
-    <Box className="content">
+    <Box className={theme.content}>
       <h1 className='large text-primary'>Edit Your Profile</h1>
       <small>* = required field</small>
       <form className='form' onSubmit={onSubmit}>
