@@ -7,14 +7,15 @@
 - [Frontend Documentation](#frontend-documentation)  
   - [Setup](#setup)  
   - [Technologies](#technologies)  
+  - [Dependencies](#dependencies) 
   - [Frontend Structure](#frontend-structure)  
   - [Frontend Routes](#frontend-routes)  
 - [Backend Documentation](#backend-documentation)  
   - [Setup](#setup)  
-  - [Technologies](#technologies)  
+  - [Technologies](#technologies) 
+  - [Dependencies](#dependencies)
   - [Backend Structure](#backend-structure)  
   - [Backend API Documentation](#backend-api-documentation) 
-  - [Backend Calls](#backend-calls) 
   
                
 # User Documentation  
@@ -61,19 +62,44 @@ to be continue...
 
   
 ## Technologies  
-React & Redux  
+React & Redux   
+  
+## Dependencies  
+```javascript
+"dependencies": {
+    "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.9.1",
+    "axios": "^0.20.0",
+    "faker": "^5.1.0",
+    "firebase": "^7.21.1",
+    "firebaseui": "^4.6.1",
+    "moment": "^2.24.0",
+    "react": "^16.13.0",
+    "react-dom": "^16.13.0",
+    "react-firebaseui": "^4.1.0",
+    "react-hook-form": "^6.8.6",
+    "react-moment": "^0.9.7",
+    "react-redux": "^7.2.0",
+    "react-redux-firebase": "^3.7.0",
+    "react-router-dom": "^5.1.2",
+    "react-scripts": "^3.4.3",
+    "redux": "^4.0.5",
+    "redux-devtools-extension": "^2.13.8",
+    "redux-thunk": "^2.3.0",
+    "uuid": "^7.0.2"
+  }
+  ```
 ## Frontend Structure  
 <p align="left">	
   <img src="client/src/images/FrontendStructure.PNG"  width="300" >	
 </p>  
 
 ## Frontend Routes
-http://localhost:3000/home  
-http://localhost:3000/register  
-http://localhost:3000/login   
+http://localhost:3000/home   
 http://localhost:3000/dashboard   
-http://localhost:3000/profile   
-  
+http://localhost:3000/eportfolio   
+http://localhost:3000/eportfolio/page
+TBA.....
   
   
    
@@ -90,6 +116,28 @@ http://localhost:3000/profile
 
 ## Technologies  
 Express
+
+## Dependencies
+```json
+ "dependencies": {
+    "axios": "^0.19.2",
+    "bcryptjs": "^2.4.3",
+    "client": "file:client",
+    "config": "^3.3.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-validator": "^6.6.1",
+    "firebase-admin": "^9.2.0",
+    "gravatar": "^1.8.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.10.3",
+    "normalize-url": "^5.0.0",
+    "puppeteer": "^5.3.0",
+    "react": "^16.13.1",
+    "react-router-dom": "^5.2.0",
+    "tough-cookie": "^4.0.0"
+  }
+  ```
 ## Backend Structure  
 <p align="left">	
   <img src="client/src/images/BackendStructure.PNG"  width="300" >	
@@ -99,84 +147,3 @@ Express
 https://documenter.getpostman.com/view/12626526/TVK5cgbD   
 
 
-## Backend Calls  
-
-### Register & Login  
-#### To Register user, on Postman:  
-POST localhost:5000/api/users  
-header: key = Content-Type, value = application/json  
-body: {"name": "name", "email": "email", "password": "password"}  
-returns a TOKEN  
-      
-#### To Authenticate user, on Postman:    
-GET localhost:5000/api/auth  
-header: key = x-auth-token, value = "TOKEN" (from register step)  
-returns user info without password   
-    
-#### To Login user, on Postman:      
-POST localhost:5000/api/auth  
-header: key = Content-Type, value = application/json  
-body: {"email": "email", "password": "password"}  
-returns TOKEN if email & password is correct  
-     
-### Blog   
-#### Create a portfolio    
-POST localhost:5000/api/portfolio  
-header: key = x-auth-token, value = "TOKEN" (from login)  
-#### Get specific portfolio by id    
-GET localhost:5000/api/portfolio/:id  
-here :id refers to portfolio id  
-#### Create blog post    
-POST localhost:5000/api/portfolio/blog/:id  
-header: key = x-auth-token, value = "TOKEN" (from login)  
-header: key = Content-Type, value = application/json  
-body: {"title": "title of blog post", "text": "body of blog post"}  
-description: gives error if title and text are not provided  
-#### Delete blog post    
-DELETE localhost:5000/api/portfolio/blog/:id/:blog_id  
-:id = portfolio id  
-:blog_id = blog id  
-header: key = x-auth-token, value = "TOKEN" (from login)  
-#### Get blog posts in a given portfolio    
-GET localhost:5000/api/portfolio/blog/:id/:sort/:page  
-:id = portfolio id  
-:blog_id = blog id  
-:sort = (1 = old to new, anything else = new to old)  
-:page = (page of blog posts)  
-description: in default values blog posts per page is defines as 10. if page is provided as anything <= 0 you get the first 10 posts, after that you get later pages. Anything >= max page returns the last page.  
-#### Edit blog post    
-POST localhost:5000/api/portfolio/blog/:id/:blog_id  
-:id = portfolio id  
-:blog_id = blog id  
-header: key = x-auth-token, value = "TOKEN" (from login)  
-header: key = Content-Type, value = application/json  
-body: {"title": "new title", "text": "new text"}  
-description: if you only send title, only updates title, copies text from original post. If you only put text, updates text and copies title from original post. You can update both. Date is copied from old post.  
-### Portfolio Items    
-#### Create new item    
-POST localhost:5000/api/item/:id  
-:id = portfolio id  
-header: key = x-auth-token, value = "TOKEN"  
-description: Temporary Item creator to test comments. More will be added here.  
-### Comments    
-#### Leave a comment    
-POST localhost:5000/api/comment/:item_id  
-:item_id = the id of the item the comment is being left for  
-header: key = x-auth-token, value = "TOKEN"  
-header: key = Content-Type, value = application/json  
-body: {"text": "content of comment"}  
-#### Get all comments on an item    
-GET localhost:5000/api/comment/:item_id  
-:item_id = the id of the item the comment is being left for  
-#### Remove comment    
-DELETE localhost:5000/api/comment/edit/:comment_id    
-:comment_id = id of comment  
-header: key = x-auth-token, value = "TOKEN"  
-IMPORTANT: remove/update comments are in comment/edit not just /comment  
-#### Update comment    
-POST localhost:5000/api/comment/edit/:comment_id  
-:comment_id = id of comment  
-header: key = x-auth-token, value = "TOKEN"  
-header: key = Content-Type, value = application/json  
-body: {"text" : "updated comment"}  
-IMPORTANT: remove/update comments are in comment/edit not just /comment  

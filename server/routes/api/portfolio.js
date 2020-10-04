@@ -27,7 +27,7 @@ router.get('/', async (req, res) => {
     console.error(err.message);
     res.status(500).send('Server Error');
   }
-})
+});
 
 // @route   POST api/portfolio
 // @desc    Create a portfolio
@@ -36,17 +36,15 @@ router.post(
   '/',
   [auth, [check('name', 'Portfolios must have a name').not().isEmpty()]],
   async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
+    // const errors = validationResult(req);
+    // if (!errors.isEmpty()) {
+    //   return res.status(400).json({ errors: errors.array() });
+    // }
 
     try {
-      const user = await User.findById(req.user.id).select('-password');
-
       const newPortfolio = new Portfolio({
         name: req.body.name,
-        user: req.user.id,
+        user: req.user.uid,
         private: req.body.private,
       });
 
@@ -66,8 +64,13 @@ router.get('/single/:id', auth, async (req, res) => {
   try {
     const portfolio = await Portfolio.findById(req.params.id);
     if (!portfolio) return res.status(404).json({ msg: 'Portfolio not found' });
+    const user = await User.findOne({ googleId: req.user.uid });
     // check that user is authorized
-    if (portfolio.private && portfolio.user.toString() !== req.user.id && !(req.user.id in portfolio.allowedUsers)){ 
+    if (
+      portfolio.private &&
+      portfolio.user.toString() !== req.user.uid &&
+      !(user.id in portfolio.allowedUsers)
+    ) {
       return res.status(401).json({ msg: 'User not authorized' });
     }
     res.json(portfolio);
@@ -108,17 +111,17 @@ router.get('/guest/:id', async (req, res) => {
 router.get('/user', auth, async (req, res) => {
   try {
     // Make sure user exists
-    const user = await User.findById(req.user.id).select('-password');
+    const user = await User.findOne({ googleId: req.user.uid });
     if (!user) {
       return res.status(404).json({ msg: 'User not found' });
     }
 
     const portfolios = await Portfolio.find()
       .where('user')
-      .in(req.user.id.toString())
+      .in(req.user.uid.toString())
       .sort({ date: -1 })
       .exec();
-    
+
     // return portfolios
     res.json(portfolios);
   } catch (err) {
@@ -139,8 +142,9 @@ router.get('/thumbnail/:id', auth, async (req, res) => {
     if (!portfolio) {
       return res.status(404).json({ msg: 'Portfolio not found' });
     }
-    if (portfolio.private && portfolio.user.toString() !== req.user.id) {
-      if (!(req.user.id in portfolio.allowedUsers)) {
+    const user = await User.findOne({ googleId: req.user.uid });
+    if (portfolio.private && portfolio.user.toString() !== req.user.uid) {
+      if (!(user.id in portfolio.allowedUsers)) {
         return res.status(401).json({ msg: 'User not authorized' });
       }
     }
@@ -153,9 +157,7 @@ router.get('/thumbnail/:id', auth, async (req, res) => {
       height: 1080,
     });
     //TODO: replace with link to site
-    await page.goto(
-      'http://localhost:3000/view/' + req.params.id
-    );
+    await page.goto('http://localhost:3000/view/' + req.params.id);
     const image = await page.screenshot();
     await browser.close();
     res.set('Content-Type', 'image/png');
@@ -178,11 +180,12 @@ router.delete('/delete/:id', auth, async (req, res) => {
     // check if portfolio exists
     if (!portfolio) return res.status(404).json({ msg: 'Portfolio not found' });
     // check if user is authorized
-    if (portfolio.user.toString() !== req.user.id) return res.status(401).json({ msg: 'User not authorized' });
+    if (portfolio.user.toString() !== req.user.uid)
+      return res.status(401).json({ msg: 'User not authorized' });
     // perform delete
     await Portfolio.findByIdAndDelete(req.body.id);
-    return res.status(202).json({msg: 'Portfolio deleted successfully'});
-   } catch (err) {
+    return res.status(202).json({ msg: 'Portfolio deleted successfully' });
+  } catch (err) {
     console.error(err.message);
     if (err.kind === 'ObjectId') {
       return res.status(404).json({ msg: 'Portfolio not found' });
@@ -200,17 +203,28 @@ router.put('/edit', auth, async (req, res) => {
     // check if portfolio exists
     if (!portfolio) return res.status(404).json({ msg: 'Portfolio not found' });
     // check if user is authorized
-    if (portfolio.user.toString() !== req.user.id) return res.status(401).json({ msg: 'User not authorized' });
-    if (req.body.field === "name"){
-      res.json(await Portfolio.findByIdAndUpdate(req.body.portfolio, { $set: { name: req.body.value}}, {new : true}));
-    }
-    else if (req.body.field === "private"){
-      res.json(await Portfolio.findByIdAndUpdate(req.body.portfolio, { $set: { private: req.body.value}}, {new : true}));
-    }
-    else{
+    if (portfolio.user.toString() !== req.user.uid)
+      return res.status(401).json({ msg: 'User not authorized' });
+    if (req.body.field === 'name') {
+      res.json(
+        await Portfolio.findByIdAndUpdate(
+          req.body.portfolio,
+          { $set: { name: req.body.value } },
+          { new: true }
+        )
+      );
+    } else if (req.body.field === 'private') {
+      res.json(
+        await Portfolio.findByIdAndUpdate(
+          req.body.portfolio,
+          { $set: { private: req.body.value } },
+          { new: true }
+        )
+      );
+    } else {
       return res.status(422).json({ msg: 'Invalid field parameter' });
     }
-   } catch (err) {
+  } catch (err) {
     console.error(err.message);
     if (err.kind === 'ObjectId') {
       return res.status(404).json({ msg: 'Portfolio not found' });
@@ -218,7 +232,6 @@ router.put('/edit', auth, async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
-
 
 // @route   POST api/portfolio/permission
 // @desc    Give or remove permission to users to view private portfolio
@@ -229,14 +242,26 @@ router.put('/permission', auth, async (req, res) => {
     // check if portfolio exists
     if (!portfolio) return res.status(404).json({ msg: 'Portfolio not found' });
     // check if user is authorized
-    if (portfolio.user.toString() !== req.user.id) return res.status(401).json({ msg: 'User not authorized' });
-    if (req.body.add === true){
-      res.json(await Portfolio.findByIdAndUpdate(req.body.portfolio, { $push: { allowedUsers: { _id: req.body.user }}}, {new : true}));
+    if (portfolio.user.toString() !== req.user.uid)
+      return res.status(401).json({ msg: 'User not authorized' });
+    if (req.body.add === true) {
+      res.json(
+        await Portfolio.findByIdAndUpdate(
+          req.body.portfolio,
+          { $push: { allowedUsers: { _id: req.body.user } } },
+          { new: true }
+        )
+      );
+    } else {
+      res.json(
+        await Portfolio.findByIdAndUpdate(
+          req.body.portfolio,
+          { $pull: { allowedUsers: { _id: req.body.user } } },
+          { new: true }
+        )
+      );
     }
-    else{
-      res.json(await Portfolio.findByIdAndUpdate(req.body.portfolio, { $pull: { allowedUsers: { _id: req.body.user }}}, {new : true}));
-    }
-   } catch (err) {
+  } catch (err) {
     console.error(err.message);
     if (err.kind === 'ObjectId') {
       return res.status(404).json({ msg: 'Portfolio not found' });

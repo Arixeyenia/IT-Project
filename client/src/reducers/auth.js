@@ -1,12 +1,10 @@
 import {
-  REGISTER_SUCCESS,
-  //REGISTER_FAIL,
   USER_LOADED,
   AUTH_ERROR,
   LOGIN_SUCCESS,
-  //LOGIN_FAIL,
-  LOGOUT,
-  ACCOUNT_DELETED,
+  LOGIN_FAIL,
+  SIGN_IN,
+  SIGN_OUT,
 } from '../actions/types';
 
 //initial state --an object
@@ -35,33 +33,19 @@ export default function (state = initialState, action) {
         loading: false,
         user: payload,
       };
-    //if register success , we got token back, put token in localstorage
-    case REGISTER_SUCCESS:
-      //...state mean whatever is in the current state
-      return {
-        ...state,
-        ...payload,
-        isAuthenticated: true,
-        loading: false,
-      };
     case LOGIN_SUCCESS:
+    case SIGN_IN:
       return {
         ...state,
         ...payload,
         isAuthenticated: true,
         loading: false,
       };
-    case ACCOUNT_DELETED:
-      return {
-        ...state,
-        token: null,
-        isAuthenticated: false,
-        loading: false,
-        user: null,
-      };
+
     //remove token from localstorage, set things to null or false
     case AUTH_ERROR:
-    case LOGOUT:
+    case LOGIN_FAIL:
+    case SIGN_OUT:
       return {
         ...state,
         token: null,
