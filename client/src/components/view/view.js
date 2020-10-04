@@ -76,7 +76,7 @@ const View = ({getPortfolio, portfolio, getPage, page}) => {
 
   return (
     <Fragment>
-      <Box className={`${themeStyle.content} ${classes.content}`}>
+      <Box className={themeStyle.content}>
         <Typography variant='h1'>{portfolio.name}</Typography>
       </Box>
       {groupedItems.map((item)=>
