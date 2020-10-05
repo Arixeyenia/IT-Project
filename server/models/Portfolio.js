@@ -9,7 +9,7 @@ const PortfolioSchema = new mongoose.Schema({
     required: true,
   },
   user: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: 'user',
   },
   blog: [
@@ -27,30 +27,30 @@ const PortfolioSchema = new mongoose.Schema({
         default: Date.now,
       },
     },
-  ],  
+  ],
   pages: [
-   {
-     name: {
-       type: String,
-       required: true,
-     },
-     url: {
-      type: String,
-      required: true,
-     },
-     main: {
-      type: Boolean,
-      default: false,
-     },
-     items: [
-      {
-        item: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'item',
-        },
+    {
+      name: {
+        type: String,
+        required: true,
       },
-     ],
-   },
+      url: {
+        type: String,
+        required: true,
+      },
+      main: {
+        type: Boolean,
+        default: false,
+      },
+      items: [
+        {
+          item: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'item',
+          },
+        },
+      ],
+    },
   ],
   date: {
     type: Date,

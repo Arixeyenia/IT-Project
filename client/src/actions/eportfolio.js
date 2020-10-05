@@ -1,6 +1,5 @@
 import { red } from '@material-ui/core/colors';
 import api from '../utils/api';
-import { setAlert } from './alert';
 
 import {
   GET_USER_EPORTFOLIOS,
