@@ -16,6 +16,10 @@ import {
   POST_COMMENT,
   EDIT_COMMENT,
   DELETE_COMMENT,
+  CREATE_PAGE,
+  EDIT_PAGENAME,
+  MAKE_MAIN,
+  DELETE_PAGE
 } from '../actions/types';
 
 const initialState = {
@@ -84,6 +88,30 @@ export default function (state = initialState, action) {
         page: payload,
         loading: false,
       };
+    case CREATE_PAGE:
+      return {
+        ...state,
+        portfolio: payload,
+        loading: false,
+      };
+    case EDIT_PAGENAME:
+      return {
+        ...state,
+        portfolio: payload,
+        loading: false,
+      };
+    case MAKE_MAIN:
+    return {
+      ...state,
+      portfolio: payload,
+      loading: false,
+    };
+    case DELETE_PAGE:
+    return {
+      ...state,
+      portfolio: payload,
+      loading: false,
+    };
     case EDIT_ITEM:
       return {
         ...state,
