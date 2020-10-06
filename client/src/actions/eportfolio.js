@@ -76,6 +76,7 @@ export const createPortfolio = (name) => async (dispatch) => {
     const res = await api.post('/portfolio', { name: name });
     dispatch({
       type: CREATE_PORTFOLIO,
+      payload: res.data,
     });
   } catch (err) {
     dispatch({
