@@ -21,7 +21,7 @@ export default function card(classes, rowLengths, portfolioID, object, history, 
             <IconButton aria-label='edit' onClick={() => handleDrawerOpen(object._id)}>
               <EditIcon />
             </IconButton>
-            <IconButton aria-label='delete' onClick={() => handleDialogOpen(object._id)}>
+            <IconButton aria-label="delete" onClick={() => handleDialogOpen("ITEM", object._id)}>
             <DeleteIcon />
           </IconButton>
           </div>

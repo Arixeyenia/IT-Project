@@ -19,6 +19,10 @@ import {
   POST_COMMENT,
   DELETE_COMMENT,
   EDIT_COMMENT,
+  CREATE_PAGE,
+  EDIT_PAGENAME,
+  MAKE_MAIN,
+  DELETE_PAGE
 } from './types';
 
 export const getUserEPortfolios = () => async (dispatch) => {
@@ -228,6 +232,69 @@ export const editComment = (commentID, text) => async (dispatch) => {
   } catch (err) {
     dispatch({
       type: COMMENTS_ERROR,
+      payload: { msg: err.message },
+    });
+  }
+};
+
+export const createPage = (newPage) => async (dispatch) => {
+  try {
+    const res = await api.post('/page', newPage);
+    dispatch({
+      type: CREATE_PAGE,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: EPORTFOLIOS_ERROR,
+      payload: { msg: err.message },
+    });
+  }
+};
+
+export const editPagename = (body) => async (dispatch) => {
+  try {
+    const res = await api.post('/page/editname', body);
+    dispatch({
+      type: EDIT_PAGENAME,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: EPORTFOLIOS_ERROR,
+      payload: { msg: err.message },
+    });
+  }
+};
+
+export const makeMain = (portfolioID, pagename) => async (dispatch) => {
+  try {
+    const res = await api.put('/page/makemain', {
+      'portfolio': portfolioID,
+      'pagename': pagename
+    });
+    dispatch({
+      type: MAKE_MAIN,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: EPORTFOLIOS_ERROR,
+      payload: { msg: err.message },
+    });
+  }
+};
+
+export const deletePage = (portfolioID, pageURL) => async (dispatch) => {
+  try {
+    const res = await api.delete('/page/' + portfolioID + '/' + pageURL);
+    dispatch({
+      type: DELETE_PAGE,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: EPORTFOLIOS_ERROR,
       payload: { msg: err.message },
     });
   }
