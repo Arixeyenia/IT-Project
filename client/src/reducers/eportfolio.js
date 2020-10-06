@@ -65,7 +65,8 @@ export default function (state = initialState, action) {
       return {
         ...state,
         loading: false,
-        createPortfolioName: state.createPortfolioName,
+        portfolio: payload,
+        createPortfolioName: '',
         eportfolioThumbnails: [],
         userEPortfolios: [],
       };

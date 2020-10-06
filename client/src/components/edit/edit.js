@@ -304,6 +304,7 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
               </span>
               </form>
             </ListItem>
+            {!page.main && 
             <ListItem className={classes.nested}>
             <Button
             variant="outlined"    
@@ -313,7 +314,7 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
             >
             Make Main
             </Button>
-            </ListItem>
+            </ListItem>}
             <ListItem className={classes.nested}>
             <Button
             variant="outlined"
