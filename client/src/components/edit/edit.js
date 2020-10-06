@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 import { Typography, Drawer, Grid, Button, CardMedia, TextField, Divider, Box, List, ListItem, ListItemText, ListItemIcon, Collapse, IconButton, Icon, FormControlLabel, CardActions, Checkbox } from '@material-ui/core';
 import {getPortfolio, getPage, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage} from '../../actions/eportfolio';
 import { Link, useHistory, useParams } from 'react-router-dom';
-import { useForm } from "react-hook-form";
+import { useForm } from 'react-hook-form';
 import store from '../../store'
+import { useThemeStyle } from '../../styles/themes';
 
 
 import clsx from 'clsx';
@@ -152,6 +153,7 @@ const useStyles = makeStyles((theme) => ({
 const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage}) => {
   const classes = useStyles();
   const theme = useTheme();
+  const themeStyle = useThemeStyle();
   const history = useHistory();
   const { handleSubmit, register, reset } = useForm();
   const { handleSubmit:handleCreatePage, register:registerCreatePage, reset:resetCreatePage} = useForm();
@@ -176,11 +178,11 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
 
   const addItemWrapper = (row, column) => {
     addItem({
-      "portfolio": portfolio._id,
-      "pagename": page.name,
-      "row": row,
-      "column": column,
-      "title": "Empty Item"
+      'portfolio': portfolio._id,
+      'pagename': page.name,
+      'row': row,
+      'column': column,
+      'title': 'Empty Item'
     });
   }
 
@@ -231,13 +233,13 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
   };
 
   const getField = (index) => {
-    return ["title", "subtitle", "paragraph", "mediaLink", "mediaType", "linkText", "linkAddress", "private", "row", "column"][index];
+    return ['title', 'subtitle', 'paragraph', 'mediaLink', 'mediaType', 'linkText', 'linkAddress', 'private', 'row', 'column'][index];
   }
 
   const getItem = (id) => {
     const curr = items.filter(item => item._id === id);
     let item = {};
-    ["title", "subtitle", "paragraph", "mediaLink", "mediaType", "linkText", "linkAddress", "private", "row", "column"].forEach(field => {if (curr.length > 0 && Object.keys(curr[0]).includes(field)) item[field] = curr[0][field];});
+    ['title', 'subtitle', 'paragraph', 'mediaLink', 'mediaType', 'linkText', 'linkAddress', 'private', 'row', 'column'].forEach(field => {if (curr.length > 0 && Object.keys(curr[0]).includes(field)) item[field] = curr[0][field];});
     return item;
   }
 
@@ -263,13 +265,13 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
   });
     
   return (    
-    <Box className="content">
+    <Box className={themeStyle.content}>
     <div className={classes.root}>
     <CssBaseline />
     <Drawer
       className={classes.drawer}
-      variant="persistent"
-      anchor="left"
+      variant='persistent'
+      anchor='left'
       open={drawerOpen}
       classes={{
         paper: classes.drawerPaper,
@@ -338,10 +340,10 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
       {editID !== '' &&
       <form className={classes.root} noValidate autoComplete="off" onSubmit={handleSubmit(editItemWrapper)}>
       <List>
-        {['Title', 'Subtitle', 'Paragraph', 'Media Link', 'Media Type', 'Link Text', 'Link Address', "private", "row", "column"].map((text, index) => (
-          <TextField key={getField(index)} className={classes.textinput} id="standard-basic" label={text} variant="outlined" name={getField(index)} inputRef={register}/>
+        {['Title', 'Subtitle', 'Paragraph', 'Media Link', 'Media Type', 'Link Text', 'Link Address', 'private', 'row', 'column'].map((text, index) => (
+          <TextField key={getField(index)} className={classes.textinput} id='standard-basic' label={text} variant='outlined' name={getField(index)} inputRef={register}/>
         ))}
-        <Button variant="outlined" color="primary" className={classes.textinput} type="submit">Save</Button>
+        <Button variant='outlined' color='primary' className={classes.textinput} type='submit'>Save</Button>
       </List>      
       </form>
       }
@@ -366,7 +368,7 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
         )}
 
         <IconButton
-        color="primary"   
+        color='primary'   
         onClick = {() => addItemWrapper(Object.keys(rowLengths).length, 0)}
         children={<AddCircleOutlineIcon classes={{root:classes.addIcon}}/>}
         className={classes.addRow}>
@@ -377,8 +379,8 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
   <Dialog
         open={dialogOpen}
         onClose={() => handleDialogClose(false)}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
       >
         <DialogTitle id="alert-dialog-title">{(toDelete === 'ITEM') ? "Do you want to delete this item?" : "Do you want to delete this page?"}</DialogTitle>
         <DialogContent>
@@ -387,10 +389,10 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => handleDialogClose(false)} color="primary" autoFocus>
+          <Button onClick={() => handleDialogClose(false)} color='primary' autoFocus>
             No
           </Button>
-          <Button onClick={() =>handleDialogClose(true)} color="primary">
+          <Button onClick={() =>handleDialogClose(true)} color='primary'>
             Yes
           </Button>
         </DialogActions>

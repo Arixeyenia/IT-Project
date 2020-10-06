@@ -1,12 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { Typography, Grid, Box, Card, CardContent, CardHeader, CardMedia, CardActions, Button } from '@material-ui/core';
 import {getPortfolio, getPage} from '../../actions/eportfolio';
 import { Link, useParams, useHistory } from 'react-router-dom';
-import store from '../../store'
+import store from '../../store';
 import Comment from '../comments/Comment';
+import { useThemeStyle } from '../../styles/themes';
 
 const useStyles = makeStyles((theme) => ({
   cardRoot: {
@@ -14,6 +15,7 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: 'none',
     borderRadius: 0,
     backgroundColor: 'inherit',
+    paddingBottom: '20px'
   },
   pos: {
   },
@@ -22,14 +24,32 @@ const useStyles = makeStyles((theme) => ({
   },
   titleText:{
     fontSize: '1.5rem'
+  },
+  viewGridItem: {
+    display: 'grid',
+  },
+  viewGridItemCardHeader: {
+    paddingBottom: '0px !important',
+  },
+  viewCardActions: {
+    paddingLeft: '20px !important',
+  },
+  viewCardContent: {
+    paddingBottom: '0px !important',
+  },
+  content: {
+    paddingTop: '20px !important',
+    paddingBottom: '20px !important',
   }
 }));
 
 const View = ({getPortfolio, portfolio, getPage, page}) => {
   const classes = useStyles();
   const theme = useTheme();
+  const themeStyle = useThemeStyle();
   const params = useParams();
   const history = useHistory();
+
   useEffect(() => {
     if (Object.keys(portfolio).length === 0) {
       getPortfolio(params.id);
@@ -55,36 +75,39 @@ const View = ({getPortfolio, portfolio, getPage, page}) => {
   });
 
   return (
-    <Box className="content">
-      <Typography variant="h1">{portfolio.name}</Typography>
+    <Fragment>
+      <Box className={themeStyle.content}>
+        <Typography variant='h1'>{portfolio.name}</Typography>
+      </Box>
       {groupedItems.map((item)=>
-      <Grid container spacing={3} className="view-grid-container">
+      <Grid container spacing={3} className={`${themeStyle.content} ${classes.content}`}>
       {item.map((object) => card(classes, rowLengths, params.id, object, history))}  
       </Grid>)}
-    </Box>
+    </Fragment>
   );
 }
 
 const card = (classes, rowLengths, portfolioID, object, history, owner) => {
   return (
-    <Grid item xs={12/rowLengths[object.row]} className="view-grid-item">
+    <Grid item xs={12/rowLengths[object.row]} className={classes.viewGridItem}>
       <Card className={classes.cardRoot}>
-        {object.mediaType === "image" && <CardMedia
+        {object.mediaType === 'image' && <CardMedia
             className={classes.media}
             image={object.mediaLink}
           />}
         {object.title && <CardHeader
+          className={classes.viewGridItemCardHeader}
           classes={{title:classes.titleText}}
           title={object.title}
           subheader={object.subtitle}
         />}
-        {object.paragraph&& <CardContent className="view-card-content">
-          {object.paragraph && <Typography variant="body2" component="p">
+        {object.paragraph&& <CardContent className={classes.viewCardContent}>
+          {object.paragraph && <Typography variant='body2' component='p'>
             {object.paragraph}
           </Typography>}
         </CardContent>}
-        {object.linkAddress && <CardActions className="view-card-actions">
-            <Button size="small" onClick={()=> {if(!/^(f|ht)tps?:\/\//i.test(object.linkAddress)){ history.push('/view/' + portfolioID + '/' + object.linkAddress);}else{ window.location.href = object.linkAddress;}window.location.reload(false);}}>{object.linkText}</Button>
+        {object.linkAddress && <CardActions className={classes.viewCardActions}>
+            <Button size='small' onClick={()=> {if(!/^(f|ht)tps?:\/\//i.test(object.linkAddress)){ history.push('/view/' + portfolioID + '/' + object.linkAddress);}else{ window.location.href = object.linkAddress;}window.location.reload(false);}}>{object.linkText}</Button>
         </CardActions>}
         <Comment itemID={object._id} owner={owner} />
       </Card>

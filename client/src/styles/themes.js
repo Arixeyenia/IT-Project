@@ -1,108 +1,65 @@
 import { createMuiTheme } from '@material-ui/core/styles';
-import RobotoMedium from './fonts/Roboto-Medium.woff2';
-import RobotoBold from './fonts/Roboto-Bold.woff2';
-import RobotoRegular from './fonts/Roboto-Regular.woff2';
-import RobotoLight from './fonts/Roboto-Light.woff2';
-import RobotoExtraLight from './fonts/Roboto-ExtraLight.woff2';
-import SourceSansProRegular from './fonts/SourceSansPro-Regular.woff2';
-import SourceSansProLight from './fonts/SourceSansPro-Light.woff2';
-import SourceSansProExtraLight from './fonts/SourceSansPro-ExtraLight.woff2';
+import { makeStyles } from '@material-ui/core/styles';
+import { robotoMedium,
+  robotoBold,
+  robotoRegular,
+  robotoLight,
+  robotoExtraLight,
+  sourceSansProRegular,
+  sourceSansProLight,
+  sourceSansProExtraLight } from './fonts'
 
-const robotoMedium = {
-  fontFamily: 'Roboto',
-  fontStyle: 'normal',
-  fontDisplay: 'swap',
-  fontWeight: 500,
-  src: `
-    local('Roboto'),
-    local('Roboto-Medium'),
-    url(${RobotoMedium}) format('woff2')
-  `,
-};
-
-const robotoBold = {
-  fontFamily: 'Roboto',
-  fontStyle: 'normal',
-  fontDisplay: 'swap',
-  fontWeight: 700,
-  src: `
-      local('Roboto'),
-      local('Roboto-Bold'),
-      url(${RobotoBold}) format('woff2')
-    `,
-};
-
-const robotoRegular = {
-  fontFamily: 'Roboto',
-  fontStyle: 'normal',
-  fontDisplay: 'swap',
-  fontWeight: 400,
-  src: `
-      local('Roboto'),
-      local('Roboto-Regular'),
-      url(${RobotoRegular}) format('woff2')
-    `,
-};
-
-const robotoLight = {
-  fontFamily: 'Roboto',
-  fontStyle: 'normal',
-  fontDisplay: 'swap',
-  fontWeight: 300,
-  src: `
-      local('Roboto'),
-      local('Roboto-Light'),
-      url(${RobotoLight}) format('woff2')
-    `,
-};
-
-const robotoExtraLight = {
-  fontFamily: 'Roboto',
-  fontStyle: 'normal',
-  fontDisplay: 'swap',
-  fontWeight: 200,
-  src: `
-      local('Roboto'),
-      local('Roboto-ExtraLight'),
-      url(${RobotoExtraLight}) format('woff2')
-    `,
-};
-
-const sourceSansProRegular = {
-  fontFamily: 'SourceSansPro',
-  fontStyle: 'normal',
-  fontDisplay: 'swap',
-  fontWeight: 400,
-  src: `
-      local('SourceSansPro'),
-      local('SourceSansPro-Regular'),
-      url(${SourceSansProRegular}) format('woff2')
-    `,
-};
-
-const sourceSansProLight = {
-  fontFamily: 'SourceSansPro',
-  fontStyle: 'normal',
-  fontDisplay: 'swap',
-  fontWeight: 300,
-  src: `
-      local('SourceSansPro'),
-      local('SourceSansPro-Light'),
-      url(${SourceSansProLight}) format('woff2')
-    `,
-};
-
-const sourceSansProExtraLight = {
-  fontFamily: 'SourceSansPro',
-  fontStyle: 'normal',
-  fontDisplay: 'swap',
-  fontWeight: 200,
-  src: `
-      local('SourceSansPro'),
-      local('SourceSansPro-ExtraLight'),
-      url(${SourceSansProExtraLight}) format('woff2')
-    `,
-};
+export const useThemeStyle = makeStyles((theme) => ({
+  content: {
+    padding: '80px 10% 80px'
+  },
+  half: {
+    display: 'flex'
+  },
+  leftright: {
+    width: '50%',
+    margin: 'auto'
+  },
+  leftrightButton: {
+    marginLeft: '10px'
+  },
+  gray1: {
+    backgroundColor: '#333333'
+  },
+  gray2: {
+    backgroundColor: '#4f4f4f'
+  },
+  gray3: {
+    backgroundColor: '#828282'
+  },
+  gray4: {
+    backgroundColor: '#bdbdbd'
+  },
+  gray5: {
+    backgroundColor: '#e0e0e0'
+  },
+  gray6: {
+    backgroundColor: '#f2f2f2'
+  },
+  fontg1: {
+    color: '#333333'
+  },
+  fontg2: {
+    color: '#4f4f4f'
+  },
+  fontg3: {
+    color: '#828282'
+  },
+  fontg4: {
+    color: '#bdbdbd'
+  },
+  fontg5: {
+    color: '#e0e0e0'
+  },
+  fontg6: {
+    color: '#f2f2f2'
+  }
+}));
 
 const theme = createMuiTheme({
   palette: {
@@ -179,5 +136,7 @@ const theme = createMuiTheme({
     },
   },
 });
+
+
 
 export default theme;

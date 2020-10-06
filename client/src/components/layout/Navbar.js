@@ -7,6 +7,19 @@ import firebase from 'firebase';
 import 'whatwg-fetch';
 import api from '../../utils/api';
 import { signIn, signOut } from '../../actions/auth';
+import logo from '../../images/Quaranteam.png'
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme) => ({
+  logo: {
+    margin: 0,
+    width: '20%',
+    padding: '0px'
+  },
+  logoLink: {
+    padding: '0 !important'
+  }
+}));
 
 //initialize firebase google authentication
 const firebaseConfig = require('../../utils/firebaseConfig').firebaseConfig;
@@ -21,6 +34,7 @@ const Navbar = ({
   signIn,
   signOut,
 }) => {
+  const classes = useStyles();
   //function for google sign in
   const GSignIn = () => {
     //sign in google with pop up window
@@ -46,11 +60,9 @@ const Navbar = ({
   //navbar for users signed in
   const authLinks = (
     <nav className='navbar bg-dark'>
-      <h1>
-        <Link to='/'>
-          <i className='fad fa-user-secret' /> Quaranteam
-        </Link>
-      </h1>
+      <Link className={classes.logoLink} to='/'>
+        <img src={logo} alt='Quaranteam' className={classes.logo}></img>
+      </Link>
       <ul>
         <li>
           <span className='hide-sm'>Hi, {user && user.name}!</span>
@@ -74,11 +86,9 @@ const Navbar = ({
   //navbar for guests not signed in yet
   const guestLinks = (
     <nav className='navbar bg-dark'>
-      <h1>
-        <Link to='/'>
-          <i className='fad fa-user-secret' /> Quaranteam
-        </Link>
-      </h1>
+      <Link className={classes.logoLink} to='/'>
+        <img src={logo} alt='Quaranteam' className={classes.logo}></img>
+      </Link>
       <ul>
         <li>
           <Link to='/'>

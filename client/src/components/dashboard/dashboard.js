@@ -8,9 +8,11 @@ import { Link } from 'react-router-dom';
 import Category from './DashboardCategory';
 import IndividualMenu from './DashboardMenu';
 import useStyles from './DashboardStyles';
+import { useThemeStyle } from '../../styles/themes';
 
 const Dashboard = ({getUserEPortfolios, userEPortfolios, getEPortfolioThumbnail, eportfolioThumbnails, deletePortfolio}) => {
   const classes = useStyles();
+  const theme = useThemeStyle();
   useEffect(() => {
     if (userEPortfolios.length == 0){
       getUserEPortfolios();
@@ -33,24 +35,24 @@ const Dashboard = ({getUserEPortfolios, userEPortfolios, getEPortfolioThumbnail,
   }
     
   return (
-    <Box className="content">
-      <Typography variant="h2">Welcome to your dashboard</Typography>
-      <Category title="Your existing ePortfolios"></Category>
+    <Box className={theme.content}>
+      <Typography variant='h2'>Welcome to your dashboard</Typography>
+      <Category title='Your existing ePortfolios'></Category>
       <GridList className={classes.portfolioList}>
         {DisplayPortfolioItem(arrayOfPortfolioObjects, deletePortfolio)}
-        <GridListTile className={classes.portfolioListItem} key="last">
-            <Card raised={true} className={`${classes.portfolioCard} "MuiButton-root"`}>
-              <CardActionArea><Link to="/create-eportfolio">
+        <GridListTile className={classes.portfolioListItem} key='last'>
+            <Card raised={true} className={`${classes.portfolioCard} 'MuiButton-root'`}>
+              <CardActionArea><Link to='/create-eportfolio'>
                 <Box className={classes.addPortfolio}>
-                  <Icon aria-label="settings" className={classes.addPortfolioIcon}>
-                    <AddIcon fontSize="large"/>
+                  <Icon aria-label='settings' className={classes.addPortfolioIcon}>
+                    <AddIcon fontSize='large'/>
                   </Icon>
                 </Box>
               </Link></CardActionArea>
             </Card>
           </GridListTile>
       </GridList>
-      <Category title="Your favourited ePortfolios"></Category>
+      <Category title='Your favourited ePortfolios'></Category>
       <List ></List>
     </Box>
   );
@@ -60,14 +62,15 @@ const Dashboard = ({getUserEPortfolios, userEPortfolios, getEPortfolioThumbnail,
 // Component to map each tile
 function DisplayPortfolioItem(arrayOfPortfolioObjects, deletePortfolio) {
   const classes = useStyles();
+  const theme = useThemeStyle();
   return(
     arrayOfPortfolioObjects.map((object, i) => (
       <GridListTile className={classes.portfolioListItem} key={object.portfolio._id}>
         <Card raised={true} className={classes.portfolioCard}>
           <IndividualMenu i={i} object={object} deletePortfolio={deletePortfolio}/>
-          <img src={object.thumbnail} alt="Portfolio Thumbnail" className={classes.cardThumbnail}></img>
+          <img src={object.thumbnail} alt='Portfolio Thumbnail' className={classes.cardThumbnail}></img>
           <CardContent className={classes.overlayPortfolioItem}>
-            <Typography variant="body1" className="fontg6">{object.portfolio.name}</Typography>
+            <Typography variant='body1' className={theme.fontg6}>{object.portfolio.name}</Typography>
           </CardContent>
         </Card>
         
