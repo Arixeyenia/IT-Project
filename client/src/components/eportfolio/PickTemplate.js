@@ -4,7 +4,7 @@ import image from '../../images/pick.png';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createPortfolio } from '../../actions/eportfolio'
-import store from '../../store'
+import store from '../../store';
 import { makeStyles } from '@material-ui/core/styles';
 import { useThemeStyle } from '../../styles/themes';
 import { useHistory } from 'react-router-dom';
@@ -42,19 +42,19 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const PickTemplate = ({createPortfolio, portfolio}) => {
+const PickTemplate = ({createPortfolio, createPortfolioDetails}) => {
   const classes = useStyles();
   const theme = useThemeStyle();
   const history = useHistory();
 
   useEffect(() => {
-    if (Object.keys(portfolio).length !== 0){
-      history.push('/edit/' + portfolio._id + '/' + encodeURI('Home'));
-      history.go(0);
+    if (Object.keys(createPortfolioDetails).length !== 0 && Object.keys(createPortfolioDetails).includes('_id')){
+      console.log(createPortfolioDetails);
+      //history.push('/edit/' + createPortfolioDetails._id + '/' + encodeURI('Home'));
+      //history.go(0);
     }
-  }, [portfolio]);
+  }, [createPortfolioDetails]);
 
-  const test = () =>{console.log(store.getState().eportfolio);}
   return (
     <Fragment>
       <Box className={`${theme.content} ${classes.templateSelection} ${theme.fontg1} ${theme.gray6}`}>
@@ -66,7 +66,7 @@ const PickTemplate = ({createPortfolio, portfolio}) => {
           <Box className={classes.categoryDiv}>
             <Divider light className={classes.categoryLine}/>
           </Box>
-          <Button style={{marginBottom: '10px'}} variant='contained' color='primary' onClick={()=>createPortfolio(store.getState().eportfolio.createPortfolioName)}>CREATE</Button>
+          <Button style={{marginBottom: '10px'}} variant='contained' color='primary' onClick={()=>{createPortfolio(store.getState().eportfolio.createPortfolioDetails);}}>CREATE</Button>
         </Box>
       </Box>
       <Box className={`${theme.content} ${theme.half} ${theme.fontg1} ${theme.gray6}`}>
@@ -86,11 +86,11 @@ const PickTemplate = ({createPortfolio, portfolio}) => {
 
 PickTemplate.propTypes = {
   createPortfolio: PropTypes.func.isRequired,
-  portfolio: PropTypes.object.isRequired
+  createPortfolioDetails: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => ({
-  portfolio: state.eportfolio.portfolio
+  createPortfolioDetails: state.eportfolio.createPortfolioDetails
 });
 
 export default connect(mapStateToProps, { createPortfolio })(PickTemplate);

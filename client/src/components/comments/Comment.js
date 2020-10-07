@@ -80,7 +80,6 @@ const Comment = ({
     postComment(itemID, textField);
     setValue('');
   };
-  console.log(comments);
 
   return (
     <>

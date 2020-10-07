@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Typography, Box, Button, TextField } from '@material-ui/core';
+import { Typography, Box, Button, TextField, Checkbox, FormControlLabel, List, ListItem } from '@material-ui/core';
 import { creatingPortfolioName, resetCreatingPortfolioName } from '../../actions/eportfolio';
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
@@ -15,6 +15,9 @@ const useStyles = makeStyles((theme) => ({
   },
   portfolioNameInputLabel: {
     paddingLeft: '10px !important'
+  },
+  checkbox: {
+    paddingLeft: '10px !important'
   }
 }));
 
@@ -25,6 +28,9 @@ const CreateEPortfolio = ({creatingPortfolioName, resetCreatingPortfolioName}) =
   const [name, setName] = React.useState('');
   const [label, setLabel] = React.useState('Name of Portfolio');
   const [error, setError] = React.useState(false);
+  const [privacy, setPrivacy] = React.useState(false);
+  const [emails, setEmails] = React.useState([]);
+  const [emailInputError, setEmailInputError] = React.useState('');
 
   useEffect(() => {
     resetCreatingPortfolioName();
@@ -41,6 +47,24 @@ const CreateEPortfolio = ({creatingPortfolioName, resetCreatingPortfolioName}) =
       setError(true);
     }
   }
+
+  function handleChange(component){
+    setPrivacy(component.target.checked);
+  }
+
+  function onEnter(event){
+    if(event.key === 'Enter'){
+      const input = event.target.value;
+      const pattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      const passes = pattern.test(input);
+      if (passes){
+        setEmails([...emails, input]);
+      }
+      else{
+        setEmailInputError('Not a valid email');
+      }
+    }
+  }
   
   return (
     <Box className={theme.content}>
@@ -54,7 +78,29 @@ const CreateEPortfolio = ({creatingPortfolioName, resetCreatingPortfolioName}) =
           onChange={handleInputChange}
           InputLabelProps={{className: classes.portfolioNameInputLabel}}>
         </TextField>
-        <Link onClick={() => name && creatingPortfolioName(name)} to={()=> name ? '/pick-template' : true}><Button style={{float: 'right'}} variant='contained' color='primary' >NEXT</Button></Link>
+        <FormControlLabel
+          control={<Checkbox 
+            checked={privacy} 
+            onChange={handleChange}
+            color='primary'/>}
+          label='Private'
+          className={classes.checkbox}
+        />
+        {privacy && <TextField
+          id='standard'
+          className={classes.portfolioNameInput}
+          label='Enter the emails of the users who are allowed to visit your portfolio and press enter to add'
+          placeholder='name@gmail.com'
+          onKeyDown={onEnter}
+          InputLabelProps={{className: classes.portfolioNameInputLabel}}>
+        </TextField>}
+        {privacy && <List>
+          {emails.map((object,i)=>
+          <ListItem key={i}>
+            {object}
+          </ListItem>)}
+        </List>}
+        <Link onClick={() => name && creatingPortfolioName(name, privacy, emails)} to={()=> name ? '/pick-template' : true}><Button style={{float: 'right'}} variant='contained' color='primary' >NEXT</Button></Link>
       </form>
     </Box>
   )

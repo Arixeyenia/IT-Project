@@ -6,6 +6,7 @@ import {
   RESET_CREATEPORTFOLIO_NAME,
   CREATE_PORTFOLIO,
   GET_PORTFOLIO,
+  GET_PORTFOLIO_GUEST,
   GET_PAGE,
   DELETE_PORTFOLIO,
   ADD_ITEM,
@@ -19,7 +20,8 @@ import {
   CREATE_PAGE,
   EDIT_PAGENAME,
   MAKE_MAIN,
-  DELETE_PAGE
+  DELETE_PAGE,
+  GET_ERROR
 } from '../actions/types';
 
 const initialState = {
@@ -27,7 +29,7 @@ const initialState = {
   page: {},
   userEPortfolios: [],
   eportfolioThumbnails: [],
-  createPortfolioName: '',
+  createPortfolioDetails:{name: '', privacy: false, emails: []},
   loading: true,
   comments: {},
   error: {},
@@ -42,33 +44,37 @@ export default function (state = initialState, action) {
         ...state,
         userEPortfolios: payload,
         loading: false,
+        error: {},
       };
     case GET_EPORTFOLIO_THUMBNAILS:
       return {
         ...state,
         eportfolioThumbnails: state.eportfolioThumbnails.concat(payload),
         loading: false,
+        error: {},
       };
     case CREATE_PORTFOLIO_NAME:
       return {
         ...state,
         loading: false,
-        createPortfolioName: payload,
+        createPortfolioDetails: payload,
+        error: {},
       };
     case RESET_CREATEPORTFOLIO_NAME:
       return {
         ...state,
         loading: false,
-        createPortfolioName: payload,
+        createPortfolioDetails: payload,
+        error: {},
       };
     case CREATE_PORTFOLIO:
       return {
         ...state,
         loading: false,
-        portfolio: payload,
-        createPortfolioName: '',
+        createPortfolioDetails: payload,
         eportfolioThumbnails: [],
         userEPortfolios: [],
+        error: {},
       };
     case DELETE_PORTFOLIO:
       return {
@@ -76,42 +82,56 @@ export default function (state = initialState, action) {
         loading: false,
         eportfolioThumbnails: [],
         userEPortfolios: [],
+        error: {},
       };
     case GET_PORTFOLIO:
       return {
         ...state,
         portfolio: payload,
         loading: false,
+        error: {},
+      };
+    case GET_PORTFOLIO_GUEST:
+      return {
+        ...state,
+        portfolio: payload,
+        loading: false,
+        error: {},
       };
     case GET_PAGE:
       return {
         ...state,
         page: payload,
         loading: false,
+        error: {},
       };
     case CREATE_PAGE:
       return {
         ...state,
         portfolio: payload,
         loading: false,
+        error: {},
       };
     case EDIT_PAGENAME:
       return {
         ...state,
         portfolio: payload,
         loading: false,
+        error: {},
       };
     case MAKE_MAIN:
     return {
       ...state,
       portfolio: payload,
       loading: false,
+      error: {},
     };
     case DELETE_PAGE:
     return {
       ...state,
       portfolio: payload,
       loading: false,
+      error: {},
     };
     case EDIT_ITEM:
       return {
@@ -123,12 +143,14 @@ export default function (state = initialState, action) {
           ),
         },
         loading: false,
+        error: {},
       };
     case ADD_ITEM:
       return {
         ...state,
         page: { ...state.page, items: [...state.page.items, payload] },
         loading: false,
+        error: {},
       };
     case DELETE_ITEM:
       return {
@@ -138,6 +160,7 @@ export default function (state = initialState, action) {
           items: state.page.items.filter((item) => item._id !== payload._id),
         },
         loading: false,
+        error: {},
       };
     case EPORTFOLIOS_ERROR:
       return {
@@ -150,6 +173,7 @@ export default function (state = initialState, action) {
         ...state,
         comments: { ...state.comments, ...payload },
         loading: false,
+        error: {},
       };
     case COMMENTS_ERROR:
       return {
@@ -165,12 +189,14 @@ export default function (state = initialState, action) {
           [payload.item]: [payload, ...state.comments[payload.item]],
         },
         loading: false,
+        error: {},
       };
     case DELETE_COMMENT:
       return {
         ...state,
         comments: { ...payload },
         loading: false,
+        error: {},
       };
     case EDIT_COMMENT:
       return {
@@ -182,7 +208,10 @@ export default function (state = initialState, action) {
           ),
         },
         loading: false,
+        error: {},
       };
+    case GET_ERROR:
+      return state;
     default:
       return state;
   }
