@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { Typography, Grid, Box, Card, CardContent, CardHeader, CardMedia, CardActions, Button } from '@material-ui/core';
-import {getPortfolio, getPage, getPortfolioAsGuest} from '../../actions/eportfolio';
+import {getPortfolio, getPage, getPortfolioAsGuest, getError } from '../../actions/eportfolio';
 import { loadUser } from '../../actions/auth';
 import { Link, useParams, useHistory } from 'react-router-dom';
 import store from '../../store';
@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const View = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated, error}) => {
+const View = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated, getError, error}) => {
   const classes = useStyles();
   const theme = useTheme();
   const themeStyle = useThemeStyle();
@@ -84,27 +84,31 @@ const View = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated
       groupedItems[element.row] = [element];
     }
   });
-  
-  return  (error ? 
-    (<Box className={themeStyle.content}>
+  if (Object.keys(error).length!==0){
+    return (
+    <Box className={themeStyle.content}>
       <Typography variant='h3'>You are not authorised to view this portfolio.</Typography>
-    </Box>):
-  (
-    <Fragment>
-      <Box className={themeStyle.content}>
-        <Typography variant='h1'>{portfolio.name}</Typography>
-      </Box>
-      {groupedItems.map((item)=>
-      <Grid container spacing={3} className={`${themeStyle.content} ${classes.content}`}>
-      {item.map((object) => card(classes, rowLengths, params.id, object, history))}  
-      </Grid>)}
-    </Fragment>
-  ));
+    </Box>);
+  }
+  else{
+    return (
+      <Fragment>
+        <Box className={themeStyle.content}>
+          <Typography variant='h1'>{portfolio.name}</Typography>
+        </Box>
+        {groupedItems.map((item, i)=>
+        <Grid container spacing={3} className={`${themeStyle.content} ${classes.content}`}>
+        {item.map((object) => card(classes, rowLengths, params.id, object, history))}  
+        </Grid>)}
+      </Fragment>
+    );
+  }
+  
 }
 
 const card = (classes, rowLengths, portfolioID, object, history, owner) => {
   return (
-    <Grid item xs={12/rowLengths[object.row]} className={classes.viewGridItem}>
+    <Grid item xs={12/rowLengths[object.row]} className={classes.viewGridItem} key={object._id}>
       <Card className={classes.cardRoot}>
         {object.mediaType === 'image' && <CardMedia
             className={classes.media}
@@ -138,7 +142,8 @@ View.propTypes = {
   portfolio: PropTypes.object.isRequired,
   loadUser: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.bool,
-  error: PropTypes.object
+  error: PropTypes.object,
+  getError: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -148,4 +153,4 @@ const mapStateToProps = (state) => ({
   error: state.eportfolio.error
 });
 
-export default connect(mapStateToProps, {getPage, getPortfolio, loadUser})(View);
+export default connect(mapStateToProps, {getPage, getPortfolio, loadUser, getError})(View);

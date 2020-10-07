@@ -23,7 +23,8 @@ import {
   CREATE_PAGE,
   EDIT_PAGENAME,
   MAKE_MAIN,
-  DELETE_PAGE
+  DELETE_PAGE,
+  GET_ERROR
 } from './types';
 
 export const getUserEPortfolios = () => async (dispatch) => {
@@ -321,3 +322,9 @@ export const deletePage = (portfolioID, pageURL) => async (dispatch) => {
     });
   }
 };
+
+export const getError = () => async (dispatch) => {
+  dispatch({
+    type: GET_ERROR
+  })
+}

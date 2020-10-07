@@ -54,7 +54,6 @@ const PickTemplate = ({createPortfolio, portfolio}) => {
     }
   }, [portfolio]);
 
-  const test = () =>{console.log(store.getState().eportfolio);}
   return (
     <Fragment>
       <Box className={`${theme.content} ${classes.templateSelection} ${theme.fontg1} ${theme.gray6}`}>
