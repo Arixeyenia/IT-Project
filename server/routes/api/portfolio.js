@@ -183,7 +183,7 @@ router.delete('/delete/:id', auth, async (req, res) => {
     if (portfolio.user.toString() !== req.user.uid)
       return res.status(401).json({ msg: 'User not authorized' });
     // perform delete
-    await Portfolio.findByIdAndDelete(req.body.id);
+    await Portfolio.findByIdAndDelete(req.params.id);
     return res.status(202).json({ msg: 'Portfolio deleted successfully' });
   } catch (err) {
     console.error(err.message);
