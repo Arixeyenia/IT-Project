@@ -42,17 +42,18 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const PickTemplate = ({createPortfolio, portfolio}) => {
+const PickTemplate = ({createPortfolio, createPortfolioDetails}) => {
   const classes = useStyles();
   const theme = useThemeStyle();
   const history = useHistory();
 
   useEffect(() => {
-    if (Object.keys(portfolio).length !== 0){
-      history.push('/edit/' + portfolio._id + '/' + encodeURI('Home'));
-      history.go(0);
+    if (Object.keys(createPortfolioDetails).length !== 0 && Object.keys(createPortfolioDetails).includes('_id')){
+      console.log(createPortfolioDetails);
+      //history.push('/edit/' + createPortfolioDetails._id + '/' + encodeURI('Home'));
+      //history.go(0);
     }
-  }, [portfolio]);
+  }, [createPortfolioDetails]);
 
   return (
     <Fragment>
@@ -85,11 +86,11 @@ const PickTemplate = ({createPortfolio, portfolio}) => {
 
 PickTemplate.propTypes = {
   createPortfolio: PropTypes.func.isRequired,
-  portfolio: PropTypes.object.isRequired
+  createPortfolioDetails: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => ({
-  portfolio: state.eportfolio.portfolio
+  createPortfolioDetails: state.eportfolio.createPortfolioDetails
 });
 
 export default connect(mapStateToProps, { createPortfolio })(PickTemplate);

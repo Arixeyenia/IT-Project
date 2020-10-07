@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Typography, Box, List, Card, CardContent, Icon, CardActionArea, GridList, GridListTile } from '@material-ui/core';
+import { Typography, Box, List, Card, CardContent, Icon, CardActionArea, GridList, GridListTile, CardMedia } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add'
 import {getUserEPortfolios, getEPortfolioThumbnail, deletePortfolio} from '../../actions/eportfolio';
 import { Link } from 'react-router-dom';
@@ -9,6 +9,7 @@ import Category from './DashboardCategory';
 import IndividualMenu from './DashboardMenu';
 import useStyles from './DashboardStyles';
 import { useThemeStyle } from '../../styles/themes';
+import img from '../../images/Quaranteam.png'
 
 const Dashboard = ({getUserEPortfolios, userEPortfolios, getEPortfolioThumbnail, eportfolioThumbnails, deletePortfolio}) => {
   const classes = useStyles();
@@ -18,7 +19,7 @@ const Dashboard = ({getUserEPortfolios, userEPortfolios, getEPortfolioThumbnail,
       getUserEPortfolios();
     }
     ePortfolioIDs.forEach(id => {
-      getEPortfolioThumbnail(id);
+      //getEPortfolioThumbnail(id);
     });
   }, [getUserEPortfolios, getEPortfolioThumbnail, userEPortfolios]);
   var ePortfolioIDs = [];
@@ -68,7 +69,7 @@ function DisplayPortfolioItem(arrayOfPortfolioObjects, deletePortfolio) {
       <GridListTile className={classes.portfolioListItem} key={object.portfolio._id}>
         <Card raised={true} className={classes.portfolioCard}>
           <IndividualMenu i={i} object={object} deletePortfolio={deletePortfolio}/>
-          <img src={object.thumbnail} alt='Portfolio Thumbnail' className={classes.cardThumbnail}></img>
+          <img src={img} alt='Portfolio Thumbnail' className={classes.cardThumbnail}></img>
           <CardContent className={classes.overlayPortfolioItem}>
             <Typography variant='body1' className={theme.fontg6}>{object.portfolio.name}</Typography>
           </CardContent>

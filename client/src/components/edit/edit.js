@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Typography, Drawer, Grid, Button, CardMedia, TextField, Divider, Box, List, ListItem, ListItemText, ListItemIcon, Collapse, IconButton, Icon, FormControlLabel, CardActions, Checkbox } from '@material-ui/core';
-import {getPortfolio, getPage, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage} from '../../actions/eportfolio';
+import {getPortfolio, getPage, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, isAuthenticated, error, getPortfolioAsGuest} from '../../actions/eportfolio';
+import { loadUser } from '../../actions/auth';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import store from '../../store'
@@ -150,7 +151,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage}) => {
+const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, loadUser, isAuthenticated, error, getPortfolioAsGuest}) => {
   const classes = useStyles();
   const theme = useTheme();
   const themeStyle = useThemeStyle();
@@ -245,13 +246,23 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
 
   const params = useParams();
   useEffect(() => {
-    if (Object.keys(portfolio).length === 0){
-      getPortfolio(params.id);
+    if (store.getState().auth.isAuthenticated){
+      if (Object.keys(portfolio).length === 0) {
+        getPortfolio(params.id);
+      }
+      if (Object.keys(page).length === 0) {
+        getPage(params.id, params.pagename);
+      }
     }
-    if (Object.keys(page).length === 0){
-      getPage(params.id, params.pagename);
+    else{
+      if (Object.keys(portfolio).length === 0) {
+        getPortfolioAsGuest(params.id);
+      }
+      if (Object.keys(page).length === 0) {
+        getPage(params.id, params.pagename);
+      }
     }
-  }, [portfolio, page]);
+  }, [getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated]);
   console.log(portfolio);
   const items = (Object.keys(page).length !== 0) ? page.items.sort((a, b) => a.row - b.row || a.column - b.column) : [];
   const rowLengths = {};
@@ -414,12 +425,18 @@ Edit.propTypes = {
   createPage: PropTypes.func.isRequired,
   editPageName: PropTypes.func.isRequired,
   mainMain: PropTypes.func.isRequired,
-  deletePage: PropTypes.func.isRequired 
+  deletePage: PropTypes.func.isRequired,
+  loadUser: PropTypes.func.isRequired,
+  isAuthenticated: PropTypes.bool,
+  error: PropTypes.object,
+  getPortfolioAsGuest: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state) => ({
   page: state.eportfolio.page,
-  portfolio: state.eportfolio.portfolio
+  portfolio: state.eportfolio.portfolio,
+  isAuthenticated: state.auth.isAuthenticated,
+  error: state.eportfolio.error
 });
 
-export default connect(mapStateToProps, {getPage, getPortfolio, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage})(Edit);
+export default connect(mapStateToProps, {getPage, getPortfolio, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, loadUser, getPortfolioAsGuest})(Edit);
