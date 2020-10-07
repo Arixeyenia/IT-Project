@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const View = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated}) => {
+const View = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated, error}) => {
   const classes = useStyles();
   const theme = useTheme();
   const themeStyle = useThemeStyle();
@@ -84,8 +84,12 @@ const View = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated
       groupedItems[element.row] = [element];
     }
   });
-
-  return (
+  
+  return  (error ? 
+    (<Box className={themeStyle.content}>
+      <Typography variant='h3'>You are not authorised to view this portfolio.</Typography>
+    </Box>):
+  (
     <Fragment>
       <Box className={themeStyle.content}>
         <Typography variant='h1'>{portfolio.name}</Typography>
@@ -95,7 +99,7 @@ const View = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated
       {item.map((object) => card(classes, rowLengths, params.id, object, history))}  
       </Grid>)}
     </Fragment>
-  );
+  ));
 }
 
 const card = (classes, rowLengths, portfolioID, object, history, owner) => {
@@ -133,13 +137,15 @@ View.propTypes = {
   getPortfolio: PropTypes.func.isRequired,
   portfolio: PropTypes.object.isRequired,
   loadUser: PropTypes.func.isRequired,
-  isAuthenticated: PropTypes.bool
+  isAuthenticated: PropTypes.bool,
+  error: PropTypes.object
 };
 
 const mapStateToProps = (state) => ({
   page: state.eportfolio.page,
   portfolio: state.eportfolio.portfolio,
-  isAuthenticated: state.auth.isAuthenticated
+  isAuthenticated: state.auth.isAuthenticated,
+  error: state.eportfolio.error
 });
 
 export default connect(mapStateToProps, {getPage, getPortfolio, loadUser})(View);

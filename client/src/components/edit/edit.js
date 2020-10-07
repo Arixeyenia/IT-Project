@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Typography, Drawer, Grid, Button, CardMedia, TextField, Divider, Box, List, ListItem, Card, CardContent, CardHeader, IconButton, Icon, CardActionArea, CardActions } from '@material-ui/core';
-import {getPortfolio, getPage, editItem, addItem, deleteItem} from '../../actions/eportfolio';
+import { Typography, Drawer, Grid, Button, CardMedia, TextField, Divider, Box, List, ListItem, ListItemText, ListItemIcon, Collapse, IconButton, Icon, FormControlLabel, CardActions, Checkbox } from '@material-ui/core';
+import {getPortfolio, getPage, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage} from '../../actions/eportfolio';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import store from '../../store'
@@ -23,6 +23,12 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import card from './card';
+import MenuIcon from '@material-ui/icons/Menu';
+import HomeIcon from '@material-ui/icons/Home';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
+import AddIcon from '@material-ui/icons/Add';
+import {Instagram, Facebook, LinkedIn, Twitter} from '@material-ui/icons';
 
 const drawerWidth = 300;
 
@@ -63,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
   },
   content: {
     flexGrow: 1,
@@ -90,7 +96,7 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 275,
   },
   unflex: {
-    flex: '0 1 11em',
+    flex: '0 1 7em',
   },
   pos: {
     marginTop: '2em',
@@ -118,21 +124,53 @@ const useStyles = makeStyles((theme) => ({
   },
   addIcon:{
     fontSize: '3.5rem'  
-  }
+  },
+  inline:{
+    display:'inline-flex'
+  },
+  inlineTextInput:{
+    margin: theme.spacing(1)
+  },
+  socialLinks:{      
+    display: 'flex',
+    alignItems: 'center'
+  },
+  socialMedia:{
+    marginTop: theme.spacing(2),
+    marginRight: theme.spacing(2),
+    fontSize: '20px',
+    color: 'white',
+    padding: theme.spacing(2),
+  },
+  currentPage:{
+    fontWeight: 'bold'
+  },
+  nested: {
+    paddingLeft: theme.spacing(4),
+  },
 }));
 
-const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, deleteItem}) => {
+const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage}) => {
   const classes = useStyles();
   const theme = useTheme();
   const themeStyle = useThemeStyle();
   const history = useHistory();
   const { handleSubmit, register, reset } = useForm();
+  const { handleSubmit:handleCreatePage, register:registerCreatePage, reset:resetCreatePage} = useForm();
+  const { handleSubmit:handleEditPage, register:registerEditPage, reset:resetEditPage} = useForm();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [currPageOpen, setCurrPageOpen] = React.useState(true);
   const [editID, setEditID] = React.useState('');
   const [deleteID, setDeleteID] = React.useState('');
+  const [toDelete, setToDelete] = React.useState('');
 
-  const onSubmit = (values) => {
+
+  const openCurrPage = () => {
+    setCurrPageOpen(!currPageOpen);
+  };
+
+  const editItemWrapper = (values) => {
     values.item = editID;
     editItem(values);
     handleDrawerClose(); 
@@ -148,15 +186,40 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
     });
   }
 
-  const handleDialogOpen = (id) => {
+  const createPageWrapper = (values) =>{
+    values.portfolio = portfolio._id;
+    values.oldname = 
+    createPage(values);
+    resetCreatePage();
+  }
+
+  const editPageWrapper = (values) =>{
+    values.portfolio = portfolio._id;
+    editPagename(values);
+    resetEditPage();
+    history.push('/edit/' + portfolio._id + '/' + encodeURI(values.newname));
+    history.go(0);
+  }
+
+  const handleDialogOpen = (target, id) => {
+    setToDelete(target);
     setDeleteID(id);
     setDialogOpen(true);
   };
 
   const handleDialogClose = (accepted) => {
-    if (accepted) deleteItem(deleteID);
+
+    if (accepted) {
+      if (toDelete === 'ITEM') deleteItem(deleteID);
+      if (toDelete === 'PAGE') deletePage(portfolio._id, deleteID);
+    }
+    setToDelete('');
     setDeleteID('');
     setDialogOpen(false);
+    if (toDelete === 'PAGE'){
+      history.push('/edit/' + portfolio._id);
+      history.go(0);
+    }
   };
 
   const handleDrawerOpen = (id) => {
@@ -189,7 +252,7 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
       getPage(params.id, params.pagename);
     }
   }, [portfolio, page]);
-  console.log(page);
+  console.log(portfolio);
   const items = (Object.keys(page).length !== 0) ? page.items.sort((a, b) => a.row - b.row || a.column - b.column) : [];
   const rowLengths = {};
   items.forEach(element => {
@@ -215,12 +278,68 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
       }}
     >
       <div className={classes.drawerHeader}>
+        <Typography variant='h4' className={classes.drawerTitle}>{editID === '' ? 'Options' : 'Edit'}</Typography>
         <IconButton onClick={() => handleDrawerClose()}>
           {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
         </IconButton>
       </div>
       <Divider />
-      <form className={classes.root} noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
+      {editID === '' && Object.keys(portfolio).length !== 0 &&
+        <div>
+        <Typography variant='h5'>Pages</Typography>
+        <List>
+            {portfolio.pages.map(page => (<div><ListItem button onClick={() => {if (page.name === params.pagename){openCurrPage();} else{history.push('/edit/' + portfolio._id + '/' + page.url);history.go(0);}}} key={page.url} selected={page.url === params.pagename}>
+            <ListItemText primary={page.name}/>
+            {page.main && <ListItemIcon><HomeIcon></HomeIcon></ListItemIcon>}
+            {page.name === params.pagename && (currPageOpen ? <ExpandLess /> : <ExpandMore />)}
+          </ListItem>
+          {page.name === params.pagename && <Collapse in={currPageOpen} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <ListItem className={classes.nested}>
+              <form noValidate autoComplete="off" onSubmit={handleEditPage(editPageWrapper)}>
+              <span className={classes.inline}>
+              <TextField style={{display:'none'}} name="oldname" value={page.name} inputRef={registerEditPage}/>
+              <TextField label='New Name' variant="outlined" name="newname" inputRef={registerEditPage}/>
+              <Button variant="outlined" startIcon={<EditIcon />} color="primary" type="submit">Edit</Button>
+              </span>
+              </form>
+            </ListItem>
+            {!page.main && 
+            <ListItem className={classes.nested}>
+            <Button
+            variant="outlined"    
+            color="primary"      
+            startIcon={<HomeIcon />}
+            onClick={() => makeMain(portfolio._id, page.name)}
+            >
+            Make Main
+            </Button>
+            </ListItem>}
+            <ListItem className={classes.nested}>
+            <Button
+            variant="outlined"
+            color="primary"
+            startIcon={<DeleteIcon />}
+            onClick={() => handleDialogOpen('PAGE', page.url)}
+            >
+            Delete
+            </Button>
+            </ListItem>
+          </List>
+        </Collapse>}
+        </div>
+          ))}
+        <form noValidate autoComplete="off" onSubmit={handleCreatePage(createPageWrapper)}><span className={classes.inline}><TextField className={classes.inlineTextInput} label='New Page' variant="outlined" name="pagename" inputRef={registerCreatePage}/><Button variant="outlined" color="primary" className={classes.inlineTextInput} startIcon={<AddIcon />} type="submit">Add</Button></span></form>
+        </List>
+        <Typography variant='h5'>Social Media</Typography>
+        <form>
+          {['instagram', 'facebook', 'twitter', 'linkedin'].map(name => (<TextField className={classes.textinput} label={name} variant="outlined"/>))}
+          <Button variant="outlined" color="primary" className={classes.textinput} type="submit">Save</Button>
+        </form>
+        </div>
+      }
+      {editID !== '' &&
+      <form className={classes.root} noValidate autoComplete="off" onSubmit={handleSubmit(editItemWrapper)}>
       <List>
         {['Title', 'Subtitle', 'Paragraph', 'Media Link', 'Media Type', 'Link Text', 'Link Address', 'private', 'row', 'column'].map((text, index) => (
           <TextField key={getField(index)} className={classes.textinput} id='standard-basic' label={text} variant='outlined' name={getField(index)} inputRef={register}/>
@@ -228,13 +347,23 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
         <Button variant='outlined' color='primary' className={classes.textinput} type='submit'>Save</Button>
       </List>      
       </form>
+      }
     </Drawer>
     <main
       className={clsx(classes.content, {
         [classes.contentShift]: drawerOpen,
       })}
     >
-      <Typography variant='h1'>{portfolio.name}</Typography>
+      <Typography variant="h1">{portfolio.name}</Typography>
+      <IconButton onClick={() => {if(drawerOpen){handleDrawerClose();}else{handleDrawerOpen('')}}}>
+          <MenuIcon/>&nbsp;Options
+        </IconButton>
+        <div className={classes.socialLinks}>
+            <Button className={classes.socialMedia} style={{backgroundColor:"#4267B2"}}><Facebook/></Button>
+            <Button className={classes.socialMedia} style={{backgroundColor:"#DD2A7B"}}><Instagram/></Button>
+            <Button className={classes.socialMedia} style={{backgroundColor:"#1DA1F2"}}><Twitter/></Button>
+            <Button className={classes.socialMedia} style={{backgroundColor:"#2867B2"}}><LinkedIn/></Button>
+        </div>
       <Grid container spacing={3}>
       {items.map((object) => card(classes, rowLengths, portfolio._id, object, history, handleDrawerOpen, handleDialogOpen, addItemWrapper)
         )}
@@ -254,10 +383,10 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
       >
-        <DialogTitle id='alert-dialog-title'>{'Do you want to delete this item?'}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{(toDelete === 'ITEM') ? "Do you want to delete this item?" : "Do you want to delete this page?"}</DialogTitle>
         <DialogContent>
-          <DialogContentText id='alert-dialog-description'>
-            Once deleted, this item will not be able to be restored.
+          <DialogContentText id="alert-dialog-description">
+            {(toDelete === 'ITEM') ? "Once deleted, this item will not be able to be restored." : "Once deleted, this page will not be able to be restored."}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -281,7 +410,11 @@ Edit.propTypes = {
   portfolio: PropTypes.object.isRequired,
   editItem: PropTypes.func.isRequired,
   addItem: PropTypes.func.isRequired,
-  deleteItem: PropTypes.func.isRequired
+  deleteItem: PropTypes.func.isRequired,
+  createPage: PropTypes.func.isRequired,
+  editPageName: PropTypes.func.isRequired,
+  mainMain: PropTypes.func.isRequired,
+  deletePage: PropTypes.func.isRequired 
 };
 
 const mapStateToProps = (state) => ({
@@ -289,4 +422,4 @@ const mapStateToProps = (state) => ({
   portfolio: state.eportfolio.portfolio
 });
 
-export default connect(mapStateToProps, {getPage, getPortfolio, editItem, addItem, deleteItem})(Edit);
+export default connect(mapStateToProps, {getPage, getPortfolio, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage})(Edit);

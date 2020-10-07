@@ -70,26 +70,21 @@ router.post('/', auth, async (req, res) => {
 // @route   DELETE api/page
 // @desc    Remove a page from a portfolio
 // @access  Private
-router.delete('/', auth, async (req, res) => {
+router.delete('/:portfolio/:url', auth, async (req, res) => {
   try {
-    const portfolio = await Portfolio.findById(req.body.portfolio);
+    const portfolio = await Portfolio.findById(req.params.portfolio);
     // check if portfolio exists
     if (!portfolio) return res.status(404).json({ msg: 'Portfolio not found' });
     // check if user is authorized
     if (portfolio.user.toString() !== req.user.uid)
       return res.status(401).json({ msg: 'User not authorized' });
     // retrieve id, assume no duplicate page
-    const page = portfolio.pages.filter(
-      (page) => page.url === encodeURI(req.body.pagename)
-    );
+    const page = portfolio.pages.filter(page => page.url === req.params.url);
+    if (page.main){
+      res.status(500).send('Cannot delete main page');
+    }
     // TODO : remove associated items
-    res.json(
-      await Portfolio.findByIdAndUpdate(
-        req.body.portfolio,
-        { $pull: { pages: { _id: page[0]._id } } },
-        { new: true }
-      )
-    );
+    res.json(await Portfolio.findByIdAndUpdate(req.params.portfolio, { $pull: { pages: {_id : page[0]._id}}}, {new : true}));
   } catch (err) {
     console.error(err.message);
     if (err.kind === 'ObjectId') {
@@ -99,11 +94,12 @@ router.delete('/', auth, async (req, res) => {
   }
 });
 
-// @route   put api/page/editname
-// @desc    Edits the name of a page on a portfolio
+// @route   post api/page/editname
+// @desc    Edits the name of a page on a portfolio 
 // @access  Private
-router.put('/editname', auth, async (req, res) => {
+router.post('/editname', auth, async (req, res) => {
   try {
+    console.log(req.body.oldname);
     const portfolio = await Portfolio.findById(req.body.portfolio);
     // check if portfolio exists
     if (!portfolio) return res.status(404).json({ msg: 'Portfolio not found' });
