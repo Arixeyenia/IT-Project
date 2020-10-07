@@ -4,6 +4,9 @@
   "description": "ePortfolio",
   "main": "index.js",
   "scripts": {
+    "build": "npm buildserver && npm buildclient",
+    "buildserver": "cd ./server && npm install",
+    "buildclient": "cd ./client && npm install",
     "start": "cd ./server && npm run dev"
   },
   "repository": {
