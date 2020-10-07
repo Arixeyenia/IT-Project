@@ -7,7 +7,7 @@
     "build": "npm run buildserver && npm run buildclient",
     "buildserver": "cd ./server && npm install",
     "buildclient": "cd ./client && npm install",
-    "start": "cd ./server && npm run dev"
+    "start": "cd ./server && npm run production"
   },
   "repository": {
     "type": "git",
