@@ -9,6 +9,7 @@ import {
   RESET_CREATEPORTFOLIO_NAME,
   CREATE_PORTFOLIO,
   GET_PORTFOLIO,
+  GET_PORTFOLIO_GUEST,
   GET_PAGE,
   DELETE_PORTFOLIO,
   ADD_ITEM,
@@ -53,10 +54,15 @@ export const getEPortfolioThumbnail = (eportfolioID) => async (dispatch) => {
   }
 };
 
-export const creatingPortfolioName = (name) => async (dispatch) => {
+export const creatingPortfolioName = (name, privacy, emails) => async (dispatch) => {
+  const info = {
+    'name': name,
+    'privacy': privacy,
+    'emails': emails
+  }
   dispatch({
     type: CREATE_PORTFOLIO_NAME,
-    payload: name,
+    payload: info,
   });
 };
 
@@ -67,11 +73,12 @@ export const resetCreatingPortfolioName = () => async (dispatch) => {
   });
 };
 
-export const createPortfolio = (name) => async (dispatch) => {
+export const createPortfolio = (details) => async (dispatch) => {
   try {
-    const res = await api.post('/portfolio', { name: name });
+    const res = await api.post('/portfolio', { name: details.name, private: details.privacy, emails: details.emails });
     dispatch({
       type: CREATE_PORTFOLIO,
+      data: res.data
     });
   } catch (err) {
     dispatch({
@@ -97,9 +104,24 @@ export const deletePortfolio = (id) => async (dispatch) => {
 
 export const getPortfolio = (eportfolioID) => async (dispatch) => {
   try {
-    const res = await api.get('/portfolio/guest/' + eportfolioID);
+    const res = await api.get('/portfolio/single/' + eportfolioID);
     dispatch({
       type: GET_PORTFOLIO,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: EPORTFOLIOS_ERROR,
+      payload: { msg: err.message },
+    });
+  }
+};
+
+export const getPortfolioAsGuest = (eportfolioID) => async (dispatch) => {
+  try {
+    const res = await api.get('/portfolio/guest/' + eportfolioID);
+    dispatch({
+      type: GET_PORTFOLIO_GUEST,
       payload: res.data,
     });
   } catch (err) {

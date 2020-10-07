@@ -6,6 +6,7 @@ import {
   RESET_CREATEPORTFOLIO_NAME,
   CREATE_PORTFOLIO,
   GET_PORTFOLIO,
+  GET_PORTFOLIO_GUEST,
   GET_PAGE,
   DELETE_PORTFOLIO,
   ADD_ITEM,
@@ -23,7 +24,7 @@ const initialState = {
   page: {},
   userEPortfolios: [],
   eportfolioThumbnails: [],
-  createPortfolioName: '',
+  createPortfolioDetails:{name: '', privacy: false, emails: []},
   loading: true,
   comments: {},
   error: {},
@@ -49,19 +50,19 @@ export default function (state = initialState, action) {
       return {
         ...state,
         loading: false,
-        createPortfolioName: payload,
+        createPortfolioDetails: payload
       };
     case RESET_CREATEPORTFOLIO_NAME:
       return {
         ...state,
         loading: false,
-        createPortfolioName: payload,
+        createPortfolioDetails: payload
       };
     case CREATE_PORTFOLIO:
       return {
         ...state,
         loading: false,
-        createPortfolioName: state.createPortfolioName,
+        createPortfolioDetails: payload,
         eportfolioThumbnails: [],
         userEPortfolios: [],
       };
@@ -73,6 +74,12 @@ export default function (state = initialState, action) {
         userEPortfolios: [],
       };
     case GET_PORTFOLIO:
+      return {
+        ...state,
+        portfolio: payload,
+        loading: false,
+      };
+    case GET_PORTFOLIO_GUEST:
       return {
         ...state,
         portfolio: payload,

@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { Typography, Grid, Box, Card, CardContent, CardHeader, CardMedia, CardActions, Button } from '@material-ui/core';
-import {getPortfolio, getPage} from '../../actions/eportfolio';
+import {getPortfolio, getPage, getPortfolioAsGuest} from '../../actions/eportfolio';
+import { loadUser } from '../../actions/auth';
 import { Link, useParams, useHistory } from 'react-router-dom';
 import store from '../../store';
 import Comment from '../comments/Comment';
@@ -43,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const View = ({getPortfolio, portfolio, getPage, page}) => {
+const View = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated}) => {
   const classes = useStyles();
   const theme = useTheme();
   const themeStyle = useThemeStyle();
@@ -51,13 +52,23 @@ const View = ({getPortfolio, portfolio, getPage, page}) => {
   const history = useHistory();
 
   useEffect(() => {
-    if (Object.keys(portfolio).length === 0) {
-      getPortfolio(params.id);
+    if (store.getState().auth.isAuthenticated){
+      if (Object.keys(portfolio).length === 0) {
+        getPortfolio(params.id);
+      }
+      if (Object.keys(page).length === 0) {
+        getPage(params.id, params.pagename);
+      }
     }
-    if (Object.keys(page).length === 0) {
-      getPage(params.id, params.pagename);
+    else{
+      if (Object.keys(portfolio).length === 0) {
+        getPortfolioAsGuest(params.id);
+      }
+      if (Object.keys(page).length === 0) {
+        getPage(params.id, params.pagename);
+      }
     }
-  }, [getPortfolio, portfolio, getPage, page]);
+  }, [getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated]);
 
   const items = (Object.keys(page).length !== 0) ? page.items : [];
   const rowLengths = {};
@@ -76,7 +87,7 @@ const View = ({getPortfolio, portfolio, getPage, page}) => {
 
   return (
     <Fragment>
-      <Box className={`${themeStyle.content} ${classes.content}`}>
+      <Box className={themeStyle.content}>
         <Typography variant='h1'>{portfolio.name}</Typography>
       </Box>
       {groupedItems.map((item)=>
@@ -120,12 +131,15 @@ View.propTypes = {
   getPage: PropTypes.func.isRequired,
   page: PropTypes.object.isRequired,
   getPortfolio: PropTypes.func.isRequired,
-  portfolio: PropTypes.object.isRequired
+  portfolio: PropTypes.object.isRequired,
+  loadUser: PropTypes.func.isRequired,
+  isAuthenticated: PropTypes.bool
 };
 
 const mapStateToProps = (state) => ({
   page: state.eportfolio.page,
-  portfolio: state.eportfolio.portfolio
+  portfolio: state.eportfolio.portfolio,
+  isAuthenticated: state.auth.isAuthenticated
 });
 
-export default connect(mapStateToProps, {getPage, getPortfolio})(View);
+export default connect(mapStateToProps, {getPage, getPortfolio, loadUser})(View);

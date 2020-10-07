@@ -40,15 +40,34 @@ router.post(
     // if (!errors.isEmpty()) {
     //   return res.status(400).json({ errors: errors.array() });
     // }
-
+    
     try {
+      var allowedUsers = [];
+      for (const email of req.body.emails){
+        const user = await User.findOne({ email:email });
+        if(!user) return res.status(404).json({ msg: 'User not found'});
+        allowedUsers.push({user: user._id});
+      };
+
       const newPortfolio = new Portfolio({
         name: req.body.name,
         user: req.user.uid,
         private: req.body.private,
+        allowedUsers: allowedUsers,
+        pages: {
+          name: 'Home',
+          url: 'Home',
+          main: true
+        }
       });
 
       const portfolio = await newPortfolio.save();
+      Portfolio.findOne({_id: portfolio._id})
+        .populate('allowedUser.user')
+        .exec(function (err, portfolio) {
+          if (err) return res.status(500).send('Server Error');
+        });
+        
       res.json(portfolio);
     } catch (err) {
       console.error(err.message);
@@ -66,10 +85,15 @@ router.get('/single/:id', auth, async (req, res) => {
     if (!portfolio) return res.status(404).json({ msg: 'Portfolio not found' });
     const user = await User.findOne({ googleId: req.user.uid });
     // check that user is authorized
+    
+    const isAllowed = portfolio.allowedUsers.some(function(user){
+      return user.equals(user.id);
+    });
+
     if (
       portfolio.private &&
       portfolio.user.toString() !== req.user.uid &&
-      !(user.id in portfolio.allowedUsers)
+      !(isAllowed)
     ) {
       return res.status(401).json({ msg: 'User not authorized' });
     }
@@ -183,7 +207,7 @@ router.delete('/delete/:id', auth, async (req, res) => {
     if (portfolio.user.toString() !== req.user.uid)
       return res.status(401).json({ msg: 'User not authorized' });
     // perform delete
-    await Portfolio.findByIdAndDelete(req.body.id);
+    await Portfolio.findByIdAndDelete(req.params.id);
     return res.status(202).json({ msg: 'Portfolio deleted successfully' });
   } catch (err) {
     console.error(err.message);

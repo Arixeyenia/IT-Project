@@ -4,7 +4,7 @@ import image from '../../images/pick.png';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createPortfolio } from '../../actions/eportfolio'
-import store from '../../store'
+import store from '../../store';
 import { makeStyles } from '@material-ui/core/styles';
 import { useThemeStyle } from '../../styles/themes';
 
@@ -55,7 +55,7 @@ const PickTemplate = ({createPortfolio}) => {
           <Box className={classes.categoryDiv}>
             <Divider light className={classes.categoryLine}/>
           </Box>
-          <Button style={{marginBottom: '10px'}} variant='contained' color='primary' onClick={()=>{createPortfolio(store.getState().eportfolio.createPortfolioName)}}>CREATE</Button>
+          <Button style={{marginBottom: '10px'}} variant='contained' color='primary' onClick={()=>{createPortfolio(store.getState().eportfolio.createPortfolioDetails);}}>CREATE</Button>
         </Box>
       </Box>
       <Box className={`${theme.content} ${theme.half} ${theme.fontg1} ${theme.gray6}`}>
