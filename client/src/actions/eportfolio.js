@@ -102,7 +102,7 @@ export const deletePortfolio = (id) => async (dispatch) => {
 
 export const getPortfolio = (eportfolioID) => async (dispatch) => {
   try {
-    const res = await api.get('/portfolio/guest/' + eportfolioID);
+    const res = await api.get('/portfolio/single/' + eportfolioID);
     dispatch({
       type: GET_PORTFOLIO,
       payload: res.data,
