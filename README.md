@@ -1,7 +1,6 @@
 # Quaranteam Documentation  
 ## Table of contents  
 - [User Documentation](#user-documentation)  
-  - [Link](#link)  
 - [Frontend Documentation](#frontend-documentation)  
   - [Setup](#setup)  
   - [Technologies](#technologies)  
@@ -17,7 +16,7 @@
   
                
 # User Documentation  
-## Link  
+
 https://winnie76.github.io/Quaranteam/  
 
   
