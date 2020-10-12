@@ -4,11 +4,10 @@
   "description": "ePortfolio",
   "main": "index.js",
   "scripts": {
-    "build": "npm run buildserver && npm run buildclient",
+    "build": "npm run buildserver && npm run buildclient && cd ./client && npm build",
     "buildserver": "cd ./server && npm install",
     "buildclient": "cd ./client && npm install",
-    "start": "cd ./server && npm run server",
-    "heroku-postbuild": "cd ./client && npm build && npm run"
+    "start": "cd ./server && npm run start",
   },
   "repository": {
     "type": "git",
