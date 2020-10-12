@@ -5,9 +5,15 @@
   "main": "server.js",
   "scripts": {
     "start": "node server",
-    "server": "nodemon",
+    "server:dev": "nodemon",
+    "server": "node server.js",
     "client": "npm start --prefix ../client",
+<<<<<<< HEAD
     "dev": "concurrently \"npm run server\" \"npm run client\""
+=======
+    "dev": "concurrently \"npm run server:dev\" \"npm run client\"",
+    "production": "npm run server & npm run client"
+>>>>>>> 9f78764837095fc0c6c86ad42eaafffad26c9a61
   },
   "engines": {
     "node": "12.x"

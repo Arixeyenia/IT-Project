@@ -50,8 +50,8 @@ const PickTemplate = ({createPortfolio, createPortfolioDetails}) => {
   useEffect(() => {
     if (Object.keys(createPortfolioDetails).length !== 0 && Object.keys(createPortfolioDetails).includes('_id')){
       console.log(createPortfolioDetails);
-      //history.push('/edit/' + createPortfolioDetails._id + '/' + encodeURI('Home'));
-      //history.go(0);
+      history.push('/edit/' + createPortfolioDetails._id + '/' + encodeURI('Home'));
+      history.go(0);
     }
   }, [createPortfolioDetails]);
 
