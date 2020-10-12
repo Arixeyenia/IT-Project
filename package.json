@@ -7,7 +7,8 @@
     "build": "npm run buildserver && npm run buildclient",
     "buildserver": "cd ./server && npm install",
     "buildclient": "cd ./client && npm install",
-    "start": "cd ./server && npm run production"
+    "start": "cd ./server && npm run start",
+    "heroku-postbuild": "cd ./client && npm run build"
   },
   "repository": {
     "type": "git",
