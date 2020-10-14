@@ -27,6 +27,7 @@ router.post('/', auth, async (req, res, next) => {
           name: req.user.name,
           email: req.user.email,
           googleId: req.user.uid,
+          avatar: req.user.picture,
         }).save();
       }
     });

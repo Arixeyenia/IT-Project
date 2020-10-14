@@ -21,7 +21,6 @@ import {
   DialogActions,
   Button,
 } from '@material-ui/core';
-import Faker from 'faker'; // Making random avatar appear for now
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ChatIcon from '@material-ui/icons/Chat';
@@ -105,7 +104,7 @@ const Comment = ({
                     <React.Fragment key={comment.id}>
                       <ListItem key={comment.id} alignItems='flex-start'>
                         <ListItemAvatar>
-                          <Avatar alt='avatar' src={Faker.image.avatar()} />
+                          <Avatar alt='avatar' src={comment.from.avatar} />
                           {/* Will need to add avatars later on */}
                         </ListItemAvatar>
 
