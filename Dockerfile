@@ -20,6 +20,8 @@ COPY package*.json /server/
 
 RUN npm install
 
+RUN npm install express
+
 COPY . /server/
 
 CMD ["npm", "start"]
