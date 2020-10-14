@@ -8,20 +8,18 @@ COPY . /
 
 WORKDIR /client
 
-COPY package*.json /client/
+COPY package*.json .
 
 RUN npm install
 
-COPY . /client/
+COPY . .
 
 WORKDIR /server
 
-COPY package*.json /server/
+COPY package*.json .
 
 RUN npm install
 
-RUN npm install express
-
-COPY . /server/
+COPY . .
 
 CMD ["npm", "start"]
