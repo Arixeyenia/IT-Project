@@ -6,7 +6,7 @@ COPY package.json /client/
 
 RUN npm install
 
-COPY . ./client/
+COPY . /client/
 
 WORKDIR /server
 
@@ -14,7 +14,7 @@ COPY package.json /server/
 
 RUN npm install
 
-COPY . ./server/
+COPY . /server/
 
 EXPOSE 3000
 
