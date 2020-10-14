@@ -34,7 +34,9 @@ jobs:
       - name: Build and push
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: heroku container:push -a eportfolio-quaranteam web 
+        run: heroku container:push -a eportfolio-quaranteam web
+      - name: Check image
+        run: docker images
       - name: Release
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
