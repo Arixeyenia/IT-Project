@@ -26,9 +26,6 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      - name: Build Dockerfile
-        run: docker build -t quaranteam .
-
       # Runs a single command using the runners shell
       - name: Login to Heroku Container Registry
         env:
@@ -38,6 +35,8 @@ jobs:
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: heroku container:push -a eportfolio-quaranteam web
+      - name: Check image
+        run: docker images
       - name: Release
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
