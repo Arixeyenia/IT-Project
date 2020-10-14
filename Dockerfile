@@ -8,7 +8,7 @@ COPY . /
 
 WORKDIR /client
 
-COPY package*.json .
+COPY package*.json /
 
 RUN npm install
 
@@ -16,7 +16,7 @@ COPY . .
 
 WORKDIR /server
 
-COPY package*.json .
+COPY package*.json /
 
 RUN npm install
 
