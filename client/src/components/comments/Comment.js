@@ -185,8 +185,6 @@ function CommentMenu(props) {
     setOpen(false);
   };
 
-  console.log(props.comment.from);
-
   const [commentValue, setCommentValue] = useState(props.comment.text);
   return (
     <div>
