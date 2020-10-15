@@ -347,6 +347,8 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
           {['instagram', 'facebook', 'twitter', 'linkedin'].map(name => (<TextField className={classes.textinput} label={name} variant="outlined"/>))}
           <Button variant="outlined" color="primary" className={classes.textinput} type="submit">Save</Button>
         </form>
+        <Typography variant='h5'>Templates</Typography>
+        <Button variant="outlined" color="primary" className={classes.textinput} type="submit">Save template</Button>
         </div>
       }
       {editID !== '' &&

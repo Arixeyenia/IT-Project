@@ -3,7 +3,7 @@ import { Box, Button, Typography, Divider } from '@material-ui/core';
 import image from '../../images/pick.png';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { createPortfolio } from '../../actions/eportfolio'
+import { getUserEPortfolios, createPortfolio } from '../../actions/eportfolio'
 import store from '../../store';
 import { makeStyles } from '@material-ui/core/styles';
 import { useThemeStyle } from '../../styles/themes';
@@ -35,14 +35,22 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '14px',
     borderRadius: '8px',
     marginTop: '25px',
+    marginLeft: '25px',
     '&:hover, &:focus': {
       backgroundColor: '#4F4F4F',
       color: '#F2F2F2'
     }
+  }, 
+  horizontalScroll: {
+    width: '100%',
+    height: '120px',
+    overflowX: 'scroll',
+    overflowY: 'hidden',
+    whiteSpace: 'nowrap'
   }
 }));
 
-const PickTemplate = ({createPortfolio, createPortfolioDetails}) => {
+const PickTemplate = ({createPortfolio, createPortfolioDetails, getUserEPortfolios, userEPortfolios}) => {
   const classes = useStyles();
   const theme = useThemeStyle();
   const history = useHistory();
@@ -53,13 +61,28 @@ const PickTemplate = ({createPortfolio, createPortfolioDetails}) => {
       history.push('/edit/' + createPortfolioDetails._id + '/' + encodeURI('Home'));
       history.go(0);
     }
-  }, [createPortfolioDetails]);
+    if (userEPortfolios.length == 0){
+      getUserEPortfolios();
+    }
+  }, [createPortfolioDetails, getUserEPortfolios, userEPortfolios]);
+
+  var ePortfolioIDs = [];
+  userEPortfolios.forEach(portfolio => {
+    ePortfolioIDs.push(portfolio._id);
+  });
+
+  var arrayOfPortfolioObjects = [];
+  for (let i = 0; i < userEPortfolios.length; i++) {
+    arrayOfPortfolioObjects.push({
+      portfolio: userEPortfolios[i]
+    })
+  }
 
   return (
     <Fragment>
       <Box className={`${theme.content} ${classes.templateSelection} ${theme.fontg1} ${theme.gray6}`}>
-        <Box>
-          <Button variant='contained' className={classes.templateButton}>Blank</Button>
+        <Box className={classes.horizontalScroll}>
+          {DisplayTemplateButtons(arrayOfPortfolioObjects)}
         </Box>
         <Box className={classes.category}>
           <Typography noWrap variant='body1' className={classes.categoryTypography}>Pick a template</Typography>
@@ -84,13 +107,25 @@ const PickTemplate = ({createPortfolio, createPortfolioDetails}) => {
   );
 }
 
+function DisplayTemplateButtons(arrayOfPortfolioObjects) {
+  const classes = useStyles();
+  return(
+    arrayOfPortfolioObjects.map((object) => (
+      <Button variant='contained' className={classes.templateButton}>{object.portfolio.name}</Button>
+    ))
+  );
+}
+
 PickTemplate.propTypes = {
   createPortfolio: PropTypes.func.isRequired,
-  createPortfolioDetails: PropTypes.object.isRequired
+  createPortfolioDetails: PropTypes.object.isRequired,
+  getUserEPortfolios: PropTypes.func.isRequired,
+  userEPortfolios: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
 const mapStateToProps = (state) => ({
-  createPortfolioDetails: state.eportfolio.createPortfolioDetails
+  createPortfolioDetails: state.eportfolio.createPortfolioDetails,
+  userEPortfolios: state.eportfolio.userEPortfolios
 });
 
-export default connect(mapStateToProps, { createPortfolio })(PickTemplate);
+export default connect(mapStateToProps, { getUserEPortfolios, createPortfolio })(PickTemplate);

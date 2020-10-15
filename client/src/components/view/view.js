@@ -134,7 +134,6 @@ const card = (classes, rowLengths, portfolioID, object, history, owner) => {
   )
 }
 
-
 View.propTypes = {
   getPage: PropTypes.func.isRequired,
   page: PropTypes.object.isRequired,
