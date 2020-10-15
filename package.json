@@ -8,6 +8,7 @@
     "buildserver": "cd ./server && npm install",
     "buildclient": "cd ./client && npm install",
     "start": "cd ./server && npm run start",
+    "dev": "cd ./server && npm run dev"
   },
   "repository": {
     "type": "git",
