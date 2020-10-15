@@ -38,7 +38,7 @@ router.post(
       }
 
       const newComment = new Comment({
-        from: user.id,
+        from: req.user.uid,
         name: user.name,
         avatar: user.avatar,
         item: req.params.item_id,

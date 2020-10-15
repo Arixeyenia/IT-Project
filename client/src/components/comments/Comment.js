@@ -80,11 +80,6 @@ const Comment = ({
     setValue('');
   };
 
-  console.log('owner is:');
-  console.log(owner);
-  console.log('currentUser is:');
-  console.log(currentUserID);
-
   return (
     <>
       <Helpers.Button
@@ -118,8 +113,8 @@ const Comment = ({
                           secondary={comment.text}
                         />
                         {/* Check if user is owner of comment or item to display commentMenu */}
-                        {currentUserID === owner ||
-                        currentUserID === comment.from ? (
+                        {(currentUserID === owner ||
+                        currentUserID === comment.from) ? (
                           <CommentMenu
                             comment={comment}
                             deleteComment={deleteComment}
@@ -189,6 +184,8 @@ function CommentMenu(props) {
   const handleEditClose = () => {
     setOpen(false);
   };
+
+  console.log(props.comment.from);
 
   const [commentValue, setCommentValue] = useState(props.comment.text);
   return (
