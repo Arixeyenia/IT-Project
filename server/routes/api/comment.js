@@ -40,6 +40,7 @@ router.post(
       const newComment = new Comment({
         from: user.id,
         name: user.name,
+        avatar: user.avatar,
         item: req.params.item_id,
         text: req.body.text,
       });
@@ -164,6 +165,7 @@ router.post(
         _id: comment._id,
         from: comment.from,
         name: comment.name,
+        avatar: comment.avatar,
         item: comment.item,
         text: req.body.text,
         date: comment.date,

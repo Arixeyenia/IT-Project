@@ -80,6 +80,11 @@ const Comment = ({
     setValue('');
   };
 
+  console.log('owner is:');
+  console.log(owner);
+  console.log('currentUser is:');
+  console.log(currentUserID);
+
   return (
     <>
       <Helpers.Button
@@ -104,7 +109,7 @@ const Comment = ({
                     <React.Fragment key={comment.id}>
                       <ListItem key={comment.id} alignItems='flex-start'>
                         <ListItemAvatar>
-                          <Avatar alt='avatar' src={comment.from.avatar} />
+                          <Avatar alt='avatar' src={comment.avatar} />
                           {/* Will need to add avatars later on */}
                         </ListItemAvatar>
 
@@ -148,11 +153,7 @@ const Comment = ({
                     edge='end'
                     aria-label='submit'
                     onClick={() => {
-                      {
-                        /* If currentUserID == null direct to login */
-                      }
                       postCommentWrapper(itemID, textValue);
-                      // update the comment box so new comment is shown
                     }}
                   >
                     <ArrowUpwardIcon />
@@ -188,6 +189,7 @@ function CommentMenu(props) {
   const handleEditClose = () => {
     setOpen(false);
   };
+
   const [commentValue, setCommentValue] = useState(props.comment.text);
   return (
     <div>
@@ -265,7 +267,7 @@ Comment.propTypes = {
 
 const mapStateToProps = (state, props) => ({
   comments: state.eportfolio.comments,
-  currentUserID: state.auth.user._id,
+  currentUserID: state.auth.user.googleId,
   itemID: props.itemID,
   owner: props.owner,
 });
