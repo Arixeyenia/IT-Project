@@ -294,4 +294,34 @@ router.put('/permission', auth, async (req, res) => {
   }
 });
 
+
+// @route   put api/portfolio/socialmedia
+// @desc    Adds/Updates a social media link
+// @access  Private
+router.put('/socialmedia', auth, async (req, res) => {
+  try {
+    const portfolio = await Portfolio.findById(req.body.portfolio);
+    // check if portfolio exists
+    if (!portfolio) return res.status(404).json({ msg: 'Portfolio not found' });
+    // check if user is authorized
+    if (portfolio.user.toString() !== req.user.uid) {
+      return res.status(401).json({ msg: 'User not authorized' });
+    }
+    socialMedia = { ...req.body};
+    delete socialMedia["portfolio"]; 
+    res.json(await Portfolio.findByIdAndUpdate(
+        req.body.portfolio,
+        { $set: { 'socialmedia': socialMedia } },  { new: true }
+      ));    
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'Portfolio not found' });
+    }
+    res.status(500).send('Server Error');
+  }
+});
+
+
+
 module.exports = router;

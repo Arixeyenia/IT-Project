@@ -221,7 +221,6 @@ router.get('/:id/:url?', auth, async (req, res) => {
       const result = await getData(page.items);
       page.items = result;
       res.json(page);
-      console.log(page);
     }
   } catch (err) {
     console.error(err.message);

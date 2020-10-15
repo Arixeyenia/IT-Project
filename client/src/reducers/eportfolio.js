@@ -21,6 +21,7 @@ import {
   EDIT_PAGENAME,
   MAKE_MAIN,
   DELETE_PAGE,
+  ADD_SOCIAL_MEDIA,
   GET_ERROR
 } from '../actions/types';
 
@@ -159,6 +160,13 @@ export default function (state = initialState, action) {
           ...state.page,
           items: state.page.items.filter((item) => item._id !== payload._id),
         },
+        loading: false,
+        error: {},
+      };
+    case ADD_SOCIAL_MEDIA:
+      return {
+        ...state,
+        portfolio: payload,
         loading: false,
         error: {},
       };
