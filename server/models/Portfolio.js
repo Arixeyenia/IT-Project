@@ -12,6 +12,10 @@ const PortfolioSchema = new mongoose.Schema({
     type: String,
     ref: 'user',
   },
+  socialmedia : {
+    type: Map,
+    of: String
+  },
   blog: [
     {
       title: {

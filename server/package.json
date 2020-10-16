@@ -8,7 +8,7 @@
     "server:dev": "nodemon",
     "server": "node server.js",
     "client": "npm start --prefix ../client",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "dev": "concurrently \"npm run server:dev\" \"npm run client\""
   },
   "engines": {
     "node": "12.x"

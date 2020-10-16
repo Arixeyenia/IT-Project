@@ -2,14 +2,10 @@
 
 name: Push Container to Heroku
 
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
+# Controls when the action will run. Triggers the workflow on push
+# events but only for the master and main branch
 on:
   push:
-    branches:
-      - master
-      - main
-  pull_request:
     branches:
       - master
       - main
@@ -34,11 +30,9 @@ jobs:
       - name: Build and push
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: heroku container:push -a eportfolio-quaranteam web
-      - name: Check image
-        run: docker images
+        run: heroku container:push -a ${{secrets.HEROKU_APP_NAME}} web
       - name: Release
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: heroku container:release -a eportfolio-quaranteam web 
+        run: heroku container:release -a ${{secrets.HEROKU_APP_NAME}} web 
   

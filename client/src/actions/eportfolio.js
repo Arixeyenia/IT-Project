@@ -24,7 +24,8 @@ import {
   EDIT_PAGENAME,
   MAKE_MAIN,
   DELETE_PAGE,
-  GET_ERROR
+  GET_ERROR,
+  ADD_SOCIAL_MEDIA
 } from './types';
 
 export const getUserEPortfolios = () => async (dispatch) => {
@@ -313,6 +314,21 @@ export const deletePage = (portfolioID, pageURL) => async (dispatch) => {
     const res = await api.delete('/page/' + portfolioID + '/' + pageURL);
     dispatch({
       type: DELETE_PAGE,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: EPORTFOLIOS_ERROR,
+      payload: { msg: err.message },
+    });
+  }
+};
+
+export const addSocialMedia = (newItem) => async (dispatch) => {
+  try {
+    const res = await api.put('/portfolio/socialmedia', newItem);
+    dispatch({
+      type: ADD_SOCIAL_MEDIA,
       payload: res.data,
     });
   } catch (err) {

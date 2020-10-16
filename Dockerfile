@@ -1,21 +1,27 @@
 FROM node:10.19.0
 
-WORKDIR /client
-
-COPY package.json /client/
+COPY package*.json /
 
 RUN npm install
 
-COPY . /client/
+COPY . /
+
+WORKDIR /client
+
+COPY package*.json /
+
+RUN npm install
+
+RUN npm run build
+
+COPY . .
 
 WORKDIR /server
 
-COPY package.json /server/
+COPY package*.json /
 
 RUN npm install
 
-COPY . /server/
-
-EXPOSE 3000
+COPY . .
 
 CMD ["npm", "start"]
