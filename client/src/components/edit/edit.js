@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Typography, Drawer, Grid, Button, CardMedia, TextField, Divider, Box, List, ListItem, ListItemText, ListItemIcon, Collapse, IconButton, Icon, FormControlLabel, CardActions, Checkbox } from '@material-ui/core';
-import {getPortfolio, getPage, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, isAuthenticated, error, getPortfolioAsGuest} from '../../actions/eportfolio';
+import {getPortfolio, getPage, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, isAuthenticated, error, getPortfolioAsGuest, addSocialMedia} from '../../actions/eportfolio';
 import { loadUser } from '../../actions/auth';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -151,7 +151,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, loadUser, isAuthenticated, error, getPortfolioAsGuest}) => {
+const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, loadUser, isAuthenticated, error, getPortfolioAsGuest, addSocialMedia}) => {
   const classes = useStyles();
   const theme = useTheme();
   const themeStyle = useThemeStyle();
@@ -159,6 +159,7 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
   const { handleSubmit, register, reset } = useForm();
   const { handleSubmit:handleCreatePage, register:registerCreatePage, reset:resetCreatePage} = useForm();
   const { handleSubmit:handleEditPage, register:registerEditPage, reset:resetEditPage} = useForm();
+  const { handleSubmit:handleSocialMedia, register:registerSocialMedia, reset:resetSocialMedia} = useForm();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [currPageOpen, setCurrPageOpen] = React.useState(true);
@@ -189,7 +190,6 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
 
   const createPageWrapper = (values) =>{
     values.portfolio = portfolio._id;
-    values.oldname = 
     createPage(values);
     resetCreatePage();
   }
@@ -200,6 +200,11 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
     resetEditPage();
     history.push('/edit/' + portfolio._id + '/' + encodeURI(values.newname));
     history.go(0);
+  }
+
+  const socialMediaWrapper = (values) => {
+    values.portfolio = portfolio._id;
+    addSocialMedia(values);
   }
 
   const handleDialogOpen = (target, id) => {
@@ -262,6 +267,9 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
         getPage(params.id, params.pagename);
       }
     }
+    if (Object.keys(portfolio).includes("socialmedia")){
+      resetSocialMedia(portfolio.socialmedia);
+    }
   }, [getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated]);
   console.log(portfolio);
   const items = (Object.keys(page).length !== 0) ? page.items.sort((a, b) => a.row - b.row || a.column - b.column) : [];
@@ -299,7 +307,7 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
         <div>
         <Typography variant='h5'>Pages</Typography>
         <List>
-            {portfolio.pages.map(page => (<div><ListItem button onClick={() => {if (page.name === params.pagename){openCurrPage();} else{history.push('/edit/' + portfolio._id + '/' + page.url);history.go(0);}}} key={page.url} selected={page.url === params.pagename}>
+            {portfolio.pages.map(page => (<div key={page.url}><ListItem button onClick={() => {if (page.name === params.pagename){openCurrPage();} else{history.push('/edit/' + portfolio._id + '/' + page.url);history.go(0);}}} selected={page.url === params.pagename}>
             <ListItemText primary={page.name}/>
             {page.main && <ListItemIcon><HomeIcon></HomeIcon></ListItemIcon>}
             {page.name === params.pagename && (currPageOpen ? <ExpandLess /> : <ExpandMore />)}
@@ -343,8 +351,8 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
         <form noValidate autoComplete="off" onSubmit={handleCreatePage(createPageWrapper)}><span className={classes.inline}><TextField className={classes.inlineTextInput} label='New Page' variant="outlined" name="pagename" inputRef={registerCreatePage}/><Button variant="outlined" color="primary" className={classes.inlineTextInput} startIcon={<AddIcon />} type="submit">Add</Button></span></form>
         </List>
         <Typography variant='h5'>Social Media</Typography>
-        <form>
-          {['instagram', 'facebook', 'twitter', 'linkedin'].map(name => (<TextField className={classes.textinput} label={name} variant="outlined"/>))}
+        <form noValidate autoComplete="off" onSubmit={handleSocialMedia(socialMediaWrapper)}>
+          {['facebook', 'instagram', 'twitter', 'linkedin'].map(name => (<TextField className={classes.textinput} label={name} variant="outlined" name={name} key={name} inputRef={registerSocialMedia}/>))}
           <Button variant="outlined" color="primary" className={classes.textinput} type="submit">Save</Button>
         </form>
         </div>
@@ -370,10 +378,10 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
           <MenuIcon/>&nbsp;Options
         </IconButton>
         <div className={classes.socialLinks}>
-            <Button className={classes.socialMedia} style={{backgroundColor:"#4267B2"}}><Facebook/></Button>
-            <Button className={classes.socialMedia} style={{backgroundColor:"#DD2A7B"}}><Instagram/></Button>
-            <Button className={classes.socialMedia} style={{backgroundColor:"#1DA1F2"}}><Twitter/></Button>
-            <Button className={classes.socialMedia} style={{backgroundColor:"#2867B2"}}><LinkedIn/></Button>
+            {Object.keys(portfolio).includes("socialmedia") && portfolio.socialmedia.facebook !== "" && <Button className={classes.socialMedia} style={{backgroundColor:"#4267B2"}} onClick={() => window.location.href=portfolio.socialmedia.facebook}><Facebook/></Button>}
+            {Object.keys(portfolio).includes("socialmedia") && portfolio.socialmedia.instagram !== "" && <Button className={classes.socialMedia} style={{backgroundColor:"#DD2A7B"}} onClick={() => window.location.href=portfolio.socialmedia.instagram}><Instagram/></Button>}
+            {Object.keys(portfolio).includes("socialmedia") && portfolio.socialmedia.twitter !== "" && <Button className={classes.socialMedia} style={{backgroundColor:"#1DA1F2"}} onClick={() => window.location.href=portfolio.socialmedia.twitter}><Twitter/></Button>}
+            {Object.keys(portfolio).includes("socialmedia") && portfolio.socialmedia.linkedin !== "" && <Button className={classes.socialMedia} style={{backgroundColor:"#2867B2"}} onClick={() => window.location.href=portfolio.socialmedia.linkedin}><LinkedIn/></Button>}
         </div>
       <Grid container spacing={3}>
       {items.map((object) => card(classes, rowLengths, portfolio._id, object, history, handleDrawerOpen, handleDialogOpen, addItemWrapper)
@@ -423,13 +431,14 @@ Edit.propTypes = {
   addItem: PropTypes.func.isRequired,
   deleteItem: PropTypes.func.isRequired,
   createPage: PropTypes.func.isRequired,
-  editPageName: PropTypes.func.isRequired,
-  mainMain: PropTypes.func.isRequired,
+  editPagename: PropTypes.func.isRequired,
+  makeMain: PropTypes.func.isRequired,
   deletePage: PropTypes.func.isRequired,
   loadUser: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.bool,
   error: PropTypes.object,
-  getPortfolioAsGuest: PropTypes.func.isRequired
+  getPortfolioAsGuest: PropTypes.func.isRequired,
+  addSocialMedia: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -439,4 +448,4 @@ const mapStateToProps = (state) => ({
   error: state.eportfolio.error
 });
 
-export default connect(mapStateToProps, {getPage, getPortfolio, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, loadUser, getPortfolioAsGuest})(Edit);
+export default connect(mapStateToProps, {getPage, getPortfolio, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, loadUser, getPortfolioAsGuest, addSocialMedia})(Edit);
