@@ -68,7 +68,7 @@ router.post('/', auth, async (req, res) => {
 // @route   PUT api/item
 // @desc    Edits an existing item
 // @access  Private
-router.put('/', auth, async (req, res) => {
+router.put('/', auth, async (req, res) => {s
   try {
     const item = await Item.findById(req.body.item);
     // retrieve portfolio
