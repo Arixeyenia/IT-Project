@@ -9,7 +9,6 @@ import featureImg2 from '../../images/Vector 3.png';
 import featureImg3 from '../../images/Vector 4.png';
 import { useThemeStyle } from '../../styles/themes';
 import { makeStyles } from '@material-ui/core/styles';
-import { signIn } from '../../actions/auth';
 import { GSignIn } from './Navbar';
 const useStyles = makeStyles((theme) => ({
   features: {
@@ -77,7 +76,6 @@ const Landing = ({isAuthenticated}) => {
 };
 
 Landing.propTypes = {
-  signIn: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.bool,
 };
 
@@ -85,4 +83,4 @@ const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
 });
 
-export default connect(mapStateToProps, {signIn})(Landing);
+export default connect(mapStateToProps)(Landing);
