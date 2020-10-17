@@ -21,7 +21,6 @@ import {
   DialogActions,
   Button,
 } from '@material-ui/core';
-import Faker from 'faker'; // Making random avatar appear for now
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ChatIcon from '@material-ui/icons/Chat';
@@ -105,7 +104,7 @@ const Comment = ({
                     <React.Fragment key={comment.id}>
                       <ListItem key={comment.id} alignItems='flex-start'>
                         <ListItemAvatar>
-                          <Avatar alt='avatar' src={Faker.image.avatar()} />
+                          <Avatar alt='avatar' src={comment.avatar} />
                           {/* Will need to add avatars later on */}
                         </ListItemAvatar>
 
@@ -114,8 +113,8 @@ const Comment = ({
                           secondary={comment.text}
                         />
                         {/* Check if user is owner of comment or item to display commentMenu */}
-                        {currentUserID === owner ||
-                        currentUserID === comment.from ? (
+                        {(currentUserID === owner ||
+                        currentUserID === comment.from) ? (
                           <CommentMenu
                             comment={comment}
                             deleteComment={deleteComment}
@@ -149,11 +148,7 @@ const Comment = ({
                     edge='end'
                     aria-label='submit'
                     onClick={() => {
-                      {
-                        /* If currentUserID == null direct to login */
-                      }
                       postCommentWrapper(itemID, textValue);
-                      // update the comment box so new comment is shown
                     }}
                   >
                     <ArrowUpwardIcon />
@@ -189,6 +184,7 @@ function CommentMenu(props) {
   const handleEditClose = () => {
     setOpen(false);
   };
+
   const [commentValue, setCommentValue] = useState(props.comment.text);
   return (
     <div>
@@ -266,7 +262,7 @@ Comment.propTypes = {
 
 const mapStateToProps = (state, props) => ({
   comments: state.eportfolio.comments,
-  currentUserID: state.auth.user._id,
+  currentUserID: state.auth.user.googleId,
   itemID: props.itemID,
   owner: props.owner,
 });

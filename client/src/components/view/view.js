@@ -98,7 +98,7 @@ const View = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated
         </Box>
         {groupedItems.map((item, i)=>
         <Grid container spacing={3} className={`${themeStyle.content} ${classes.content}`}>
-        {item.map((object) => card(classes, rowLengths, params.id, object, history))}  
+        {item.map((object) => card(classes, rowLengths, params.id, object, history, portfolio.user))}  
         </Grid>)}
       </Fragment>
     );
