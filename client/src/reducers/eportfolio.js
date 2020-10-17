@@ -1,5 +1,6 @@
 import {
   GET_USER_EPORTFOLIOS,
+  GET_SAVED,
   EPORTFOLIOS_ERROR,
   GET_EPORTFOLIO_THUMBNAILS,
   CREATE_PORTFOLIO_NAME,
@@ -22,6 +23,7 @@ import {
   MAKE_MAIN,
   DELETE_PAGE,
   ADD_SOCIAL_MEDIA,
+  SAVE_PORTFOLIO,
   GET_ERROR
 } from '../actions/types';
 
@@ -29,6 +31,7 @@ const initialState = {
   portfolio: {},
   page: {},
   userEPortfolios: [],
+  savedPortfolios: [],
   eportfolioThumbnails: [],
   createPortfolioDetails:{name: '', privacy: false, emails: []},
   loading: true,
@@ -44,6 +47,13 @@ export default function (state = initialState, action) {
       return {
         ...state,
         userEPortfolios: payload,
+        loading: false,
+        error: {},
+      };
+    case GET_SAVED:
+      return {
+        ...state,
+        savedPortfolios: payload,
         loading: false,
         error: {},
       };
@@ -167,6 +177,13 @@ export default function (state = initialState, action) {
       return {
         ...state,
         portfolio: payload,
+        loading: false,
+        error: {},
+      };
+    case SAVE_PORTFOLIO:
+      return {
+        ...state,
+        savedPortfolios: payload,
         loading: false,
         error: {},
       };
