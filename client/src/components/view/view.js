@@ -52,21 +52,16 @@ const View = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated
   const history = useHistory();
 
   useEffect(() => {
-    if (store.getState().auth.isAuthenticated){
-      if (Object.keys(portfolio).length === 0) {
+    if (Object.keys(portfolio).length === 0 || portfolio._id !== params.id) {
+      if (store.getState().auth.isAuthenticated){
         getPortfolio(params.id);
       }
-      if (Object.keys(page).length === 0) {
-        getPage(params.id, params.pagename);
-      }
-    }
-    else{
-      if (Object.keys(portfolio).length === 0) {
+      else{
         getPortfolioAsGuest(params.id);
       }
-      if (Object.keys(page).length === 0) {
-        getPage(params.id, params.pagename);
-      }
+    }
+    if (Object.keys(page).length === 0 || !(page.url === params.pagename || (page.main && params.pagename===''))) {
+      getPage(params.id, params.pagename);
     }
   }, [getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated]);
 

@@ -251,21 +251,16 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
 
   const params = useParams();
   useEffect(() => {
-    if (store.getState().auth.isAuthenticated){
-      if (Object.keys(portfolio).length === 0) {
+    if (Object.keys(portfolio).length === 0 || portfolio._id !== params.id) {
+      if (store.getState().auth.isAuthenticated){
         getPortfolio(params.id);
       }
-      if (Object.keys(page).length === 0) {
-        getPage(params.id, params.pagename);
-      }
-    }
-    else{
-      if (Object.keys(portfolio).length === 0) {
+      else{
         getPortfolioAsGuest(params.id);
       }
-      if (Object.keys(page).length === 0) {
-        getPage(params.id, params.pagename);
-      }
+    }
+    if (Object.keys(page).length === 0 || !(page.url === params.pagename || (page.main && params.pagename===''))) {
+      getPage(params.id, params.pagename);
     }
     if (Object.keys(portfolio).includes("socialmedia")){
       resetSocialMedia(portfolio.socialmedia);
@@ -374,9 +369,12 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
       })}
     >
       <Typography variant="h1">{portfolio.name}</Typography>
-      <IconButton onClick={() => {if(drawerOpen){handleDrawerClose();}else{handleDrawerOpen('')}}}>
+      {Object.keys(error).length!==0 && <Box className={themeStyle.content}>
+      <Typography variant='h3'>You are not authorised to edit this portfolio.</Typography>
+      </Box>}
+      {Object.keys(portfolio).length > 0 && <IconButton onClick={() => {if(drawerOpen){handleDrawerClose();}else{handleDrawerOpen('')}}}>
           <MenuIcon/>&nbsp;Options
-        </IconButton>
+        </IconButton>}
         <div className={classes.socialLinks}>
             {Object.keys(portfolio).includes("socialmedia") && portfolio.socialmedia.facebook !== "" && <Button className={classes.socialMedia} style={{backgroundColor:"#4267B2"}} onClick={() => window.location.href=portfolio.socialmedia.facebook}><Facebook/></Button>}
             {Object.keys(portfolio).includes("socialmedia") && portfolio.socialmedia.instagram !== "" && <Button className={classes.socialMedia} style={{backgroundColor:"#DD2A7B"}} onClick={() => window.location.href=portfolio.socialmedia.instagram}><Instagram/></Button>}
@@ -387,12 +385,12 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
       {items.map((object) => card(classes, rowLengths, portfolio._id, object, history, handleDrawerOpen, handleDialogOpen, addItemWrapper)
         )}
 
-        <IconButton
+        {Object.keys(portfolio).length > 0 && <IconButton
         color='primary'   
         onClick = {() => addItemWrapper(Object.keys(rowLengths).length, 0)}
         children={<AddCircleOutlineIcon classes={{root:classes.addIcon}}/>}
         className={classes.addRow}>
-        </IconButton>        
+        </IconButton>}
       </Grid>
     </main>
   </div>

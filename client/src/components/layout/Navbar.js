@@ -28,6 +28,27 @@ var provider = new firebase.auth.GoogleAuthProvider();
 provider.addScope('profile');
 provider.addScope('email');
 
+
+//function for google sign in
+export const GSignIn = (signIn) => {
+  //sign in google with pop up window
+  firebase
+    .auth()
+    .signInWithPopup(provider)
+    .then(function (result) {
+      //get idToken from google server
+      firebase
+        .auth()
+        .currentUser.getIdToken(true)
+        .then(function (idToken) {
+          signIn(idToken);
+        })
+        .catch(function (error) {
+          console.debug(error);
+        });
+    });
+};
+
 //navbar includes home page, sign in with google and dashboard
 const Navbar = ({
   auth: { isAuthenticated, loading, user },
@@ -35,26 +56,6 @@ const Navbar = ({
   signOut,
 }) => {
   const classes = useStyles();
-  //function for google sign in
-  const GSignIn = () => {
-    //sign in google with pop up window
-    firebase
-      .auth()
-      .signInWithPopup(provider)
-      .then(function (result) {
-        //get idToken from google server
-        firebase
-          .auth()
-          .currentUser.getIdToken(true)
-          .then(function (idToken) {
-            signIn(idToken);
-          })
-          .catch(function (error) {
-            console.debug(error);
-          });
-      });
-  };
-
   //navbar for users signed in
   const authLinks = (
     <nav className='navbar bg-dark'>
@@ -90,7 +91,7 @@ const Navbar = ({
       <ul>
         <li>
           <Link to='/'>
-            <Button onClick={GSignIn} variant='contained' color='primary'>
+            <Button onClick={() => GSignIn(signIn)} variant='contained' color='primary'>
               SIGN IN WITH GOOGLE
             </Button>
           </Link>
@@ -100,16 +101,10 @@ const Navbar = ({
   );
 
   return (
-    
     <Fragment>{isAuthenticated ? authLinks : guestLinks}</Fragment>
-     
   );
 };
-// {/* <Fragment>
-// {!loading && (
-//   <Fragment>{isAuthenticated ? authLinks : guestLinks}</Fragment>
-// )}
-// </Fragment> */}
+
 Navbar.propTypes = {
   signIn: PropTypes.func.isRequired,
   signOut: PropTypes.func.isRequired,
