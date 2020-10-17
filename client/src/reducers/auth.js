@@ -9,8 +9,8 @@ import {
 
 //initial state --an object
 const initialState = {
-  //token we got back from server --get token stored in localStorage
-  token: localStorage.getItem('token'),
+  //token we got back from server --get token stored in sessionStorage
+  token: sessionStorage.getItem('token'),
   //set true once successfully login/registered
   isAuthenticated: null,
   //if user authenticated, wanna make sure loading is done-->already made req to backend and got response
@@ -42,7 +42,7 @@ export default function (state = initialState, action) {
         loading: false,
       };
 
-    //remove token from localstorage, set things to null or false
+    //remove token from sessionStorage, set things to null or false
     case AUTH_ERROR:
     case LOGIN_FAIL:
     case SIGN_OUT:

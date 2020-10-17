@@ -47,9 +47,7 @@ const Navbar = ({
           .auth()
           .currentUser.getIdToken(true)
           .then(function (idToken) {
-            api.defaults.headers.common['x-auth-token'] = idToken;
-            localStorage.setItem('token', idToken);
-            signIn();
+            signIn(idToken);
           })
           .catch(function (error) {
             console.debug(error);
@@ -102,14 +100,16 @@ const Navbar = ({
   );
 
   return (
-    <Fragment>
-      {!loading && (
-        <Fragment>{isAuthenticated ? authLinks : guestLinks}</Fragment>
-      )}
-    </Fragment>
+    
+    <Fragment>{isAuthenticated ? authLinks : guestLinks}</Fragment>
+     
   );
 };
-
+// {/* <Fragment>
+// {!loading && (
+//   <Fragment>{isAuthenticated ? authLinks : guestLinks}</Fragment>
+// )}
+// </Fragment> */}
 Navbar.propTypes = {
   signIn: PropTypes.func.isRequired,
   signOut: PropTypes.func.isRequired,

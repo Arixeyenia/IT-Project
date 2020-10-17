@@ -15,10 +15,9 @@ module.exports = function (req, res, next) {
   // Check if no token
   if (!token) {
     return res.status(401).json({ msg: 'No token, authorization denied' });
-  }
-
-  //verify token and decode token to get user info
-  admin
+  }else{
+    //verify token and decode token to get user info
+    admin
     .auth()
     .verifyIdToken(token)
     .then(function (decodedToken) {
@@ -29,4 +28,5 @@ module.exports = function (req, res, next) {
     .catch(function (error) {
       console.log(error);
     });
+  }
 };
