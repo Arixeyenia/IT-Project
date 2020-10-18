@@ -41,14 +41,14 @@ const upload = multer({ storage });
 router.get('/', (req, res) => res.send('Media route'));
 
 // @route   POST api/media
-// @desc    Upload a media file to database
+// @desc    Upload a media file to database returns json that includes filename
 // @access  Private
 router.post('/', [auth, upload.single('file')], (req, res) => {
-  res.redirect('/');
+  res.json({ file: req.file });
 });
 
 // @route   GET api/media/:filename
-// @desc    Get file object
+// @desc    Get file object, similar to what is returned when new file is posted
 // @access  Private
 router.get('/:filename', auth, (req, res) => {
   gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
