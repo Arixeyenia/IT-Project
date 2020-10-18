@@ -9,31 +9,6 @@ const User = require('../../models/User');
 const Item = require('../../models/Item');
 const { parseDate } = require('tough-cookie');
 
-const multer = require('multer');
-const GridFsStorage = require('multer-gridfs-storage');
-const Grid = require('gridfs-stream');
-const methodOverride = require('method-override');
-const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
-const { initStorage, initUpload } = require('../../modules/multerModule');
-
-const conn = mongoose.connection;
-Grid.mongo = mongoose.mongo;
-
-//Init gfs
-let gfs;
-
-const collectionName = 'items';
-const bucketName = 'items';
-
-conn.once('open', () => {
-  gfs = Grid(conn.db);
-  gfs.collection(collectionName);
-});
-
-const storage = initStorage(conn, bucketName);
-const upload = initUpload(storage);
-
 // @route   GET api/item
 // @desc    Test route
 // @access  Public
