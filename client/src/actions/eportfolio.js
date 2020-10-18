@@ -3,6 +3,7 @@ import api from '../utils/api';
 
 import {
   GET_USER_EPORTFOLIOS,
+  GET_SAVED,
   EPORTFOLIOS_ERROR,
   GET_EPORTFOLIO_THUMBNAILS,
   CREATE_PORTFOLIO_NAME,
@@ -25,7 +26,8 @@ import {
   MAKE_MAIN,
   DELETE_PAGE,
   GET_ERROR,
-  ADD_SOCIAL_MEDIA
+  ADD_SOCIAL_MEDIA,
+  SAVE_PORTFOLIO
 } from './types';
 
 export const getUserEPortfolios = () => async (dispatch) => {
@@ -33,6 +35,21 @@ export const getUserEPortfolios = () => async (dispatch) => {
     const res = await api.get('/portfolio/user');
     dispatch({
       type: GET_USER_EPORTFOLIOS,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: EPORTFOLIOS_ERROR,
+      payload: { msg: err.message },
+    });
+  }
+};
+
+export const getSaved = () => async (dispatch) => {
+  try {
+    const res = await api.get('/user/saved');
+    dispatch({
+      type: GET_SAVED,
       payload: res.data,
     });
   } catch (err) {
@@ -329,6 +346,21 @@ export const addSocialMedia = (newItem) => async (dispatch) => {
     const res = await api.put('/portfolio/socialmedia', newItem);
     dispatch({
       type: ADD_SOCIAL_MEDIA,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: EPORTFOLIOS_ERROR,
+      payload: { msg: err.message },
+    });
+  }
+};
+
+export const savePortfolio = (portfolioID) => async (dispatch) => {
+  try {
+    const res = await api.put('/user/save', {portfolio: portfolioID});
+    dispatch({
+      type: SAVE_PORTFOLIO,
       payload: res.data,
     });
   } catch (err) {
