@@ -2,15 +2,13 @@ import React, { Fragment, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { Typography, Grid, Box, Card, CardContent, CardHeader, CardMedia, CardActions, Button, IconButton } from '@material-ui/core';
-import {getPortfolio, getPage, getPortfolioAsGuest, getError, getSaved, savePortfolio} from '../../actions/eportfolio';
+import { Typography, Grid, Box, Card, CardContent, CardHeader, CardMedia, CardActions, Button } from '@material-ui/core';
+import {getPortfolio, getPage, getPortfolioAsGuest, getError } from '../../actions/eportfolio';
 import { loadUser } from '../../actions/auth';
 import { Link, useParams, useHistory } from 'react-router-dom';
 import store from '../../store';
 import Comment from '../comments/Comment';
 import { useThemeStyle } from '../../styles/themes';
-import StarIcon from '@material-ui/icons/Star';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
 
 const useStyles = makeStyles((theme) => ({
   cardRoot: {
@@ -46,31 +44,23 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const View = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated, error, getPortfolioAsGuest, getSaved, savePortfolio, savedPortfolios}) => {
+const View = ({portfolio, getPage, page, error, getPortfolioAsGuest, portfolioID}) => {
   const classes = useStyles();
   const theme = useTheme();
   const themeStyle = useThemeStyle();
-  const params = useParams();
-  const history = useHistory();
+  const [pageName, setPageName] = React.useState("Home");
 
   useEffect(() => {
-    if (Object.keys(portfolio).length === 0 || portfolio._id !== params.id) {
-        if (store.getState().auth.isAuthenticated){
-          getPortfolio(params.id);
-        }
-        else{
-            getPortfolioAsGuest(params.id);
-        }
+    if (portfolioID !== "blank" && (Object.keys(portfolio).length === 0 || portfolio._id !== portfolioID)) {
+        getPortfolioAsGuest(portfolioID);
     }
-    if (Object.keys(page).length === 0 || portfolio._id !== params.id || !(page.url === params.pagename || (page.main && params.pagename===''))) {
-        getPage(params.id, params.pagename);
+    if (portfolioID !== "blank" && (Object.keys(page).length === 0 || portfolio._id !== portfolioID || !(page.url === pageName || (page.main && pageName ==='')))) {
+        getPage(portfolioID, pageName);
     }
-  }, [getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated]);
-
+  }, [portfolio, page, pageName, portfolioID]);
   const items = (Object.keys(page).length !== 0) ? page.items : [];
   const rowLengths = {};
   const groupedItems = [];
-  const isSaved = savedPortfolios.some((e) => e._id === portfolio._id);
 
   items.forEach(element => {
     if ([element.row] in Object.keys(rowLengths)){
@@ -82,33 +72,23 @@ const View = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated
       groupedItems[element.row] = [element];
     }
   });
-  if (Object.keys(error).length!==0){
-    return (
-    <Box className={themeStyle.content}>
-      <Typography variant='h3'>You are not authorised to view this portfolio.</Typography>
-    </Box>);
-  }
-  else{
     return (
       <Fragment>
+         { (portfolioID === "blank") ? <Box className={themeStyle.content}>
+      <Typography variant='h2'>Build your own portfolio from scratch with this template</Typography>
+      </Box> :
         <Box className={themeStyle.content}>
-          <Typography variant='h1'>{portfolio.name}
-          <IconButton aria-label="save" onClick={() => savePortfolio(portfolio._id)}>
-              {isSaved ? <StarIcon/> : <StarBorderIcon/>}
-          </IconButton>
-          </Typography>
-        </Box>
-        {groupedItems.map((item, i)=>
-        <Grid container spacing={3} className={`${themeStyle.content} ${classes.content}`}>
-        {item.map((object) => card(classes, rowLengths, params.id, object, history, portfolio.user))}  
+          {groupedItems.map((item, i)=>
+        <Grid container key={i} className={classes.content}>
+        {item.map((object) => card(classes, rowLengths, object, setPageName))}  
         </Grid>)}
+        </Box>
+        }
       </Fragment>
     );
-  }
-  
 }
 
-const card = (classes, rowLengths, portfolioID, object, history, owner) => {
+const card = (classes, rowLengths, object, setPageName) => {
   return (
     <Grid item xs={12/rowLengths[object.row]} className={classes.viewGridItem} key={object._id}>
       <Card className={classes.cardRoot}>
@@ -128,9 +108,8 @@ const card = (classes, rowLengths, portfolioID, object, history, owner) => {
           </Typography>}
         </CardContent>}
         {object.linkAddress && <CardActions className={classes.viewCardActions}>
-            <Button size='small' onClick={()=> {if(!/^(f|ht)tps?:\/\//i.test(object.linkAddress)){ history.push('/view/' + portfolioID + '/' + object.linkAddress);}else{ window.location.href = object.linkAddress;}window.location.reload(false);}}>{object.linkText}</Button>
+            <Button size='small' onClick={() => setPageName(object.linkAddress)}>{object.linkText}</Button>
         </CardActions>}
-        <Comment itemID={object._id} owner={owner} />
       </Card>
     </Grid>
   )
@@ -140,22 +119,15 @@ const card = (classes, rowLengths, portfolioID, object, history, owner) => {
 View.propTypes = {
   getPage: PropTypes.func.isRequired,
   page: PropTypes.object.isRequired,
-  getPortfolio: PropTypes.func.isRequired,
   portfolio: PropTypes.object.isRequired,
-  loadUser: PropTypes.func.isRequired,
-  isAuthenticated: PropTypes.bool,
   error: PropTypes.object,
-  getPortfolioAsGuest: PropTypes.func.isRequired,
-  getSaved: PropTypes.func.isRequired,
-  savePortfolio: PropTypes.func.isRequired
+  getPortfolioAsGuest: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state) => ({
   page: state.eportfolio.page,
-  savedPortfolios: state.eportfolio.savedPortfolios,
   portfolio: state.eportfolio.portfolio,
-  isAuthenticated: state.auth.isAuthenticated,
   error: state.eportfolio.error
 });
 
-export default connect(mapStateToProps, {getPage, getPortfolio, loadUser, getPortfolioAsGuest, getSaved, savePortfolio})(View);
+export default connect(mapStateToProps, {getPage, getPortfolio, loadUser, getPortfolioAsGuest})(View);

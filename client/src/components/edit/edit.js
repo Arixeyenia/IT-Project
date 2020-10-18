@@ -266,7 +266,6 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
       resetSocialMedia(portfolio.socialmedia);
     }
   }, [getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated]);
-  console.log(portfolio);
   const items = (Object.keys(page).length !== 0) ? page.items.sort((a, b) => a.row - b.row || a.column - b.column) : [];
   const rowLengths = {};
   items.forEach(element => {

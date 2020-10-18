@@ -3,11 +3,12 @@ import { Box, Button, Typography, Divider } from '@material-ui/core';
 import image from '../../images/pick.png';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { createPortfolio } from '../../actions/eportfolio'
+import { createPortfolio, getTemplates } from '../../actions/eportfolio'
 import store from '../../store';
 import { makeStyles } from '@material-ui/core/styles';
 import { useThemeStyle } from '../../styles/themes';
 import { useHistory } from 'react-router-dom';
+import View from './preview';
 
 const useStyles = makeStyles((theme) => ({
   category: {
@@ -31,45 +32,60 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#E0E0E0',
     padding: '18px 38px',
     textAlign: 'center',
-    display: 'inline-block',
+    fontSize: '14px',
+    borderRadius: '8px',
+    marginTop: '25px'
+  },
+  templateButtonSelected: {
+    padding: '18px 38px',
+    textAlign: 'center',
     fontSize: '14px',
     borderRadius: '8px',
     marginTop: '25px',
-    '&:hover, &:focus': {
-      backgroundColor: '#4F4F4F',
-      color: '#F2F2F2'
-    }
+    backgroundColor: '#4F4F4F',
+    color: '#F2F2F2'
+  },
+  templateBox: {
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    display: 'inline-block'
   }
 }));
 
-const PickTemplate = ({createPortfolio, createPortfolioDetails}) => {
+const PickTemplate = ({createPortfolio, createPortfolioDetails, getTemplates, templates}) => {
   const classes = useStyles();
   const theme = useThemeStyle();
   const history = useHistory();
+  const [currTemplate, setCurrTemplate] = React.useState("");
 
   useEffect(() => {
+    if (templates.length === 0){
+      getTemplates();
+    }
     if (Object.keys(createPortfolioDetails).length !== 0 && Object.keys(createPortfolioDetails).includes('_id')){
-      console.log(createPortfolioDetails);
       history.push('/edit/' + createPortfolioDetails._id + '/' + encodeURI('Home'));
       history.go(0);
     }
-  }, [createPortfolioDetails]);
+  }, [createPortfolioDetails, templates]);
 
   return (
     <Fragment>
       <Box className={`${theme.content} ${classes.templateSelection} ${theme.fontg1} ${theme.gray6}`}>
-        <Box>
-          <Button variant='contained' className={classes.templateButton}>Blank</Button>
+        <Box className={classes.templateBox}>
+          <Button variant='contained' onClick={() => setCurrTemplate("blank")} className={(currTemplate === "blank") ? classes.templateButtonSelected : classes.templateButton}>Blank</Button>
         </Box>
+        {templates.map((template) => <Box className={classes.templateBox} key={template._id}>
+          <Button onClick={() => setCurrTemplate(template._id)} variant='contained' className={(currTemplate === template._id) ? classes.templateButtonSelected : classes.templateButton}>{template.name}</Button>
+        </Box>)}
         <Box className={classes.category}>
           <Typography noWrap variant='body1' className={classes.categoryTypography}>Pick a template</Typography>
           <Box className={classes.categoryDiv}>
             <Divider light className={classes.categoryLine}/>
           </Box>
-          <Button style={{marginBottom: '10px'}} variant='contained' color='primary' onClick={()=>{createPortfolio(store.getState().eportfolio.createPortfolioDetails);}}>CREATE</Button>
+          <Button style={{marginBottom: '10px'}} variant='contained' color='primary' onClick={()=>{createPortfolio(store.getState().eportfolio.createPortfolioDetails, currTemplate);}}>CREATE</Button>
         </Box>
       </Box>
-      <Box className={`${theme.content} ${theme.half} ${theme.fontg1} ${theme.gray6}`}>
+      { (currTemplate === "") ? <Box className={`${theme.content} ${theme.half} ${theme.fontg1} ${theme.gray6}`}>
         <Box className={theme.leftright}>
           <Typography variant='h1'>Choose a template</Typography>
           <Typography variant='h6'>
@@ -79,18 +95,21 @@ const PickTemplate = ({createPortfolio, createPortfolioDetails}) => {
         <Box className={theme.leftright}>
           <img src={image} alt='Illustration'></img>
         </Box>
-      </Box>
+        </Box> : <View portfolioID={currTemplate}></View>}
     </Fragment>
   );
 }
 
 PickTemplate.propTypes = {
   createPortfolio: PropTypes.func.isRequired,
-  createPortfolioDetails: PropTypes.object.isRequired
+  createPortfolioDetails: PropTypes.object.isRequired,
+  templates: PropTypes.arrayOf(PropTypes.object).isRequired,
+  getTemplates: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state) => ({
-  createPortfolioDetails: state.eportfolio.createPortfolioDetails
+  createPortfolioDetails: state.eportfolio.createPortfolioDetails,
+  templates: state.eportfolio.templates
 });
 
-export default connect(mapStateToProps, { createPortfolio })(PickTemplate);
+export default connect(mapStateToProps, { createPortfolio, getTemplates })(PickTemplate);
