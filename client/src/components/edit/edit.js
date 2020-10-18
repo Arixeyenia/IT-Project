@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Typography, Drawer, Grid, Button, CardMedia, TextField, Divider, Box, List, ListItem, ListItemText, ListItemIcon, Collapse, IconButton, Icon, FormControlLabel, CardActions, Checkbox } from '@material-ui/core';
-import {getPortfolio, getPage, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, setPrivacy, getPortfolioAsGuest, addSocialMedia, sharePortfolio} from '../../actions/eportfolio';
+import {getPortfolio, getPage, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, setPrivacy, addSocialMedia, sharePortfolio} from '../../actions/eportfolio';
 import { loadUser } from '../../actions/auth';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -155,7 +155,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, loadUser, isAuthenticated, error, getPortfolioAsGuest, addSocialMedia, setPrivacy, sharePortfolio}) => {
+const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, loadUser, isAuthenticated, error, addSocialMedia, setPrivacy, sharePortfolio}) => {
   const classes = useStyles();
   const theme = useTheme();
   const themeStyle = useThemeStyle();
@@ -270,12 +270,7 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
   const params = useParams();
   useEffect(() => {
     if (Object.keys(portfolio).length === 0 || portfolio._id !== params.id) {
-      if (store.getState().auth.isAuthenticated){
         getPortfolio(params.id);
-      }
-      else{
-        getPortfolioAsGuest(params.id);
-      }
     }
     if (Object.keys(page).length === 0 || !(page.url === params.pagename || (page.main && params.pagename=== undefined))) {
       getPage(params.id, params.pagename);
@@ -484,7 +479,6 @@ Edit.propTypes = {
   loadUser: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.bool,
   error: PropTypes.object,
-  getPortfolioAsGuest: PropTypes.func.isRequired,
   addSocialMedia: PropTypes.func.isRequired,
   setPrivacy: PropTypes.func.isRequired,
   sharePortfolio: PropTypes.func.isRequired 
@@ -497,4 +491,4 @@ const mapStateToProps = (state) => ({
   error: state.eportfolio.error
 });
 
-export default connect(mapStateToProps, {getPage, getPortfolio, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, loadUser, getPortfolioAsGuest, addSocialMedia, setPrivacy, sharePortfolio})(Edit);
+export default connect(mapStateToProps, {getPage, getPortfolio, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, loadUser, addSocialMedia, setPrivacy, sharePortfolio})(Edit);

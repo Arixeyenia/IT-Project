@@ -140,7 +140,7 @@ router.get('/guest/:id', async (req, res) => {
     if (!portfolio) {
       return res.status(404).json({ msg: 'Portfolio not found' });
     }
-    if (portfolio.private) {
+    if (portfolio.private === true) {
       return res.status(401).json({ msg: 'User not authorized' });
     }
     res.json(portfolio);

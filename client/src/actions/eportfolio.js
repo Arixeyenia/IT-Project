@@ -160,7 +160,23 @@ export const getPortfolioAsGuest = (eportfolioID) => async (dispatch) => {
 export const getPage = (eportfolioID, pageName) => async (dispatch) => {
   try {
     const link = pageName === undefined ? '' : '/' + pageName;
-    const res = await api.get('/page/' + eportfolioID + link);
+    const res = await api.get('/page/single/' + eportfolioID + link);
+    dispatch({
+      type: GET_PAGE,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: EPORTFOLIOS_ERROR,
+      payload: { msg: err.message },
+    });
+  }
+};
+
+export const getPageAsGuest = (eportfolioID, pageName) => async (dispatch) => {
+  try {
+    const link = pageName === undefined ? '' : '/' + pageName;
+    const res = await api.get('/page/guest/' + eportfolioID + link);
     dispatch({
       type: GET_PAGE,
       payload: res.data,

@@ -63,7 +63,7 @@ const Comment = ({
   editComment,
   comments,
   itemID,
-  currentUserID,
+  currentUser,
   owner,
 }) => {
   const classes = useStyles();
@@ -113,14 +113,14 @@ const Comment = ({
                           secondary={comment.text}
                         />
                         {/* Check if user is owner of comment or item to display commentMenu */}
-                        {(currentUserID === owner ||
-                        currentUserID === comment.from) ? (
+                        {(currentUser !== null && (currentUser.googleId === owner ||
+                        currentUser.googleId === comment.from)) ? (
                           <CommentMenu
                             comment={comment}
                             deleteComment={deleteComment}
                             editComment={editComment}
                             itemID={itemID}
-                            currentUserID={currentUserID}
+                            currentUserID={currentUser.googleId}
                           />
                         ) : (
                           <div />
@@ -198,7 +198,7 @@ function CommentMenu(props) {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        {props.currentUserID === props.comment.from ? (
+        {props.currentUser !== null && props.currentUser.googleId === props.comment.from ? (
           <div>
             <MenuItem onClick={handleEditOpen}>Edit</MenuItem>
             <Dialog
@@ -262,7 +262,7 @@ Comment.propTypes = {
 
 const mapStateToProps = (state, props) => ({
   comments: state.eportfolio.comments,
-  currentUserID: state.auth.user.googleId,
+  currentUser: state.auth.user,
   itemID: props.itemID,
   owner: props.owner,
 });

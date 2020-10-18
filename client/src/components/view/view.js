@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { Typography, Grid, Box, Card, CardContent, CardHeader, CardMedia, CardActions, Button, IconButton } from '@material-ui/core';
-import {getPortfolio, getPage, getPortfolioAsGuest, getError, getSaved, savePortfolio} from '../../actions/eportfolio';
+import {getPortfolio, getPage, getPortfolioAsGuest, getError, getSaved, savePortfolio, getPageAsGuest} from '../../actions/eportfolio';
 import { loadUser } from '../../actions/auth';
 import { Link, useParams, useHistory } from 'react-router-dom';
 import store from '../../store';
@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const View = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated, error, getPortfolioAsGuest, getSaved, savePortfolio, savedPortfolios}) => {
+const View = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated, error, getPortfolioAsGuest, getSaved, savePortfolio, savedPortfolios, getPageAsGuest}) => {
   const classes = useStyles();
   const theme = useTheme();
   const themeStyle = useThemeStyle();
@@ -63,7 +63,12 @@ const View = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated
         }
     }
     if (Object.keys(page).length === 0 || portfolio._id !== params.id || !(page.url === params.pagename || (page.main && params.pagename===undefined))) {
+      if (store.getState().auth.isAuthenticated){
         getPage(params.id, params.pagename);
+      }
+      else{
+        getPageAsGuest(params.id, params.pagename);
+      }
     }
   }, [getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated]);
 
@@ -71,7 +76,7 @@ const View = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated
   const rowLengths = {};
   const groupedItems = [];
   const isSaved = savedPortfolios.some((e) => e._id === portfolio._id);
-
+  console.log(page);
   items.forEach(element => {
     if ([element.row] in Object.keys(rowLengths)){
       rowLengths[element.row]++;
@@ -147,7 +152,8 @@ View.propTypes = {
   error: PropTypes.object,
   getPortfolioAsGuest: PropTypes.func.isRequired,
   getSaved: PropTypes.func.isRequired,
-  savePortfolio: PropTypes.func.isRequired
+  savePortfolio: PropTypes.func.isRequired,
+  getPageAsGuest: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -158,4 +164,4 @@ const mapStateToProps = (state) => ({
   error: state.eportfolio.error
 });
 
-export default connect(mapStateToProps, {getPage, getPortfolio, loadUser, getPortfolioAsGuest, getSaved, savePortfolio})(View);
+export default connect(mapStateToProps, {getPage, getPortfolio, loadUser, getPortfolioAsGuest, getSaved, savePortfolio, getPageAsGuest})(View);
