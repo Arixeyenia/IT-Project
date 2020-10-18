@@ -84,12 +84,12 @@ Dashboard.propTypes = {
   getUserEPortfolios: PropTypes.func.isRequired,
   userEPortfolios: PropTypes.arrayOf(PropTypes.object).isRequired,
   eportfolioThumbnails: PropTypes.arrayOf(PropTypes.string).isRequired,
-  deletePortfolio: PropTypes.func.isRequired
+  deletePortfolio: PropTypes.func.isRequired  
 };
 
 const mapStateToProps = (state) => ({
   userEPortfolios: state.eportfolio.userEPortfolios,
-  eportfolioThumbnails: state.eportfolio.eportfolioThumbnails
+  eportfolioThumbnails: state.eportfolio.eportfolioThumbnails,
 });
 
 export default connect(mapStateToProps, { getUserEPortfolios, getEPortfolioThumbnail, deletePortfolio })(Dashboard);

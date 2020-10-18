@@ -25,7 +25,8 @@ import {
   MAKE_MAIN,
   DELETE_PAGE,
   GET_ERROR,
-  ADD_SOCIAL_MEDIA
+  ADD_SOCIAL_MEDIA,
+  GET_TEMPLATES
 } from './types';
 
 export const getUserEPortfolios = () => async (dispatch) => {
@@ -79,9 +80,9 @@ export const resetCreatingPortfolioName = () => async (dispatch) => {
   });
 };
 
-export const createPortfolio = (details) => async (dispatch) => {
+export const createPortfolio = (details, currTemplate) => async (dispatch) => {
   try {
-    const res = await api.post('/portfolio', { name: details.name, private: details.privacy, emails: details.emails });
+    const res = await api.post('/portfolio', { name: details.name, private: details.privacy, emails: details.emails, template : currTemplate });
     dispatch({
       type: CREATE_PORTFOLIO,
       payload: res.data,
@@ -329,6 +330,21 @@ export const addSocialMedia = (newItem) => async (dispatch) => {
     const res = await api.put('/portfolio/socialmedia', newItem);
     dispatch({
       type: ADD_SOCIAL_MEDIA,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: EPORTFOLIOS_ERROR,
+      payload: { msg: err.message },
+    });
+  }
+};
+
+export const getTemplates = () => async (dispatch) => {
+  try {
+    const res = await api.get('/portfolio/templates');
+    dispatch({
+      type: GET_TEMPLATES,
       payload: res.data,
     });
   } catch (err) {

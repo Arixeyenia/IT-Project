@@ -22,6 +22,7 @@ import {
   MAKE_MAIN,
   DELETE_PAGE,
   ADD_SOCIAL_MEDIA,
+  GET_TEMPLATES,
   GET_ERROR
 } from '../actions/types';
 
@@ -33,6 +34,7 @@ const initialState = {
   createPortfolioDetails:{name: '', privacy: false, emails: []},
   loading: true,
   comments: {},
+  templates: [],
   error: {},
 };
 
@@ -176,6 +178,13 @@ export default function (state = initialState, action) {
         error: payload,
         loading: false,
       };
+    case GET_TEMPLATES:
+        return {
+          ...state,
+          templates: payload,
+          loading: false,
+          error: {},
+        };
     case GET_COMMENTS:
       return {
         ...state,
