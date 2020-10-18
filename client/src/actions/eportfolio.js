@@ -28,6 +28,8 @@ import {
   GET_ERROR,
   ADD_SOCIAL_MEDIA,
   GET_TEMPLATES,
+  SET_PRIVACY,
+  SHARE_PORTFOLIO,
   SAVE_PORTFOLIO
 } from './types';
 
@@ -78,11 +80,10 @@ export const getEPortfolioThumbnail = (eportfolioID) => async (dispatch) => {
   }
 };
 
-export const creatingPortfolioName = (name, privacy, emails) => async (dispatch) => {
+export const creatingPortfolioName = (name, privacy) => async (dispatch) => {
   const info = {
     'name': name,
-    'privacy': privacy,
-    'emails': emails
+    'privacy': privacy
   }
   dispatch({
     type: CREATE_PORTFOLIO_NAME,
@@ -382,6 +383,44 @@ export const savePortfolio = (portfolioID) => async (dispatch) => {
   } catch (err) {
     dispatch({
       type: EPORTFOLIOS_ERROR,
+      payload: { msg: err.message },
+    });
+  }
+};
+
+export const setPrivacy = (privacy, portfolioID) => async (dispatch) => {
+  try {
+    const res = await api.put('/portfolio/edit', {
+      portfolio: portfolioID,
+      field: 'privacy',
+      value: privacy,
+    });
+    dispatch({
+      type: SET_PRIVACY,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: COMMENTS_ERROR,
+      payload: { msg: err.message },
+    });
+  }
+};
+
+export const sharePortfolio = (email, add, portfolioID) => async (dispatch) => {
+  try {
+    const res = await api.put('/portfolio/permission', {
+      portfolio: portfolioID,
+      add: add,
+      email: email,
+    });
+    dispatch({
+      type: SHARE_PORTFOLIO,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: COMMENTS_ERROR,
       payload: { msg: err.message },
     });
   }

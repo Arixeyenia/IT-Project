@@ -84,7 +84,7 @@ router.post(
       }
       else {
         const template = await Portfolio.find({ user: config.get('templateAccount'), _id: req.body.template}).exec();
-        newPortfolio.pages = template[0].pages.map(page => {return {main:page.main, items:page.items, name:page.main, url:page.url}});
+        newPortfolio.pages = template[0].pages.map(page => {return {main:page.main, items:page.items, name:page.name, url:page.url}});
         newPortfolio.pages = await Promise.all(newPortfolio.pages.map(async(page) => {return await cloneItems(page, newPortfolio._id, page._id)}));
       }
       const portfolio = await newPortfolio.save();
@@ -111,7 +111,7 @@ router.get('/single/:id', auth, async (req, res) => {
     // check that user is authorized
     
     const isAllowed = portfolio.allowedUsers.some(function(user){
-      return user.equals(user.id);
+      return user.equals(req.user.uid);
     });
 
     if (
@@ -261,7 +261,7 @@ router.put('/edit', auth, async (req, res) => {
           { new: true }
         )
       );
-    } else if (req.body.field === 'private') {
+    } else if (req.body.field === 'privacy') {
       res.json(
         await Portfolio.findByIdAndUpdate(
           req.body.portfolio,
@@ -293,10 +293,11 @@ router.put('/permission', auth, async (req, res) => {
     if (portfolio.user.toString() !== req.user.uid)
       return res.status(401).json({ msg: 'User not authorized' });
     if (req.body.add === true) {
+      console.log(req.body.email);  
       res.json(
         await Portfolio.findByIdAndUpdate(
           req.body.portfolio,
-          { $push: { allowedUsers: { _id: req.body.user } } },
+          { $push: { allowedUsers: { email: req.body.email } } },
           { new: true }
         )
       );
@@ -304,7 +305,7 @@ router.put('/permission', auth, async (req, res) => {
       res.json(
         await Portfolio.findByIdAndUpdate(
           req.body.portfolio,
-          { $pull: { allowedUsers: { _id: req.body.user } } },
+          { $pull: { allowedUsers: { email: req.body.email } } },
           { new: true }
         )
       );
@@ -373,14 +374,5 @@ router.get('/templates', async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
-
-
-
-// var allowedUsers = [];
-//for (const email of req.body.emails){
-//  const user = await User.findOne({ email:email });
-//  if(!user) return res.status(404).json({ msg: 'User not found'});
-//  allowedUsers.push({user: user._id});
-//};
 
 module.exports = router;

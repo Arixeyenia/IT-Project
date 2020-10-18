@@ -62,7 +62,7 @@ const View = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated
             getPortfolioAsGuest(params.id);
         }
     }
-    if (Object.keys(page).length === 0 || portfolio._id !== params.id || !(page.url === params.pagename || (page.main && params.pagename===''))) {
+    if (Object.keys(page).length === 0 || portfolio._id !== params.id || !(page.url === params.pagename || (page.main && params.pagename===undefined))) {
         getPage(params.id, params.pagename);
     }
   }, [getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated]);

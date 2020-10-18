@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Typography, Drawer, Grid, Button, CardMedia, TextField, Divider, Box, List, ListItem, ListItemText, ListItemIcon, Collapse, IconButton, Icon, FormControlLabel, CardActions, Checkbox } from '@material-ui/core';
-import {getPortfolio, getPage, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, isAuthenticated, error, getPortfolioAsGuest, addSocialMedia} from '../../actions/eportfolio';
+import {getPortfolio, getPage, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, setPrivacy, getPortfolioAsGuest, addSocialMedia, sharePortfolio} from '../../actions/eportfolio';
 import { loadUser } from '../../actions/auth';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -29,6 +29,7 @@ import HomeIcon from '@material-ui/icons/Home';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import AddIcon from '@material-ui/icons/Add';
+import ClearIcon from '@material-ui/icons/Clear';
 import {Instagram, Facebook, LinkedIn, Twitter} from '@material-ui/icons';
 
 const drawerWidth = 300;
@@ -93,6 +94,9 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     width: '30ch',
   },
+  indented: { 
+    marginLeft: theme.spacing(2),
+  },
   cardRoot: {
     minWidth: 275,
   },
@@ -151,7 +155,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, loadUser, isAuthenticated, error, getPortfolioAsGuest, addSocialMedia}) => {
+const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, loadUser, isAuthenticated, error, getPortfolioAsGuest, addSocialMedia, setPrivacy, sharePortfolio}) => {
   const classes = useStyles();
   const theme = useTheme();
   const themeStyle = useThemeStyle();
@@ -249,6 +253,20 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
     return item;
   }
 
+  const shareWrapper = (e, portfolioID) => {
+    if(e.key === 'Enter'){
+      const input = e.target.value;
+      const pattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      const passes = pattern.test(input);
+      if (passes){
+        sharePortfolio(input, true, portfolioID);
+      }
+      else{
+        alert('Not a valid email');
+      }
+    }
+  }
+
   const params = useParams();
   useEffect(() => {
     if (Object.keys(portfolio).length === 0 || portfolio._id !== params.id) {
@@ -259,7 +277,7 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
         getPortfolioAsGuest(params.id);
       }
     }
-    if (Object.keys(page).length === 0 || !(page.url === params.pagename || (page.main && params.pagename===''))) {
+    if (Object.keys(page).length === 0 || !(page.url === params.pagename || (page.main && params.pagename=== undefined))) {
       getPage(params.id, params.pagename);
     }
     if (Object.keys(portfolio).includes("socialmedia")){
@@ -276,6 +294,7 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
       rowLengths[element.row] = 1;
     }
   });
+  console.log(portfolio);
     
   return (    
     <Box className={themeStyle.content}>
@@ -344,6 +363,37 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
           ))}
         <form noValidate autoComplete="off" onSubmit={handleCreatePage(createPageWrapper)}><span className={classes.inline}><TextField className={classes.inlineTextInput} label='New Page' variant="outlined" name="pagename" inputRef={registerCreatePage}/><Button variant="outlined" color="primary" className={classes.inlineTextInput} startIcon={<AddIcon />} type="submit">Add</Button></span></form>
         </List>
+        <Typography variant='h5'>Privacy</Typography>
+        <FormControlLabel
+          control={<Checkbox 
+            checked={portfolio.private} 
+            onChange={(e) => setPrivacy(e.target.checked, portfolio._id)}
+            color='primary'/>}
+          label='Portfolio is Private'
+          labelPlacement = 'start'
+          className={classes.checkbox}
+        />
+        {portfolio.private && 
+        <div>
+        <Typography variant='subtitle1' className={classes.indented}>Share</Typography>
+        <TextField
+          id='standard'          
+          variant='outlined'
+          label='email address'
+          className={classes.textinput}
+          placeholder='Press enter to add'
+          onKeyDown={(e) => shareWrapper(e, portfolio._id)}
+          InputLabelProps={{className: classes.portfolioNameInputLabel}}>
+        </TextField>
+        <List>
+          {portfolio.allowedUsers.map((object)=>
+          <ListItem key={object.email}>
+            <ListItemText primary={object.email}></ListItemText>
+            <IconButton onClick={() => sharePortfolio(object.email, false, portfolio._id)}><ClearIcon></ClearIcon></IconButton>
+          </ListItem>)}
+        </List>
+        </div>
+        }
         <Typography variant='h5'>Social Media</Typography>
         <form noValidate autoComplete="off" onSubmit={handleSocialMedia(socialMediaWrapper)}>
           {['facebook', 'instagram', 'twitter', 'linkedin'].map(name => (<TextField className={classes.textinput} label={name} variant="outlined" name={name} key={name} inputRef={registerSocialMedia}/>))}
@@ -435,7 +485,9 @@ Edit.propTypes = {
   isAuthenticated: PropTypes.bool,
   error: PropTypes.object,
   getPortfolioAsGuest: PropTypes.func.isRequired,
-  addSocialMedia: PropTypes.func.isRequired
+  addSocialMedia: PropTypes.func.isRequired,
+  setPrivacy: PropTypes.func.isRequired,
+  sharePortfolio: PropTypes.func.isRequired 
 };
 
 const mapStateToProps = (state) => ({
@@ -445,4 +497,4 @@ const mapStateToProps = (state) => ({
   error: state.eportfolio.error
 });
 
-export default connect(mapStateToProps, {getPage, getPortfolio, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, loadUser, getPortfolioAsGuest, addSocialMedia})(Edit);
+export default connect(mapStateToProps, {getPage, getPortfolio, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, loadUser, getPortfolioAsGuest, addSocialMedia, setPrivacy, sharePortfolio})(Edit);
