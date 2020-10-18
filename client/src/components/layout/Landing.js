@@ -1,5 +1,5 @@
-import React, { Fragment } from 'react';
-import { Link } from 'react-router-dom';
+import React, { Fragment, useEffect } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Box, Button, Typography, Grid } from '@material-ui/core';
@@ -9,7 +9,7 @@ import featureImg2 from '../../images/Vector 3.png';
 import featureImg3 from '../../images/Vector 4.png';
 import { useThemeStyle } from '../../styles/themes';
 import { makeStyles } from '@material-ui/core/styles';
-
+import { GSignIn } from './Navbar';
 const useStyles = makeStyles((theme) => ({
   features: {
     textAlign: 'center'
@@ -19,9 +19,16 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Landing = () => {
+const Landing = ({isAuthenticated}) => {
   const theme = useThemeStyle();
   const classes = useStyles();
+  const history = useHistory();
+  useEffect(() => {
+    if (isAuthenticated){
+      history.push('dashboard');
+      history.go(0);
+    }
+  }, [isAuthenticated]);
   return (
     <Fragment>
       <Box className={`${theme.content} ${theme.half} ${theme.gray6} ${theme.fontg1}`}>
@@ -30,12 +37,10 @@ const Landing = () => {
           <Typography variant='h6'>
             Create your own highly customisable ePortfolios for every purpose.
           </Typography>
-          <Link to='/register'>
-            <Button className={theme.leftrightButton} variant='contained' color='primary'>
+            <Button className={theme.leftrightButton} variant='contained' color='primary' onClick={GSignIn}>
               GET STARTED NOW
             </Button>
-          </Link>
-        </Box>
+         </Box>
         <Box className={theme.leftright}>
           <img src={image} alt='Vector Graphic'></img>
         </Box>
