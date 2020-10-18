@@ -65,8 +65,8 @@ router.get('/:filename', auth, (req, res) => {
 
 // @route   GET api/media/image/:filename
 // @desc    Display Image
-// @access  Private
-router.get('/image/:filename', auth, (req, res) => {
+// @access  Public
+router.get('/image/:filename', (req, res) => {
   gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
     // Check if file
     if (!file || file.length === 0) {
@@ -91,7 +91,7 @@ router.get('/image/:filename', auth, (req, res) => {
 // @route   DELETE api/media/:id
 // @desc    Delete File
 // @access  Private
-router.delete('/:id', (req, res) => {
+router.delete('/:id', auth, (req, res) => {
   gfs.remove({ _id: req.params.id, root: 'uploads' }, (err, gridStore) => {
     if (err) {
       return res.status(404).json({ err: err });
