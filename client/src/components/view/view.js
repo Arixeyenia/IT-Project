@@ -2,13 +2,15 @@ import React, { Fragment, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { Typography, Grid, Box, Card, CardContent, CardHeader, CardMedia, CardActions, Button } from '@material-ui/core';
-import {getPortfolio, getPage, getPortfolioAsGuest, getError } from '../../actions/eportfolio';
+import { Typography, Grid, Box, Card, CardContent, CardHeader, CardMedia, CardActions, Button, IconButton } from '@material-ui/core';
+import {getPortfolio, getPage, getPortfolioAsGuest, getError, getSaved, savePortfolio} from '../../actions/eportfolio';
 import { loadUser } from '../../actions/auth';
 import { Link, useParams, useHistory } from 'react-router-dom';
 import store from '../../store';
 import Comment from '../comments/Comment';
 import { useThemeStyle } from '../../styles/themes';
+import StarIcon from '@material-ui/icons/Star';
+import StarBorderIcon from '@material-ui/icons/StarBorder';
 
 const useStyles = makeStyles((theme) => ({
   cardRoot: {
@@ -44,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const View = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated, error, getPortfolioAsGuest}) => {
+const View = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated, error, getPortfolioAsGuest, getSaved, savePortfolio, savedPortfolios}) => {
   const classes = useStyles();
   const theme = useTheme();
   const themeStyle = useThemeStyle();
@@ -54,7 +56,7 @@ const View = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated
   useEffect(() => {
     if (Object.keys(portfolio).length === 0 || portfolio._id !== params.id) {
       if (store.getState().auth.isAuthenticated){
-        getPortfolio(params.id);
+        getPortfolio(params.id);        
       }
       else{
         getPortfolioAsGuest(params.id);
@@ -68,6 +70,7 @@ const View = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated
   const items = (Object.keys(page).length !== 0) ? page.items : [];
   const rowLengths = {};
   const groupedItems = [];
+  const isSaved = savedPortfolios.some((e) => e._id === portfolio._id);
 
   items.forEach(element => {
     if ([element.row] in Object.keys(rowLengths)){
@@ -89,7 +92,11 @@ const View = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated
     return (
       <Fragment>
         <Box className={themeStyle.content}>
-          <Typography variant='h1'>{portfolio.name}</Typography>
+          <Typography variant='h1'>{portfolio.name}
+          <IconButton aria-label="save" onClick={() => savePortfolio(portfolio._id)}>
+              {isSaved ? <StarIcon/> : <StarBorderIcon/>}
+          </IconButton>
+          </Typography>
         </Box>
         {groupedItems.map((item, i)=>
         <Grid container spacing={3} className={`${themeStyle.content} ${classes.content}`}>
@@ -138,14 +145,17 @@ View.propTypes = {
   loadUser: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.bool,
   error: PropTypes.object,
-  getPortfolioAsGuest: PropTypes.func.isRequired
+  getPortfolioAsGuest: PropTypes.func.isRequired,
+  getSaved: PropTypes.func.isRequired,
+  savePortfolio: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state) => ({
   page: state.eportfolio.page,
+  savedPortfolios: state.eportfolio.savedPortfolios,
   portfolio: state.eportfolio.portfolio,
   isAuthenticated: state.auth.isAuthenticated,
   error: state.eportfolio.error
 });
 
-export default connect(mapStateToProps, {getPage, getPortfolio, loadUser, getPortfolioAsGuest})(View);
+export default connect(mapStateToProps, {getPage, getPortfolio, loadUser, getPortfolioAsGuest, getSaved, savePortfolio})(View);

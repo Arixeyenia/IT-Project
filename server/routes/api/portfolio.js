@@ -16,6 +16,7 @@ need to be added here, the following is
 temporary for implementing blog and comments
 */
 
+
 // @route   GET api/portfolio
 // @desc    Test route
 // @access  Public
@@ -140,14 +141,14 @@ router.get('/user', auth, async (req, res) => {
       return res.status(404).json({ msg: 'User not found' });
     }
 
-    const portfolios = await Portfolio.find()
+    const user_portfolios = await Portfolio.find()
       .where('user')
       .in(req.user.uid.toString())
       .sort({ date: -1 })
       .exec();
-
-    // return portfolios
-    res.json(portfolios);
+    
+     // return portfolios
+    res.json(user_portfolios);
   } catch (err) {
     console.error(err.message);
     if (err.kind === 'ObjectId') {
