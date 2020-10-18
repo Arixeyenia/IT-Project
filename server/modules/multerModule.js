@@ -27,22 +27,4 @@ const initStorage = (conn, bucketName) =>
     },
   });
 
-// Create upload module
-const initUpload = (storage) =>
-  multer({
-    storage: storage,
-    fileFilter: function (req, file, callback) {
-      const ext = path.extname(file.originalname);
-      if (
-        ext !== '.png' &&
-        ext !== '.jpg' &&
-        ext !== '.gif' &&
-        ext !== '.jpeg'
-      ) {
-        return callback(new Error('Only images are allowed'));
-      }
-      callback(null, true);
-    },
-  });
-
 module.exports = { initStorage, initUpload };
