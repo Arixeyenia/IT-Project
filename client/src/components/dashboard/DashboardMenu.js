@@ -61,8 +61,8 @@ export default function IndividualMenu(props) {
                   paper: classes.menuPaperRoot
                 }}>
             <MenuItem onClick={() => history.push('/view/' + props.object.portfolio._id)}>View</MenuItem>
-            <MenuItem onClick={() => history.push('/edit/' + props.object.portfolio._id)}>Edit</MenuItem>
-            <MenuItem onClick={() => {props.deletePortfolio(props.object.portfolio._id)}}>Delete</MenuItem>
+            {props.editable && <MenuItem onClick={() => history.push('/edit/' + props.object.portfolio._id)}>Edit</MenuItem>}
+            {props.editable && <MenuItem onClick={() => {props.deletePortfolio(props.object.portfolio._id)}}>Delete</MenuItem>}
             <MenuItem onClick={(event)=>openPopover(event, props.object.portfolio._id)}>Get link</MenuItem>
         </Menu>
         <Popover id={'popover-'+props.i}
