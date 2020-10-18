@@ -14,6 +14,7 @@ const GridFsStorage = require('multer-gridfs-storage');
 const Grid = require('gridfs-stream');
 const methodOverride = require('method-override');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 const { initStorage, initUpload } = require('../../modules/multerModule');
 
 const conn = mongoose.connection;
