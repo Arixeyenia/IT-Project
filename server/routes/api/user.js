@@ -35,8 +35,13 @@ router.get('/saved', auth, async (req, res) => {
       return res.status(404).json({ msg: 'User not found' });
     }
     const data = await getData(user.saved_portfolios);
+    if (data.includes(null)){
+      const notNull = data.reduce((a, e, i)=>{if (e !== null){ a.push(i);}return a;}, []);   
+      user.saved_portfolios = user.saved_portfolios.reduce((a, e, i) => {if (notNull.includes(i)){ a.push(e);}return a;}, []);
+      await user.save();
+    }
     // return portfolios
-    res.json(["dummy item", ...data]);
+    res.json(["dummy item", ...data.filter((e)=>e!==null)]);
   } catch (err) {
     console.error(err.message);
     if (err.kind === 'ObjectId') {
@@ -47,7 +52,7 @@ router.get('/saved', auth, async (req, res) => {
 });
 
 // @route   put api/user/save
-// @desc    Adds/Updates a social media link
+// @desc    Saves a portfolio
 // @access  Private
 router.put('/save', auth, async (req, res) => {
   try {
