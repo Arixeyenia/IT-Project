@@ -36,3 +36,5 @@ export const SIGN_OUT = 'SIGN_OUT';
 export const GET_ERROR = 'GET_ERROR';
 export const ADD_SOCIAL_MEDIA = 'ADD_SOCIAL_MEDIA';
 export const GET_TEMPLATES = 'GET_TEMPLATES';
+export const SET_PRIVACY = 'SET_PRIVACY';
+export const SHARE_PORTFOLIO = 'SHARE_PORTFOLIO';

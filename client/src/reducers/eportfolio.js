@@ -23,7 +23,9 @@ import {
   DELETE_PAGE,
   ADD_SOCIAL_MEDIA,
   GET_TEMPLATES,
-  GET_ERROR
+  GET_ERROR,
+  SET_PRIVACY,
+  SHARE_PORTFOLIO
 } from '../actions/types';
 
 const initialState = {
@@ -227,6 +229,20 @@ export default function (state = initialState, action) {
         loading: false,
         error: {},
       };
+    case SET_PRIVACY:
+      return {
+        ...state,
+        portfolio: payload,
+        loading: false,
+        error: {},
+      };
+    case SHARE_PORTFOLIO:
+        return {
+          ...state,
+          portfolio: payload,
+          loading: false,
+          error: {},
+        };
     case GET_ERROR:
       return state;
     default:
