@@ -27,4 +27,4 @@ const initStorage = (conn, bucketName) =>
     },
   });
 
-module.exports = { initStorage, initUpload };
+module.exports = { initStorage };

@@ -7,7 +7,6 @@ const config = require('config');
 const Portfolio = require('../../models/Portfolio');
 const User = require('../../models/User');
 const Item = require('../../models/Item');
-const Media = require('../../models/Media');
 const { parseDate } = require('tough-cookie');
 
 const multer = require('multer');
@@ -16,7 +15,7 @@ const Grid = require('gridfs-stream');
 const methodOverride = require('method-override');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const { initStorage, initUpload } = require('../../modules/multerModule');
+const { initStorage } = require('../../modules/multerModule');
 
 const conn = mongoose.connection;
 Grid.mongo = mongoose.mongo;
