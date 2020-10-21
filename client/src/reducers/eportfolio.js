@@ -22,7 +22,7 @@ import {
   MAKE_MAIN,
   DELETE_PAGE,
   ADD_SOCIAL_MEDIA,
-  GET_ERROR
+  GET_ERROR,
 } from '../actions/types';
 
 const initialState = {

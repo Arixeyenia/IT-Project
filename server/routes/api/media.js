@@ -40,7 +40,7 @@ const upload = multer({ storage });
 router.get('/', (req, res) => res.send('Media route'));
 
 // @route   POST api/media
-// @desc    Upload a media file to database returns json that includes filename
+// @desc    Upload a media file to database returns json that includes encrypt filename
 // @access  Private
 router.post('/', [auth, upload.single('file')], (req, res) => {
   //res.json({ file: req.file });
