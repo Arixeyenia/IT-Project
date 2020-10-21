@@ -24,7 +24,17 @@ const App = () => {
       setAuthToken(sessionStorage.token);
       store.dispatch(loadUser());
     };
+    window.addEventListener('scroll', handleScroll);
   }, []);
+
+  const [scrolled, setScrolled] = React.useState(false);
+  const handleScroll = () => {
+    const offset = window.scrollY;
+    if (offset > 0){
+      setScrolled(true);
+    }
+    else setScrolled(false);
+  }
 
   return (
     <Provider store={store}>
@@ -32,7 +42,7 @@ const App = () => {
         <Fragment>
           <ThemeProvider theme={theme}>
             <CssBaseline/>
-            <Navbar/>
+            <Navbar scrolled={scrolled}/>
             <Box className="main-content">
               <Switch>
                 <Route exact path='/' component={Landing} />

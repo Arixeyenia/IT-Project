@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect } from 'react';
-import { Box, Button, Typography, Divider } from '@material-ui/core';
+import { Box, Button, Typography, Divider, List, ListItem } from '@material-ui/core';
 import image from '../../images/pick.png';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -34,21 +34,27 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     fontSize: '14px',
     borderRadius: '8px',
-    marginTop: '25px'
   },
   templateButtonSelected: {
     padding: '18px 38px',
     textAlign: 'center',
     fontSize: '14px',
     borderRadius: '8px',
-    marginTop: '25px',
     backgroundColor: '#4F4F4F',
     color: '#F2F2F2'
   },
   templateBox: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2),
-    display: 'inline-block'
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
+    display: 'inline-block',
+    width: 'fit-content'
+  },
+  list: {
+    display: 'flex',
+    flexDirection: 'row',
+    padding: 0,
+    whiteSpace: 'nowrap',
+    overflowX: 'auto'
   }
 }));
 
@@ -71,18 +77,37 @@ const PickTemplate = ({createPortfolio, createPortfolioDetails, getTemplates, te
   return (
     <Fragment>
       <Box className={`${theme.content} ${classes.templateSelection} ${theme.fontg1} ${theme.gray6}`}>
-        <Box className={classes.templateBox}>
-          <Button variant='contained' onClick={() => setCurrTemplate("blank")} className={(currTemplate === "blank") ? classes.templateButtonSelected : classes.templateButton}>Blank</Button>
-        </Box>
-        {templates.map((template) => <Box className={classes.templateBox} key={template._id}>
-          <Button onClick={() => setCurrTemplate(template._id)} variant='contained' className={(currTemplate === template._id) ? classes.templateButtonSelected : classes.templateButton}>{template.name}</Button>
-        </Box>)}
+        <List className={classes.list}>
+          <ListItem className={classes.templateBox}>
+            <Button variant='contained' 
+              onClick={() => setCurrTemplate("blank")} 
+              className={(currTemplate === "blank") ? classes.templateButtonSelected : classes.templateButton}>
+                Blank
+            </Button>
+          </ListItem>
+          {templates.map((template) => <ListItem className={classes.templateBox} key={template._id}>
+            <Button 
+              onClick={() => setCurrTemplate(template._id)} 
+              variant='contained' 
+              className={(currTemplate === template._id) ? classes.templateButtonSelected : classes.templateButton}>
+                {template.name}
+            </Button>
+          </ListItem>)}
+        </List>
         <Box className={classes.category}>
           <Typography noWrap variant='body1' className={classes.categoryTypography}>Pick a template</Typography>
           <Box className={classes.categoryDiv}>
             <Divider light className={classes.categoryLine}/>
           </Box>
-          <Button style={{marginBottom: '10px'}} variant='contained' color='primary' onClick={()=>{createPortfolio(store.getState().eportfolio.createPortfolioDetails, currTemplate);}}>CREATE</Button>
+          <Button style={{marginBottom: '10px'}} 
+            variant='contained' 
+            color='primary' 
+            onClick={()=>{createPortfolio(store.getState().eportfolio.createPortfolioDetails, currTemplate);}}
+            classes={{
+              label: theme.buttonLabel
+            }}>
+              CREATE
+          </Button>
         </Box>
       </Box>
       { (currTemplate === "") ? <Box className={`${theme.content} ${theme.half} ${theme.fontg1} ${theme.gray6}`}>

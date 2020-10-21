@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Typography, Box, List, Card, CardContent, Icon, CardActionArea, GridList, GridListTile, CardMedia } from '@material-ui/core';
+import { Typography, Box, List, Card, CardContent, Icon, CardActionArea, GridList, GridListTile, Button, CardMedia } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add'
 import {getUserEPortfolios, getEPortfolioThumbnail, deletePortfolio, getSaved} from '../../actions/eportfolio';
 import { Link } from 'react-router-dom';
@@ -42,21 +42,24 @@ const Dashboard = ({getUserEPortfolios, userEPortfolios, getEPortfolioThumbnail,
     
   return (
     <Box className={theme.content}>
-      <Typography variant='h2'>Welcome to your dashboard</Typography>
+      <Box className={classes.top}>
+        <Typography variant='h2' className={classes.topTypo}>Welcome to your dashboard</Typography>
+        <Link to='/create-eportfolio'>
+          <Button
+            className={classes.topButton}
+            variant='contained' 
+            color='primary'
+            classes={{
+              label: theme.buttonLabel
+            }}>
+            Create new
+          </Button>
+        </Link>
+      </Box>
+      
       <Category title='Your existing ePortfolios'></Category>
       <GridList className={classes.portfolioList}>
         {DisplayPortfolioItem(arrayOfPortfolioObjects, deletePortfolio, true)}
-        <GridListTile className={classes.portfolioListItem} key='last'>
-            <Card raised={true} className={`${classes.portfolioCard} 'MuiButton-root'`}>
-              <CardActionArea><Link to='/create-eportfolio'>
-                <Box className={classes.addPortfolio}>
-                  <Icon aria-label='settings' className={classes.addPortfolioIcon}>
-                    <AddIcon fontSize='large'/>
-                  </Icon>
-                </Box>
-              </Link></CardActionArea>
-            </Card>
-          </GridListTile>
       </GridList>
       <Category title='Your favourited ePortfolios'></Category>
       <GridList className={classes.portfolioList}>
@@ -74,11 +77,13 @@ function DisplayPortfolioItem(arrayOfPortfolioObjects, deletePortfolio, editable
   return(
     arrayOfPortfolioObjects.map((object, i) => (
       <GridListTile className={classes.portfolioListItem} key={object.portfolio._id}>
-        <Card raised={true} className={classes.portfolioCard}>
+        <Card className={classes.portfolioCard}>
+          <CardMedia>
+            <img src={img} alt='Portfolio Thumbnail' className={classes.cardThumbnail}></img>
+          </CardMedia>
+          <CardContent className={classes.cardContent}>
+            <Box className={classes.cardContentTypo}>{object.portfolio.name}</Box>
           <IndividualMenu i={i} object={object} deletePortfolio={deletePortfolio} editable={editable}/>
-          <img src={img} alt='Portfolio Thumbnail' className={classes.cardThumbnail}></img>
-          <CardContent className={classes.overlayPortfolioItem}>
-            <Typography variant='body1' className={theme.fontg6}>{object.portfolio.name}</Typography>
           </CardContent>
         </Card>
         

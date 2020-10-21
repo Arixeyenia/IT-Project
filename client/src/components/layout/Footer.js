@@ -7,21 +7,33 @@ import { useThemeStyle } from '../../styles/themes';
 const useStyles = makeStyles((theme) => ({
   logo: {
     margin: 0,
-    width: '25%',
-    padding: '10px'
+    padding: '10px',
+    width: '60%'
+  },
+  thirds: {
+    width: '33.33333%'
+  },
+  madeby: {
+    display: 'flex',
+    justifyContent: 'center',
+    paddingTop: '20px'
+  },
+  content: {
+    padding: '60px 10% 50px'
   }
 }));
 function Footer() {
   const classes = useStyles();
   const theme = useThemeStyle();
   return (
-    <Box className={`${theme.content} ${theme.gray2} ${theme.fontg6}`}>
-      <Box><img src={logo} className={classes.logo} alt='Quaranteam'></img></Box>
+    <Box className={`${classes.content} ${theme.black} ${theme.fontg6}`}>
       <Box className={theme.half}>
-        <Box className={theme.leftright}>
-          <Typography variant='body1'>Proudly made by Quaranteam</Typography>
-          <Typography variant='body1'>
-            COMP30022 IT Project 2020 Semester 2
+        <Box className={classes.thirds}>
+          <img src={logo} className={classes.logo} alt='Quaranteam'></img>
+        </Box>
+        <Box className={classes.thirds}>
+          <Typography variant='h6'>
+            Members
           </Typography>
           <Typography variant='body1'>
             Ajay Singh
@@ -35,9 +47,8 @@ function Footer() {
             Winnie Chen
           </Typography>
         </Box>
-        <Box className={theme.leftright}>
-          <Typography variant='body1'>Our Contacts</Typography>
-          <br />
+        <Box className={classes.thirds}>
+          <Typography variant='h6'>Contacts</Typography>
           <Typography variant='body1'>
             ajay@daltavida.com
             <br />
@@ -51,6 +62,9 @@ function Footer() {
             <br />
           </Typography>
         </Box>
+      </Box>
+      <Box className={classes.madeby}>
+        <Typography variant='body1'>This webapp was made for IT Project (COMP30022) in Semester 2, 2020 at the  University of Melbourne</Typography>
       </Box>
     </Box>
   );
