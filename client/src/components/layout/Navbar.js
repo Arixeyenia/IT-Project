@@ -116,13 +116,13 @@ const Navbar = ({
           </ListItem>
           <ListItem disableGutters dense className={classes.listItem}>
             {/** change links */}
-            <Link to='/dashboard'>
+            <Link to='/'>
               <MaterialUILink><Typography variant='body1' color='textPrimary'>About</Typography></MaterialUILink>
             </Link>
           </ListItem>
           <ListItem disableGutters dense className={classes.listItem}>
             {/** change links */}
-            <Link to='/dashboard'>
+            <Link to='/'>
               <MaterialUILink><Typography variant='body1' color='textPrimary'>Contact</Typography></MaterialUILink>
             </Link>
           </ListItem>
@@ -153,19 +153,19 @@ const Navbar = ({
         </Link>
         <List disablePadding className={classes.list} color={theme.gray6}>
           <ListItem disableGutters dense className={classes.listItem}>
-            <Link to='/dashboard'>
-              <MaterialUILink><Typography variant='body1' color='textPrimary'>Dashboard</Typography></MaterialUILink>
+            <Link to='/'>
+              <MaterialUILink><Typography variant='body1' color='textPrimary'>Home</Typography></MaterialUILink>
             </Link>
           </ListItem>
           <ListItem disableGutters dense className={classes.listItem}>
             {/** change links */}
-            <Link to='/dashboard'>
+            <Link to='/'>
               <MaterialUILink><Typography variant='body1' color='textPrimary'>About</Typography></MaterialUILink>
             </Link>
           </ListItem>
           <ListItem disableGutters dense className={classes.listItem}>
             {/** change links */}
-            <Link to='/dashboard'>
+            <Link to='/'>
               <MaterialUILink><Typography variant='body1' color='textPrimary'>Contact</Typography></MaterialUILink>
             </Link>
           </ListItem>
