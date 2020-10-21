@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Typography, Drawer, Grid, Button, CardMedia, TextField, Divider, Box, List, ListItem, ListItemText, ListItemIcon, Collapse, IconButton, Icon, FormControlLabel, CardActions, Checkbox } from '@material-ui/core';
-import {getPortfolio, getPage, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, isAuthenticated, error, getPortfolioAsGuest, addSocialMedia} from '../../actions/eportfolio';
+import {getPortfolio, getPage, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, isAuthenticated, error, getPortfolioAsGuest, addSocialMedia, uploadImage} from '../../actions/eportfolio';
 import { loadUser } from '../../actions/auth';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -166,6 +166,7 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
   const [editID, setEditID] = React.useState('');
   const [deleteID, setDeleteID] = React.useState('');
   const [toDelete, setToDelete] = React.useState('');
+  const [image, setImage] =  React.useState([]);
 
 
   const openCurrPage = () => {
@@ -174,6 +175,10 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
 
   const editItemWrapper = (values) => {
     values.item = editID;
+    console.log("value is______________");
+    console.log(values);
+    uploadImage(image);
+    //values.mediaLink = "localhost:3000/api/media/" + uploadImage(image).toString();
     editItem(values);
     handleDrawerClose(); 
   }
@@ -242,12 +247,20 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
     return ['title', 'subtitle', 'paragraph', 'mediaLink', 'mediaType', 'linkText', 'linkAddress', 'private', 'row', 'column'][index];
   }
 
+
   const getItem = (id) => {
     const curr = items.filter(item => item._id === id);
     let item = {};
     ['title', 'subtitle', 'paragraph', 'mediaLink', 'mediaType', 'linkText', 'linkAddress', 'private', 'row', 'column'].forEach(field => {if (curr.length > 0 && Object.keys(curr[0]).includes(field)) item[field] = curr[0][field];});
     return item;
   }
+
+  const onImageChanged = (image) => {
+    setImage(image.target.files[0]);
+    console.log("____________yes image.target.files[0] ______");
+    console.log(image.target.files[0]);
+  }
+
 
   const params = useParams();
   useEffect(() => {
@@ -363,6 +376,7 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
         {['Title', 'Subtitle', 'Paragraph', 'Media Link', 'Media Type', 'Link Text', 'Link Address', 'private', 'row', 'column'].map((text, index) => (
           <TextField key={getField(index)} className={classes.textinput} id='standard-basic' label={text} variant='outlined' name={getField(index)} inputRef={register}/>
         ))}
+        <TextField onChange={onImageChanged} name="upload"  type="file"/>
         <Button variant='outlined' color='primary' className={classes.textinput} type='submit'>Save</Button>
       </List>      
       </form>

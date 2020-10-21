@@ -25,7 +25,7 @@ import {
   MAKE_MAIN,
   DELETE_PAGE,
   GET_ERROR,
-  ADD_SOCIAL_MEDIA
+  ADD_SOCIAL_MEDIA,
 } from './types';
 
 export const getUserEPortfolios = () => async (dispatch) => {
@@ -343,4 +343,12 @@ export const getError = () => async (dispatch) => {
   dispatch({
     type: GET_ERROR
   })
-}
+};
+
+export const uploadImage = (file) => {
+ 
+  const res = api.post('/media', file);
+  console.log("___________yes res.data returned");  
+  console.log(res.data);
+  //return res.data.;
+};
