@@ -43,7 +43,8 @@ router.get('/', (req, res) => res.send('Media route'));
 // @desc    Upload a media file to database returns json that includes filename
 // @access  Private
 router.post('/', [auth, upload.single('file')], (req, res) => {
-  res.json({ file: req.file });
+  //res.json({ file: req.file });
+  res.redirect('/');
 });
 
 // @route   GET api/media/:filename
