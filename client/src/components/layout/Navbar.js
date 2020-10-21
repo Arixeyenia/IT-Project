@@ -127,7 +127,7 @@ const Navbar = ({
             </Link>
           </ListItem>
           <ListItem disableGutters dense className={classes.listItem}>
-            <Typography variant='body1' color='textPrimary'>Hello, {user && user.name}!</Typography>
+            <Typography variant='body1' color='textPrimary'>{user && user.name}</Typography>
             <Avatar src={user && user.avatar} onClick={handleClick}></Avatar>
           </ListItem>
         </List>
