@@ -6,51 +6,42 @@ import { useThemeStyle } from '../../styles/themes';
 
 const useStyles = makeStyles((theme) => ({
   logo: {
-    margin: 0,
-    width: '25%',
-    padding: '10px'
+    margin: 'auto',
+    padding: '10px',
+    width: '20%',
+    justifyContent: 'center',
+    display: 'flex'
+  },
+  thirds: {
+    width: '33.33333%'
+  },
+  madeby: {
+    display: 'flex',
+    justifyContent: 'center',
+    textAlign: 'center'
+  },
+  content: {
+    padding: '30px 10% 30px'
   }
 }));
 function Footer() {
   const classes = useStyles();
   const theme = useThemeStyle();
   return (
-    <Box className={`${theme.content} ${theme.gray2} ${theme.fontg6}`}>
-      <Box><img src={logo} className={classes.logo} alt='Quaranteam'></img></Box>
-      <Box className={theme.half}>
-        <Box className={theme.leftright}>
-          <Typography variant='body1'>Proudly made by Quaranteam</Typography>
-          <Typography variant='body1'>
-            COMP30022 IT Project 2020 Semester 2
-          </Typography>
-          <Typography variant='body1'>
-            Ajay Singh
-            <br />
-            Jerrayl Ng
-            <br />
-            Ju Wey Tan
-            <br />
-            Mehmet Koseoglu
-            <br />
-            Winnie Chen
-          </Typography>
+    <Box className={`${classes.content} ${theme.black} ${theme.fontg6}`}>
+      <Box>
+        <Box>
+          <img src={logo} className={classes.logo} alt='Quaranteam'></img>
         </Box>
-        <Box className={theme.leftright}>
-          <Typography variant='body1'>Our Contacts</Typography>
-          <br />
-          <Typography variant='body1'>
-            ajay@daltavida.com
-            <br />
-            jerrayln@student.unimelb.edu.au
-            <br />
-            juweytan@gmail.com
-            <br />
-            hggm02@gmail.com
-            <br />
-            biyaoc@student.unimelb.edu.au
-            <br />
-          </Typography>
-        </Box>
+      </Box>
+      <Box className={classes.madeby}>
+        <Typography variant='body1'>This webapp was made by <br/>
+            Ajay Singh, 
+            Jerrayl Ng, 
+            Ju Wey Tan, 
+            Mehmet Koseoglu, 
+            Winnie Chen<br/>
+         for IT Project (COMP30022) in Semester 2, 2020 at the  University of Melbourne</Typography>
       </Box>
     </Box>
   );

@@ -79,7 +79,6 @@ const Comment = ({
     postComment(itemID, textField);
     setValue('');
   };
-
   return (
     <>
       <Helpers.Button
@@ -120,7 +119,7 @@ const Comment = ({
                             deleteComment={deleteComment}
                             editComment={editComment}
                             itemID={itemID}
-                            currentUserID={currentUser.googleId}
+                            currentUser={currentUser}
                           />
                         ) : (
                           <div />

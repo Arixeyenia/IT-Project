@@ -43,6 +43,7 @@ const useStyles = makeStyles((theme) => ({
   content: {
     paddingTop: '20px !important',
     paddingBottom: '20px !important',
+    paddingLeft: '10% !important'
   }
 }));
 
@@ -96,7 +97,7 @@ const View = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated
   else{
     return (
       <Fragment>
-        <Box className={themeStyle.content}>
+        <Box className={classes.content}>
           <Typography variant='h1'>{portfolio.name}
           <IconButton aria-label="save" onClick={() => savePortfolio(portfolio._id)}>
               {isSaved ? <StarIcon/> : <StarBorderIcon/>}

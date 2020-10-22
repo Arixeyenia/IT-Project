@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
-import { Button } from '@material-ui/core';
+import { Button, List, ListItem, Typography, Box, Avatar, Menu, MenuItem } from '@material-ui/core';
+import MaterialUILink from '@material-ui/core/Link';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -9,15 +10,42 @@ import api from '../../utils/api';
 import { signIn, signOut } from '../../actions/auth';
 import logo from '../../images/Quaranteam.png'
 import { makeStyles } from '@material-ui/core/styles';
+import { useThemeStyle } from '../../styles/themes'
 
 const useStyles = makeStyles((theme) => ({
   logo: {
-    margin: 0,
     width: '20%',
-    padding: '0px'
+    padding: '0px',
+    display: 'initial'
   },
   logoLink: {
-    padding: '0 !important'
+    padding: '0 !important',
+    flexGrow: '4'
+  },
+  listItem: {
+    width: 'fit-content',
+    color: '#333333'
+  },
+  list: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexGrow: '1'
+  },  
+  header: {
+    display: 'flex',
+    padding: '10px 5%',
+    zIndex: '99'
+  },
+  scrolled: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'white',
+    zIndex: '99'
+  },
+  buttonBase: {
+    marginLeft: '10px'
   }
 }));
 
@@ -54,50 +82,116 @@ const Navbar = ({
   auth: { isAuthenticated, loading, user },
   signIn,
   signOut,
+  scrolled
 }) => {
   const classes = useStyles();
+  const theme = useThemeStyle();
+  console.log(user);
   //navbar for users signed in
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const logout = () => {
+    signOut();
+    handleClose();
+  }
+
   const authLinks = (
-    <nav className='navbar bg-dark'>
-      <Link className={classes.logoLink} to='/'>
-        <img src={logo} alt='Quaranteam' className={classes.logo}></img>
-      </Link>
-      <ul>
-        <li>
-          <span className='hide-sm'>Hi, {user && user.name}!</span>
-        </li>
-        <li>
-          <Link to='/dashboard'>
-            <i className='fas fa-user' />{' '}
-            <span className='hide-sm'>Dashboard</span>
-          </Link>
-        </li>
-        <li>
-          <a onClick={signOut} href='/'>
-            <i className='fas fa-sign-out-alt' />{' '}
-            <span className='hide-sm'>sign out</span>
-          </a>
-        </li>
-      </ul>
-    </nav>
+    <Box className={(scrolled ? classes.scrolled : '')}>
+      <Box className={classes.header}>
+        <Link className={classes.logoLink} to='/'>
+          <img src={logo} alt='Quaranteam' className={classes.logo}></img>
+        </Link>
+        <List disablePadding className={classes.list} color={theme.gray6}>
+          <ListItem disableGutters dense className={classes.listItem}>
+            <Link to='/dashboard'>
+              <MaterialUILink><Typography variant='body1' color='textPrimary'>Dashboard</Typography></MaterialUILink>
+            </Link>
+          </ListItem>
+          <ListItem disableGutters dense className={classes.listItem}>
+            {/** change links */}
+            <Link to='/'>
+              <MaterialUILink><Typography variant='body1' color='textPrimary'>About</Typography></MaterialUILink>
+            </Link>
+          </ListItem>
+          <ListItem disableGutters dense className={classes.listItem}>
+            {/** change links */}
+            <Link to='/'>
+              <MaterialUILink><Typography variant='body1' color='textPrimary'>Contact</Typography></MaterialUILink>
+            </Link>
+          </ListItem>
+          <ListItem disableGutters dense className={classes.listItem}>
+            <Typography variant='body1' color='textPrimary'>{user && user.name}</Typography>
+            <Avatar src={user && user.avatar} onClick={handleClick}></Avatar>
+          </ListItem>
+        </List>
+      </Box>
+      <Menu
+        id='logout'
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleClose}>
+        <MenuItem onClick={logout}><Link to='/'>Sign out</Link></MenuItem>
+      </Menu>
+    </Box>
+    
   );
+
 
   //navbar for guests not signed in yet
   const guestLinks = (
-    <nav className='navbar bg-dark'>
-      <Link className={classes.logoLink} to='/'>
-        <img src={logo} alt='Quaranteam' className={classes.logo}></img>
-      </Link>
-      <ul>
-        <li>
+    <Box className={(scrolled ? classes.scrolled : '')}>
+      <Box className={classes.header}>
+        <Link className={classes.logoLink} to='/'>
+          <MaterialUILink><img src={logo} alt='Quaranteam' className={classes.logo}></img></MaterialUILink>
+        </Link>
+        <List disablePadding className={classes.list} color={theme.gray6}>
+          <ListItem disableGutters dense className={classes.listItem}>
+            <Link to='/'>
+              <MaterialUILink><Typography variant='body1' color='textPrimary'>Home</Typography></MaterialUILink>
+            </Link>
+          </ListItem>
+          <ListItem disableGutters dense className={classes.listItem}>
+            {/** change links */}
+            <Link to='/'>
+              <MaterialUILink><Typography variant='body1' color='textPrimary'>About</Typography></MaterialUILink>
+            </Link>
+          </ListItem>
+          <ListItem disableGutters dense className={classes.listItem}>
+            {/** change links */}
+            <Link to='/'>
+              <MaterialUILink><Typography variant='body1' color='textPrimary'>Contact</Typography></MaterialUILink>
+            </Link>
+          </ListItem>
+          <ListItem disableGutters dense className={classes.listItem}>
           <Link to='/'>
-            <Button onClick={() => GSignIn(signIn)} variant='contained' color='primary'>
-              SIGN IN WITH GOOGLE
+            <Button onClick={() => GSignIn(signIn)} 
+              variant='contained' 
+              color='primary'
+              className={classes.buttonBase}
+              classes={{
+                label: theme.buttonLabel
+              }}>
+              SIGN IN
             </Button>
           </Link>
-        </li>
-      </ul>
-    </nav>
+          </ListItem>
+        </List>
+      </Box>
+      <Menu
+        id='logout'
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleClose}>
+        <MenuItem>Logout</MenuItem>
+      </Menu>
+    </Box>
   );
 
   return (

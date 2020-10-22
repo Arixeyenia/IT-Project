@@ -41,6 +41,9 @@ export const useThemeStyle = makeStyles((theme) => ({
   gray6: {
     backgroundColor: '#f2f2f2'
   },
+  black: {
+    backgroundColor: '#191919'
+  },
   fontg1: {
     color: '#333333'
   },
@@ -58,20 +61,20 @@ export const useThemeStyle = makeStyles((theme) => ({
   },
   fontg6: {
     color: '#f2f2f2'
+  },
+  buttonLabel: {
+    padding: '5px 35px'
   }
 }));
 
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#A0C9DB',
-      dark: '#7A99A6',
-      light: '#C0E7F8',
+      main: '#40D4FF',
+
     },
     secondary: {
-      main: '#E9B277',
-      dark: '#C0813E',
-      light: '#F8D1A8',
+      main: '#FFFFFF'
     },
   },
   typography: {
@@ -118,6 +121,10 @@ const theme = createMuiTheme({
       fontFamily: 'SourceSansPro',
       fontWeight: 200,
     },
+    body2: {
+      fontFamily: 'SourceSansPro',
+      fontWeight: 400
+    }
   },
   overrides: {
     MuiCssBaseline: {

@@ -30,6 +30,10 @@ router.post('/', auth, async (req, res, next) => {
           avatar: req.user.picture,
         }).save();
       }
+      else {
+        user.avatar = req.user.picture;
+        user.save();
+      }
     });
     const token = req.header('x-auth-token');
     res.json({ token });

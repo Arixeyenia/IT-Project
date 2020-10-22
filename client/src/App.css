@@ -41,13 +41,6 @@
   margin: 0;
 }
 
-/** Styles for img tag */
-img {
-  width: 80%;
-  margin-left: auto;
-  margin-right: auto;
-  display: block;
-}
 
 /** All text using Material UI Typography component styles */
 .MuiTypography-root {
@@ -56,10 +49,6 @@ img {
 
 /** Styles for MaterialUI Grid at the root (the whole box) */
 .MuiGrid-root {
-  padding-top: 50px;
-}
-
-.main-content {
   padding-top: 50px;
 }
 

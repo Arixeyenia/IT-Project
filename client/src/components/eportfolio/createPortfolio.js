@@ -52,7 +52,7 @@ const CreateEPortfolio = ({creatingPortfolioName, resetCreatingPortfolioName}) =
     
   return (
     <Box className={theme.content}>
-      <Typography variant='h1'>Enter your portfolio name here</Typography>
+      <Typography variant='h2'>Enter your portfolio name here</Typography>
       <form>
         <TextField error={error} 
           id='standard-required' 
@@ -70,7 +70,14 @@ const CreateEPortfolio = ({creatingPortfolioName, resetCreatingPortfolioName}) =
           label='Private'
           className={classes.checkbox}
         />
-        <Link onClick={() => name && creatingPortfolioName(name, privacy)} to={()=> name ? '/pick-template' : true}><Button style={{float: 'right'}} variant='contained' color='primary' >NEXT</Button></Link>
+        <Link onClick={() => name && creatingPortfolioName(name, privacy)} to={()=> name ? '/pick-template' : true}>
+          <Button style={{float: 'right'}} 
+            variant='contained' 
+            color='primary'
+            classes= {{
+              label: theme.buttonLabel
+            }} >NEXT</Button>
+        </Link>
       </form>
     </Box>
   )
