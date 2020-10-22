@@ -1,6 +1,7 @@
 const express = require('express');
 const connectDB = require('./config/db');
 const path = require('path');
+const methodOverride = require('method-override');
 
 const app = express();
 //add this bc i receive network error from front end
@@ -13,6 +14,7 @@ connectDB();
 // Init Middleware
 // Allows parsing of req body
 app.use(express.json({ extended: false }));
+app.use(methodOverride('_method'));
 
 // Define Routes
 app.use('/api/auth', require('./routes/api/auth'));

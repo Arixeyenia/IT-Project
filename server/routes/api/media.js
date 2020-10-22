@@ -15,7 +15,6 @@ const Grid = require('gridfs-stream');
 const methodOverride = require('method-override');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const { initStorage } = require('../../modules/multerModule');
 
 const conn = mongoose.connection;
 Grid.mongo = mongoose.mongo;
@@ -31,7 +30,26 @@ conn.once('open', () => {
   gfs.collection(collectionName);
 });
 
-const storage = initStorage(conn, bucketName);
+// Create storage engine
+const storage = new GridFsStorage({
+  db: conn,
+  file: (req, file) => {
+    return new Promise((resolve, reject) => {
+      crypto.randomBytes(16, (err, buf) => {
+        if (err) {
+          return reject(err);
+        }
+        const filename = buf.toString('hex') + path.extname(file.originalname);
+        const fileInfo = {
+          filename: filename,
+          bucketName: bucketName,
+        };
+        resolve(fileInfo);
+      });
+    });
+  },
+});
+
 const upload = multer({ storage });
 
 // @route   GET api/media
