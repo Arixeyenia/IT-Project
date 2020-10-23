@@ -2,12 +2,13 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
     portfolioList: {
-      display: 'flex',
       padding: '5px !important',
+      display: 'flex',
+      alignItems: 'stretch'
     },
     portfolioCardHeader: {
       padding: '0px',
-      marginBottom: '-40px',
+      flexGrow: 1
     },
     cardHeaderAction: {
       textAlign: 'right',
@@ -17,10 +18,20 @@ const useStyles = makeStyles((theme) => ({
       opacity: '66%',
     },
     portfolioListItem: {
-      width: '30% !important',
+      width: '33% !important',
+      height: 'initial !important',
+      paddingLeft: '10px !important'
     },
     portfolioCard: {
       boxShadow: 'initial',
+      backgroundColor: 'inherit'
+    },
+    cardContent: {
+      display: 'flex',
+      alignItems: 'center'
+    },
+    cardContentTypo: {
+      flexGrow: 4
     },
     portfolioCardMenu: {
       width: '20%',
@@ -28,28 +39,12 @@ const useStyles = makeStyles((theme) => ({
     menuPaperRoot: {
       width: '100%',
     },
-    addPortfolio: {
-      padding: '18%',
-    },
-    addPortfolioIcon: {
-      display: 'table !important',
-      margin: 'auto !important',
-    },
     cardThumbnail: {
       width: '100%',
-      marginBottom: '-20%',
     },
     cardMediaRoot: {
       height: '10px',
       padding: '100%',
-    },
-    overlayPortfolioItem: {
-      opacity: '66%',
-      textAlign: 'right',
-      backgroundColor: '#333333',
-      borderBottomLeftRadius: 'inherit',
-      borderBottomRightRadius: 'inherit',
-      padding: '0 !important',
     },
     copyLinkPaperRoot: {
       width: '40%',
@@ -79,6 +74,16 @@ const useStyles = makeStyles((theme) => ({
     },
     categoryLine: {
       marginBottom: '5px',
+    },
+    top: {
+      display: 'flex'
+    },
+    topTypo: {
+      flexGrow: 6
+    },
+    topButton: {
+      flexGrow: 1,
+      height: 'fit-content'
     }
   }));
 

@@ -28,7 +28,7 @@ const store = createStore(
 );
 
 // set up a store subscription listener
-// to store the users token in localStorage
+// to store the users token in sessionStorage
 
 // initialize current state from redux store for subscription comparison
 // preventing undefined error
@@ -38,7 +38,7 @@ store.subscribe(() => {
   // keep track of the previous and current state to compare changes
   let previousState = currentState;
   currentState = store.getState();
-  // if the token changes set the value in localStorage and axios headers
+  // if the token changes set the value in sessionStorage and axios headers
   if (previousState.auth.token !== currentState.auth.token) {
     const token = currentState.auth.token;
     setAuthToken(token);

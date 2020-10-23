@@ -9,6 +9,12 @@ const User = require('../../models/User');
 const Item = require('../../models/Item');
 const { parseDate } = require('tough-cookie');
 
+/*
+The calls to create/edit/delete items 
+need to be added here, the following is
+temporary for implementing blog
+*/
+
 // @route   GET api/item
 // @desc    Test route
 // @access  Public
@@ -63,7 +69,6 @@ router.post('/', auth, async (req, res) => {
 // @desc    Edits an existing item
 // @access  Private
 router.put('/', auth, async (req, res) => {
-  s;
   try {
     const item = await Item.findById(req.body.item);
     // retrieve portfolio

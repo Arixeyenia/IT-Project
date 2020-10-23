@@ -66,9 +66,8 @@ const PortfolioSchema = new mongoose.Schema({
   },
   allowedUsers: [
     {
-      user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'user',
+      email: {
+        type: String,
       },
     },
   ],

@@ -9,12 +9,40 @@ const Portfolio = require('../../models/Portfolio');
 const User = require('../../models/User');
 const { parseDate } = require('tough-cookie');
 const { Redirect } = require('react-router-dom');
+const { cloneElement } = require('react');
 
 /*
 The calls to create/edit/delete portfolio 
 need to be added here, the following is
 temporary for implementing blog and comments
 */
+
+/*
+ Janky helper functions, to remove when populate is working
+*/
+const cloneItem = async (item, portfolioID, pageID) => {
+  const templateItem = await Item.findById(item._id);
+  const newItem = new Item({
+    portfolio: portfolioID,
+    pageid: pageID,
+    private: templateItem.private,
+    title: templateItem.title,
+    subtitle: templateItem.subtitle,
+    paragraph: templateItem.paragraph,
+    mediaLink: templateItem.mediaLink,
+    mediaType: templateItem.mediaType,
+    linkText: templateItem.linkText,
+    linkAddress: templateItem.linkAddress,
+    row: templateItem.row,
+    column: templateItem.column,
+  });
+  return await newItem.save();
+};
+
+const cloneItems = async (page, portfolioID, pageID) => {
+  page.items = await Promise.all(page.items.map((item) => cloneItem(item, portfolioID, pageID)));
+  return page;
+}
 
 // @route   GET api/portfolio
 // @desc    Test route
@@ -42,32 +70,28 @@ router.post(
     // }
     
     try {
-      var allowedUsers = [];
-      for (const email of req.body.emails){
-        const user = await User.findOne({ email:email });
-        if(!user) return res.status(404).json({ msg: 'User not found'});
-        allowedUsers.push({user: user._id});
-      };
-
-      const newPortfolio = new Portfolio({
+      let newPortfolio = new Portfolio({
         name: req.body.name,
         user: req.user.uid,
         private: req.body.private,
-        allowedUsers: allowedUsers,
-        pages: {
+      });
+      if (req.body.template === "blank"){
+        newPortfolio.pages = [{
           name: 'Home',
           url: 'Home',
           main: true
-        }
-      });
-
+        }]
+      }
+      else {
+        const template = await Portfolio.find({ user: config.get('templateAccount'), _id: req.body.template}).exec();
+        newPortfolio.pages = template[0].pages.map(page => {return {main:page.main, items:page.items, name:page.name, url:page.url}});
+        newPortfolio.pages = await Promise.all(newPortfolio.pages.map(async(page) => {return await cloneItems(page, newPortfolio._id, page._id)}));
+      }
       const portfolio = await newPortfolio.save();
       Portfolio.findOne({_id: portfolio._id})
-        .populate('allowedUser.user')
         .exec(function (err, portfolio) {
           if (err) return res.status(500).send('Server Error');
         });
-        
       res.json(portfolio);
     } catch (err) {
       console.error(err.message);
@@ -87,7 +111,7 @@ router.get('/single/:id', auth, async (req, res) => {
     // check that user is authorized
     
     const isAllowed = portfolio.allowedUsers.some(function(user){
-      return user.equals(user.id);
+      return user.equals(req.user.uid);
     });
 
     if (
@@ -116,7 +140,7 @@ router.get('/guest/:id', async (req, res) => {
     if (!portfolio) {
       return res.status(404).json({ msg: 'Portfolio not found' });
     }
-    if (portfolio.private) {
+    if (portfolio.private === true) {
       return res.status(401).json({ msg: 'User not authorized' });
     }
     res.json(portfolio);
@@ -140,14 +164,14 @@ router.get('/user', auth, async (req, res) => {
       return res.status(404).json({ msg: 'User not found' });
     }
 
-    const portfolios = await Portfolio.find()
+    const user_portfolios = await Portfolio.find()
       .where('user')
       .in(req.user.uid.toString())
       .sort({ date: -1 })
       .exec();
-
-    // return portfolios
-    res.json(portfolios);
+    
+     // return portfolios
+    res.json(user_portfolios);
   } catch (err) {
     console.error(err.message);
     if (err.kind === 'ObjectId') {
@@ -237,7 +261,7 @@ router.put('/edit', auth, async (req, res) => {
           { new: true }
         )
       );
-    } else if (req.body.field === 'private') {
+    } else if (req.body.field === 'privacy') {
       res.json(
         await Portfolio.findByIdAndUpdate(
           req.body.portfolio,
@@ -269,10 +293,11 @@ router.put('/permission', auth, async (req, res) => {
     if (portfolio.user.toString() !== req.user.uid)
       return res.status(401).json({ msg: 'User not authorized' });
     if (req.body.add === true) {
+      console.log(req.body.email);  
       res.json(
         await Portfolio.findByIdAndUpdate(
           req.body.portfolio,
-          { $push: { allowedUsers: { _id: req.body.user } } },
+          { $push: { allowedUsers: { email: req.body.email } } },
           { new: true }
         )
       );
@@ -280,7 +305,7 @@ router.put('/permission', auth, async (req, res) => {
       res.json(
         await Portfolio.findByIdAndUpdate(
           req.body.portfolio,
-          { $pull: { allowedUsers: { _id: req.body.user } } },
+          { $pull: { allowedUsers: { email: req.body.email } } },
           { new: true }
         )
       );
@@ -322,6 +347,32 @@ router.put('/socialmedia', auth, async (req, res) => {
   }
 });
 
+// @route   GET api/portfolio/templates
+// @desc    Get all templates
+// @access  Private
+router.get('/templates', async (req, res) => {
+  try {
+    // Make sure user exists
+    const user = await User.findOne({ googleId: config.get('templateAccount') });
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
 
+    const portfolios = await Portfolio.find()
+      .where('user')
+      .in(config.get('templateAccount'))
+      .sort({ date: -1 })
+      .exec();
+
+    // return portfolios
+    res.json(portfolios);
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+    res.status(500).send('Server Error');
+  }
+});
 
 module.exports = router;

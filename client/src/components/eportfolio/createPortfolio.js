@@ -29,8 +29,6 @@ const CreateEPortfolio = ({creatingPortfolioName, resetCreatingPortfolioName}) =
   const [label, setLabel] = React.useState('Name of Portfolio');
   const [error, setError] = React.useState(false);
   const [privacy, setPrivacy] = React.useState(false);
-  const [emails, setEmails] = React.useState([]);
-  const [emailInputError, setEmailInputError] = React.useState('');
 
   useEffect(() => {
     resetCreatingPortfolioName();
@@ -51,24 +49,10 @@ const CreateEPortfolio = ({creatingPortfolioName, resetCreatingPortfolioName}) =
   function handleChange(component){
     setPrivacy(component.target.checked);
   }
-
-  function onEnter(event){
-    if(event.key === 'Enter'){
-      const input = event.target.value;
-      const pattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      const passes = pattern.test(input);
-      if (passes){
-        setEmails([...emails, input]);
-      }
-      else{
-        setEmailInputError('Not a valid email');
-      }
-    }
-  }
-  
+    
   return (
     <Box className={theme.content}>
-      <Typography variant='h1'>Enter your portfolio name here</Typography>
+      <Typography variant='h2'>Enter your portfolio name here</Typography>
       <form>
         <TextField error={error} 
           id='standard-required' 
@@ -86,21 +70,14 @@ const CreateEPortfolio = ({creatingPortfolioName, resetCreatingPortfolioName}) =
           label='Private'
           className={classes.checkbox}
         />
-        {privacy && <TextField
-          id='standard'
-          className={classes.portfolioNameInput}
-          label='Enter the emails of the users who are allowed to visit your portfolio and press enter to add'
-          placeholder='name@gmail.com'
-          onKeyDown={onEnter}
-          InputLabelProps={{className: classes.portfolioNameInputLabel}}>
-        </TextField>}
-        {privacy && <List>
-          {emails.map((object,i)=>
-          <ListItem key={i}>
-            {object}
-          </ListItem>)}
-        </List>}
-        <Link onClick={() => name && creatingPortfolioName(name, privacy, emails)} to={()=> name ? '/pick-template' : true}><Button style={{float: 'right'}} variant='contained' color='primary' >NEXT</Button></Link>
+        <Link onClick={() => name && creatingPortfolioName(name, privacy)} to={()=> name ? '/pick-template' : true}>
+          <Button style={{float: 'right'}} 
+            variant='contained' 
+            color='primary'
+            classes= {{
+              label: theme.buttonLabel
+            }} >NEXT</Button>
+        </Link>
       </form>
     </Box>
   )

@@ -1,5 +1,6 @@
 import {
   GET_USER_EPORTFOLIOS,
+  GET_SAVED,
   EPORTFOLIOS_ERROR,
   GET_EPORTFOLIO_THUMBNAILS,
   CREATE_PORTFOLIO_NAME,
@@ -22,17 +23,23 @@ import {
   MAKE_MAIN,
   DELETE_PAGE,
   ADD_SOCIAL_MEDIA,
-  GET_ERROR,
+  GET_TEMPLATES,
+  SET_PRIVACY,
+  SHARE_PORTFOLIO,
+  SAVE_PORTFOLIO,
+  GET_ERROR
 } from '../actions/types';
 
 const initialState = {
   portfolio: {},
   page: {},
   userEPortfolios: [],
+  savedPortfolios: [],
   eportfolioThumbnails: [],
   createPortfolioDetails:{name: '', privacy: false, emails: []},
   loading: true,
   comments: {},
+  templates: [],
   error: {},
 };
 
@@ -44,6 +51,13 @@ export default function (state = initialState, action) {
       return {
         ...state,
         userEPortfolios: payload,
+        loading: false,
+        error: {},
+      };
+    case GET_SAVED:
+      return {
+        ...state,
+        savedPortfolios: payload,
         loading: false,
         error: {},
       };
@@ -170,12 +184,26 @@ export default function (state = initialState, action) {
         loading: false,
         error: {},
       };
+    case SAVE_PORTFOLIO:
+      return {
+        ...state,
+        savedPortfolios: payload,
+        loading: false,
+        error: {},
+      };
     case EPORTFOLIOS_ERROR:
       return {
         ...state,
         error: payload,
         loading: false,
       };
+    case GET_TEMPLATES:
+        return {
+          ...state,
+          templates: payload,
+          loading: false,
+          error: {},
+        };
     case GET_COMMENTS:
       return {
         ...state,
@@ -218,6 +246,20 @@ export default function (state = initialState, action) {
         loading: false,
         error: {},
       };
+    case SET_PRIVACY:
+      return {
+        ...state,
+        portfolio: payload,
+        loading: false,
+        error: {},
+      };
+    case SHARE_PORTFOLIO:
+        return {
+          ...state,
+          portfolio: payload,
+          loading: false,
+          error: {},
+        };
     case GET_ERROR:
       return state;
     default:

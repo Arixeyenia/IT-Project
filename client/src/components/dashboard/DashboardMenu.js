@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, CardHeader, IconButton, Menu, MenuItem, Popover, Button } from '@material-ui/core';
+import { Box, CardActions, IconButton, Menu, MenuItem, Popover, Button } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { useHistory } from 'react-router-dom';
 import useStyles from './DashboardStyles';
@@ -45,12 +45,14 @@ export default function IndividualMenu(props) {
   
     return(
       <Box>
-        <CardHeader className={classes.portfolioCardHeader} action={
-          <IconButton className={classes.buttomBaseRoot} aria-label='settings' aria-controls={'menu-'+props.object.portfolio._id} onClick={handleClick}>
+        <CardActions className={classes.portfolioCardHeader}>
+          <IconButton 
+            aria-label='settings' 
+            aria-controls={'menu-'+props.object.portfolio._id} 
+            onClick={handleClick}>
             <MoreVertIcon />
           </IconButton>
-        }>
-        </CardHeader>
+        </CardActions>
         <Menu id={'menu-'+props.i}
                 anchorEl={anchorEl}
                 keepMounted
@@ -61,8 +63,8 @@ export default function IndividualMenu(props) {
                   paper: classes.menuPaperRoot
                 }}>
             <MenuItem onClick={() => history.push('/view/' + props.object.portfolio._id)}>View</MenuItem>
-            <MenuItem onClick={() => history.push('/edit/' + props.object.portfolio._id)}>Edit</MenuItem>
-            <MenuItem onClick={() => {props.deletePortfolio(props.object.portfolio._id)}}>Delete</MenuItem>
+            {props.editable && <MenuItem onClick={() => history.push('/edit/' + props.object.portfolio._id)}>Edit</MenuItem>}
+            {props.editable && <MenuItem onClick={() => {props.deletePortfolio(props.object.portfolio._id)}}>Delete</MenuItem>}
             <MenuItem onClick={(event)=>openPopover(event, props.object.portfolio._id)}>Get link</MenuItem>
         </Menu>
         <Popover id={'popover-'+props.i}

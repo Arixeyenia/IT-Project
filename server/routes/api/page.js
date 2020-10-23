@@ -99,7 +99,6 @@ router.delete('/:portfolio/:url', auth, async (req, res) => {
 // @access  Private
 router.post('/editname', auth, async (req, res) => {
   try {
-    console.log(req.body.oldname);
     const portfolio = await Portfolio.findById(req.body.portfolio);
     // check if portfolio exists
     if (!portfolio) return res.status(404).json({ msg: 'Portfolio not found' });
@@ -189,12 +188,11 @@ router.put('/makemain', auth, async (req, res) => {
 // @route   gets api/page/:id/:url
 // @desc    Get page by portfolio and url
 // @access  Private
-router.get('/:id/:url?', auth, async (req, res) => {
+router.get('/single/:id/:url?', auth, async (req, res) => {
   try {
     const portfolio = await Portfolio.findById(req.params.id);
     // check if portfolio exists
     if (!portfolio) return res.status(404).json({ msg: 'Portfolio not found' });
-    const user = await User.findOne({ googleId: req.user.uid });
     // check if user is authorized
 
     const isAllowed = portfolio.allowedUsers.some(function(user){
@@ -206,6 +204,42 @@ router.get('/:id/:url?', auth, async (req, res) => {
       (portfolio.user.toString() !== req.user.uid &&
       !(isAllowed))
     ) {
+      return res.status(401).json({ msg: 'User not authorized' });
+    }
+    // retrieve page
+    const pageIndex = req.params.url
+      ? portfolio.pages.findIndex(
+          (page) => page.url === encodeURI(req.params.url)
+        )
+      : portfolio.pages.findIndex((page) => page.main === true);
+    if (pageIndex === -1) res.status(404).json({ msg: 'Page not found' });
+    else {
+      // TODO somehow get populate to work
+      let page = portfolio.pages[pageIndex].toObject();
+      const result = await getData(page.items);
+      page.items = result;
+      res.json(page);
+    }
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'Portfolio not found' });
+    }
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route   gets api/page/guest/:id/:url
+// @desc    Get page by portfolio and url
+// @access  Public
+router.get('/guest/:id/:url?', async (req, res) => {
+  try {
+    const portfolio = await Portfolio.findById(req.params.id);
+    // check if portfolio exists
+    if (!portfolio) {
+      return res.status(404).json({ msg: 'Portfolio not found' });
+    }
+    if (portfolio.private) {
       return res.status(401).json({ msg: 'User not authorized' });
     }
     // retrieve page

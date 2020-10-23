@@ -25,8 +25,11 @@ export const loadUser = () => async (dispatch) => {
 };
 
 //google sign in
-export const signIn = () => async (dispatch) => {
+export const signIn = (idToken) => async (dispatch) => {
   try {
+
+    api.defaults.headers.common['x-auth-token'] = idToken;
+    sessionStorage.setItem('token', idToken);
     const res = await api.post('/auth');
 
     dispatch({
@@ -46,8 +49,12 @@ export const signIn = () => async (dispatch) => {
 //google sign out
 export const signOut = () => async (dispatch) => {
   try {
+
     //clear token
     setAuthToken();
+    delete api.defaults.headers.common['x-auth-token'];
+    sessionStorage.removeItem('token');
+
     dispatch({
       type: SIGN_OUT,
     });
