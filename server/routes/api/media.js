@@ -68,7 +68,7 @@ router.post('/', [auth, upload.single('file')], (req, res) => {
 // @route GET /media/files
 // @desc  Display all files in JSON
 // @access  Public
-app.get('/files', (req, res) => {
+router.get('/files', (req, res) => {
   gfs.files.find().toArray((err, files) => {
     // Check if files
     if (!files || files.length === 0) {
