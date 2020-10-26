@@ -1,8 +1,10 @@
 import { red } from '@material-ui/core/colors';
 import api from '../utils/api';
+import FormData from 'form-data';
 
 import {
   GET_USER_EPORTFOLIOS,
+  GET_SAVED,
   EPORTFOLIOS_ERROR,
   GET_EPORTFOLIO_THUMBNAILS,
   CREATE_PORTFOLIO_NAME,
@@ -26,6 +28,10 @@ import {
   DELETE_PAGE,
   GET_ERROR,
   ADD_SOCIAL_MEDIA,
+  GET_TEMPLATES,
+  SET_PRIVACY,
+  SHARE_PORTFOLIO,
+  SAVE_PORTFOLIO
 } from './types';
 
 export const getUserEPortfolios = () => async (dispatch) => {
@@ -33,6 +39,21 @@ export const getUserEPortfolios = () => async (dispatch) => {
     const res = await api.get('/portfolio/user');
     dispatch({
       type: GET_USER_EPORTFOLIOS,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: EPORTFOLIOS_ERROR,
+      payload: { msg: err.message },
+    });
+  }
+};
+
+export const getSaved = () => async (dispatch) => {
+  try {
+    const res = await api.get('/user/saved');
+    dispatch({
+      type: GET_SAVED,
       payload: res.data,
     });
   } catch (err) {
@@ -60,11 +81,10 @@ export const getEPortfolioThumbnail = (eportfolioID) => async (dispatch) => {
   }
 };
 
-export const creatingPortfolioName = (name, privacy, emails) => async (dispatch) => {
+export const creatingPortfolioName = (name, privacy) => async (dispatch) => {
   const info = {
     'name': name,
-    'privacy': privacy,
-    'emails': emails
+    'privacy': privacy
   }
   dispatch({
     type: CREATE_PORTFOLIO_NAME,
@@ -79,9 +99,9 @@ export const resetCreatingPortfolioName = () => async (dispatch) => {
   });
 };
 
-export const createPortfolio = (details) => async (dispatch) => {
+export const createPortfolio = (details, currTemplate) => async (dispatch) => {
   try {
-    const res = await api.post('/portfolio', { name: details.name, private: details.privacy, emails: details.emails });
+    const res = await api.post('/portfolio', { name: details.name, private: details.privacy, emails: details.emails, template : currTemplate });
     dispatch({
       type: CREATE_PORTFOLIO,
       payload: res.data,
@@ -141,7 +161,23 @@ export const getPortfolioAsGuest = (eportfolioID) => async (dispatch) => {
 export const getPage = (eportfolioID, pageName) => async (dispatch) => {
   try {
     const link = pageName === undefined ? '' : '/' + pageName;
-    const res = await api.get('/page/' + eportfolioID + link);
+    const res = await api.get('/page/single/' + eportfolioID + link);
+    dispatch({
+      type: GET_PAGE,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: EPORTFOLIOS_ERROR,
+      payload: { msg: err.message },
+    });
+  }
+};
+
+export const getPageAsGuest = (eportfolioID, pageName) => async (dispatch) => {
+  try {
+    const link = pageName === undefined ? '' : '/' + pageName;
+    const res = await api.get('/page/guest/' + eportfolioID + link);
     dispatch({
       type: GET_PAGE,
       payload: res.data,
@@ -339,16 +375,91 @@ export const addSocialMedia = (newItem) => async (dispatch) => {
   }
 };
 
+export const getTemplates = () => async (dispatch) => {
+  try {
+    const res = await api.get('/portfolio/templates');
+    dispatch({
+      type: GET_TEMPLATES,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: EPORTFOLIOS_ERROR,
+      payload: { msg: err.message },
+    });
+  }
+};
+      
+export const savePortfolio = (portfolioID) => async (dispatch) => {
+  try {
+    const res = await api.put('/user/save', {portfolio: portfolioID});
+    dispatch({
+      type: SAVE_PORTFOLIO,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: EPORTFOLIOS_ERROR,
+      payload: { msg: err.message },
+    });
+  }
+};
+
+export const setPrivacy = (privacy, portfolioID) => async (dispatch) => {
+  try {
+    const res = await api.put('/portfolio/edit', {
+      portfolio: portfolioID,
+      field: 'privacy',
+      value: privacy,
+    });
+    dispatch({
+      type: SET_PRIVACY,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: COMMENTS_ERROR,
+      payload: { msg: err.message },
+    });
+  }
+};
+
+export const sharePortfolio = (email, add, portfolioID) => async (dispatch) => {
+  try {
+    const res = await api.put('/portfolio/permission', {
+      portfolio: portfolioID,
+      add: add,
+      email: email,
+    });
+    dispatch({
+      type: SHARE_PORTFOLIO,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: COMMENTS_ERROR,
+      payload: { msg: err.message },
+    });
+  }
+};
+
 export const getError = () => async (dispatch) => {
   dispatch({
     type: GET_ERROR
   })
-};
+}
 
 export const uploadImage = (file) => {
- 
-  const res = api.post('/media', file);
-  console.log("___________yes res.data returned");  
-  console.log(res.data);
+  let data = new FormData();
+  data.append('file', file);
+
+  const res = api.post('/media', data, {
+    headers: {
+      'accept': 'application/json',
+      'Accept-Language': 'en-US,en;q=0.8',
+      'Content-Type': `multipart/form-data; boundary=${data._boundary}`
+    }
+  });
+  console.log(res);
   //return res.data.;
 };

@@ -3,6 +3,7 @@ const router = express.Router();
 const auth = require('../../middleware/auth');
 const { check, validationResult } = require('express-validator');
 const config = require('config');
+const db = config.get('mongoURI');
 
 const Portfolio = require('../../models/Portfolio');
 const User = require('../../models/User');
@@ -15,6 +16,8 @@ const Grid = require('gridfs-stream');
 const methodOverride = require('method-override');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const crypto = require('crypto');
+const path = require('path');
 
 const conn = mongoose.connection;
 Grid.mongo = mongoose.mongo;
@@ -26,13 +29,13 @@ const collectionName = 'uploads';
 const bucketName = 'uploads';
 
 conn.once('open', () => {
-  gfs = Grid(conn.db, mongoose.mongo);
+  gfs = Grid(conn, mongoose.mongo);
   gfs.collection(collectionName);
 });
 
 // Create storage engine
 const storage = new GridFsStorage({
-  db: conn,
+  url: db,
   file: (req, file) => {
     return new Promise((resolve, reject) => {
       crypto.randomBytes(16, (err, buf) => {
@@ -61,8 +64,8 @@ router.get('/', (req, res) => res.send('Media route'));
 // @desc    Upload a media file to database
 // @access  Private
 router.post('/', [auth, upload.single('file')], (req, res) => {
-  //res.json({ file: req.file });
-  res.redirect('/');
+  res.json({ file: req.file });
+  //res.status(200).send('Uploaded image');
 });
 
 // @route GET /media/files
