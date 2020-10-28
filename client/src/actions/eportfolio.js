@@ -30,7 +30,8 @@ import {
   GET_TEMPLATES,
   SET_PRIVACY,
   SHARE_PORTFOLIO,
-  SAVE_PORTFOLIO
+  SAVE_PORTFOLIO,
+  SAVE_THEME
 } from './types';
 
 export const getUserEPortfolios = () => async (dispatch) => {
@@ -441,6 +442,21 @@ export const sharePortfolio = (email, add, portfolioID) => async (dispatch) => {
     });
   }
 };
+
+export const saveTheme = (newTheme) => async (dispatch) => {
+  try {
+    const res = await api.put('/portfolio/theme', newTheme);
+    dispatch({
+      type: SAVE_THEME,
+      payload: res.data
+    });
+  } catch (err) {
+    dispatch({
+      type: EPORTFOLIOS_ERROR,
+      payload: { msg: err.message }
+    });
+  }
+}
 
 export const getError = () => async (dispatch) => {
   dispatch({

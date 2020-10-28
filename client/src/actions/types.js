@@ -40,3 +40,7 @@ export const SET_PRIVACY = 'SET_PRIVACY';
 export const SHARE_PORTFOLIO = 'SHARE_PORTFOLIO';
 export const GET_SAVED = 'GET_SAVED';
 export const SAVE_PORTFOLIO = 'SAVE_PORTFOLIO';
+export const GET_FONTS = 'GET_FONTS';
+export const FONTS_ERROR = 'FONTS_ERROR';
+export const RETRIEVE_FONTS = 'RETRIEVE_FONTS';
+export const SAVE_THEME = 'SAVE_THEME';

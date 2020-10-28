@@ -8,6 +8,8 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import store from '../../store'
 import { useThemeStyle } from '../../styles/themes';
+import { useStyles } from './editStyles';
+import PortfolioTheme from './portfolioTheme'
 
 
 import clsx from 'clsx';
@@ -31,129 +33,6 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import AddIcon from '@material-ui/icons/Add';
 import ClearIcon from '@material-ui/icons/Clear';
 import {Instagram, Facebook, LinkedIn, Twitter} from '@material-ui/icons';
-
-const drawerWidth = 300;
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-  },
-  appBar: {
-    transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-  },
-  appBarShift: {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: drawerWidth,
-    transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  hide: {
-    display: 'none',
-  },
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0,
-  },
-  drawerPaper: {
-    width: drawerWidth,
-  },
-  drawerHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
-    ...theme.mixins.toolbar,
-    justifyContent: 'space-between',
-  },
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    marginLeft: -drawerWidth,
-  },
-  contentShift: {
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-    marginLeft: 0,
-  },
-  textinput: { 
-    marginLeft: theme.spacing(2),
-    margin: theme.spacing(1),
-    width: '30ch',
-  },
-  indented: { 
-    marginLeft: theme.spacing(2),
-  },
-  cardRoot: {
-    minWidth: 275,
-  },
-  unflex: {
-    flex: '0 1 7em',
-  },
-  pos: {
-    marginTop: '2em',
-    marginBottom: 12,
-  },
-  media: {
-    padding:'20vh'
-  },
-  titleText:{
-    fontSize: '1.5rem'
-  },
-  addRow:{
-    marginLeft: 'auto',
-    marginRight: 'auto'
-  },
-  addCol:{
-    position: 'absolute',
-    top: '-50%',
-    right: '-5em',
-  },
-  wrapper:{
-    position: 'relative',
-    height: '100%', 
-    width: '100%'
-  },
-  addIcon:{
-    fontSize: '3.5rem'  
-  },
-  inline:{
-    display:'inline-flex'
-  },
-  inlineTextInput:{
-    margin: theme.spacing(1)
-  },
-  socialLinks:{      
-    display: 'flex',
-    alignItems: 'center'
-  },
-  socialMedia:{
-    marginTop: theme.spacing(2),
-    marginRight: theme.spacing(2),
-    fontSize: '20px',
-    color: 'white',
-    padding: theme.spacing(2),
-  },
-  currentPage:{
-    fontWeight: 'bold'
-  },
-  nested: {
-    paddingLeft: theme.spacing(4),
-  },
-}));
 
 const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, loadUser, isAuthenticated, error, addSocialMedia, setPrivacy, sharePortfolio}) => {
   const classes = useStyles();
@@ -267,6 +146,11 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
     }
   }
 
+  const [editTheme, setTheme] = React.useState(false);
+  const handleEditTheme = () => {
+    setTheme(!editTheme);
+  }
+
   const params = useParams();
   useEffect(() => {
     if (Object.keys(portfolio).length === 0 || portfolio._id !== params.id) {
@@ -289,8 +173,7 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
       rowLengths[element.row] = 1;
     }
   });
-  console.log(portfolio);
-    
+
   return (    
     <Box className={themeStyle.content}>
     <div className={classes.root}>
@@ -306,13 +189,25 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
     >
       <div className={classes.drawerHeader}>
         <Typography variant='h4' className={classes.drawerTitle}>{editID === '' ? 'Options' : 'Edit'}</Typography>
+        <Button
+          variant='contained' 
+          color='primary'
+          classes={{
+            label: theme.buttonLabel
+          }}
+          onClick={handleEditTheme}>
+            Theme
+        </Button>
         <IconButton onClick={() => handleDrawerClose()}>
           {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
         </IconButton>
       </div>
       <Divider />
-      {editID === '' && Object.keys(portfolio).length !== 0 &&
-        <div>
+      {editTheme ? 
+      <PortfolioTheme portfolioID={portfolio._id}/>
+      :
+      (editID === '' && Object.keys(portfolio).length !== 0) ?
+        (<div>
         <Typography variant='h5'>Pages</Typography>
         <List>
             {portfolio.pages.map(page => (<div key={page.url}><ListItem button onClick={() => {if (page.name === params.pagename){openCurrPage();} else{history.push('/edit/' + portfolio._id + '/' + page.url);history.go(0);}}} selected={page.url === params.pagename}>
@@ -394,10 +289,9 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
           {['facebook', 'instagram', 'twitter', 'linkedin'].map(name => (<TextField className={classes.textinput} label={name} variant="outlined" name={name} key={name} inputRef={registerSocialMedia}/>))}
           <Button variant="outlined" color="primary" className={classes.textinput} type="submit">Save</Button>
         </form>
-        </div>
-      }
-      {editID !== '' &&
-      <form className={classes.root} noValidate autoComplete="off" onSubmit={handleSubmit(editItemWrapper)}>
+        </div>)
+      :
+      (<form className={classes.root} noValidate autoComplete="off" onSubmit={handleSubmit(editItemWrapper)}>
       <List>
         {['Title', 'Subtitle', 'Paragraph', 'Media Link', 'Media Type', 'Link Text', 'Link Address', 'private', 'row', 'column'].map((text, index) => (
           <TextField key={getField(index)} className={classes.textinput} id='standard-basic' label={text} variant='outlined' name={getField(index)} inputRef={register}/>
@@ -405,7 +299,7 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
         <Button variant='outlined' color='primary' className={classes.textinput} type='submit'>Save</Button>
       </List>      
       </form>
-      }
+      )}
     </Drawer>
     <main
       className={clsx(classes.content, {

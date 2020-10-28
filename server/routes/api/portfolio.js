@@ -121,6 +121,7 @@ router.get('/single/:id', auth, async (req, res) => {
     ) {
       return res.status(401).json({ msg: 'User not authorized' });
     }
+    console.log(portfolio);
     res.json(portfolio);
   } catch (err) {
     console.error(err.message);
@@ -370,6 +371,33 @@ router.get('/templates', async (req, res) => {
     console.error(err.message);
     if (err.kind === 'ObjectId') {
       return res.status(404).json({ msg: 'User not found' });
+    }
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route   PUT api/portfolio/theme
+// @desc    Post theme of portfolio
+// @access  Private
+router.put('/theme', async (req, res) => {
+  try {
+    const portfolio = await Portfolio.findById(req.body.portfolio);
+    // check if portfolio exists
+    if (!portfolio) return res.status(404).json({ msg: 'Portfolio not found' });
+    // check if user is authorized
+    if (portfolio.user.toString() !== req.user.uid)
+      return res.status(401).json({ msg: 'User not authorized' });
+    res.json(
+      await Portfolio.findByIdAndUpdate(
+        req.body.portfolio,
+        { $set: { theme: req.body.theme } },
+        { new: true }
+      )
+    );
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'Portfolio not found' });
     }
     res.status(500).send('Server Error');
   }

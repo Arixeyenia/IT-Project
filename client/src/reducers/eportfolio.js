@@ -27,7 +27,8 @@ import {
   SET_PRIVACY,
   SHARE_PORTFOLIO,
   SAVE_PORTFOLIO,
-  GET_ERROR
+  GET_ERROR,
+  SAVE_THEME
 } from '../actions/types';
 
 const initialState = {
@@ -40,6 +41,7 @@ const initialState = {
   loading: true,
   comments: {},
   templates: [],
+  theme: {},
   error: {},
 };
 
@@ -103,6 +105,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         portfolio: payload,
+        theme: payload.theme,
         loading: false,
         error: {},
       };
@@ -110,6 +113,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         portfolio: payload,
+        theme: payload.theme,
         loading: false,
         error: {},
       };
@@ -260,6 +264,14 @@ export default function (state = initialState, action) {
           loading: false,
           error: {},
         };
+    case SAVE_THEME: 
+        return {
+          ...state,
+          theme: payload.theme,
+          portfolio: { ...state.portfolio, theme: payload.theme },
+          loading: false,
+          error: {}
+        }
     case GET_ERROR:
       return state;
     default:

@@ -1,0 +1,205 @@
+import React, { useEffect } from 'react';
+import { Typography, Box, List, ListItem, FormControlLabel, Checkbox, InputLabel, Select, MenuItem, FormControl, Button } from '@material-ui/core';
+import { useThemeStyle } from '../../styles/themes';
+import { useStyles } from './editStyles';
+
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import store from '../../store';
+import { getFonts } from '../../actions/googleFonts';
+import { saveTheme } from '../../actions/eportfolio';
+
+import { SketchPicker } from 'react-color';
+
+const PortfolioTheme = ({getFonts, fonts, saveTheme, theme, portfolioID}) => {
+    const classes = useStyles();
+    const themeStyle = useThemeStyle();
+
+    useEffect(() => {
+        if (fonts.length === 0) getFonts();
+        console.log(fonts);
+    }, [fonts, getFonts]);
+
+    const [custom, setCustom] = React.useState(false);
+    const handleCustomChange = (event) => {
+        setCustom(event.target.checked);
+    }
+
+    const [primaryFont, setPrimaryFont] = React.useState({
+        family: '',
+        variant: ''
+    });
+    const [secondaryFont, setSecondaryFont] = React.useState({
+        family: '',
+        variant: ''
+    });
+    const handlePrimaryFontFamilyChange = (event) => {
+        setPrimaryFont({
+            ...primaryFont,
+            family: event.target.value
+        });
+    }
+    const handlePrimaryFontVariantChange = (event) => {
+        setPrimaryFont({
+            ...primaryFont,
+            variant: event.target.value
+        });
+    }
+    const handleSecondaryFontFamilyChange = (event) => {
+        setSecondaryFont({
+            ...secondaryFont,
+            family: event.target.value
+        });
+    }
+    const handleSecondaryFontVariantChange = (event) => {
+        setSecondaryFont({
+            ...secondaryFont,
+            variant: event.target.value
+        });
+    }
+
+    const [primaryColor, setPrimaryColor] = React.useState('');
+    const handlePrimaryColorChange = (color) => {
+        setPrimaryColor(color.hex);
+    }
+    const [secondaryColor, setSecondaryColor] = React.useState('');
+    const handleSecondaryColorChange = (color) => {
+        setSecondaryColor(color.hex);
+    }
+
+    const [error, setError] = React.useState('');
+
+    const save = () => {
+        if (checkEmpty(primaryFont) || checkEmpty(secondaryFont) || primaryColor === '' || secondaryColor === ''){
+            setError('Cannot save with empty field');
+            return;
+        } else {
+            setError('');
+            const theme = {
+                theme: {
+                    primaryFontFamily: primaryFont.family,
+                    primaryFontVariant: primaryFont.variant,
+                    secondaryFontFamily: secondaryFont.family,
+                    secondaryFontVariant: secondaryFont.variant,
+                    primaryColor: primaryColor,
+                    secondaryFontFamily: secondaryColor,
+                },
+                portfolio: portfolioID
+            }
+            saveTheme(theme);
+        }
+    }
+
+    const checkEmpty = (obj) => {
+        for (var key in obj) {
+            if (obj[key] !== null && obj[key] != "")
+                return false;
+        }
+        return true;
+    }
+
+    return (
+        <Box>
+            <Typography variant='h5'>Theme</Typography>
+            <FormControlLabel
+                control={<Checkbox checked={custom} onChange={handleCustomChange}/>}
+                label="Use a custom theme?"
+            />
+            {custom ?
+            <List>
+                <ListItem className={classes.themeItem}>
+                    <Typography variant='body1'>Primary Colour</Typography>
+                    <SketchPicker
+                        color={primaryColor}
+                        onChangeComplete={handlePrimaryColorChange}>
+                    </SketchPicker>
+                </ListItem>
+                <ListItem className={classes.themeItem}>
+                    <Typography variant='body1'>Secondary Color</Typography>
+                    <SketchPicker
+                        color={secondaryColor}
+                        onChangeComplete={handleSecondaryColorChange}>
+                    </SketchPicker>
+                </ListItem>
+                <ListItem className={classes.themeItem}>
+                    <Typography variant='body1'>Headers Font</Typography>
+                    <Select
+                        defaultValue='Select a font'
+                        value={primaryFont.family}
+                        onChange={handlePrimaryFontFamilyChange}
+                        className={classes.select}>
+                        {fonts.map((font) => {
+                            return (<MenuItem value={font.family}>{font.family}</MenuItem>);
+                        })}
+                    </Select>
+                </ListItem>
+                <ListItem className={classes.themeItem}>
+                    <Typography variant='body1'>Style</Typography>
+                    <Select
+                        defaultValue='Select a style'
+                        value={primaryFont.variant}
+                        onChange={handlePrimaryFontVariantChange}
+                        className={classes.select}>
+                        {primaryFont.family && fonts.find(font=>font.family === primaryFont.family).variants.map((variant) => {
+                            return (<MenuItem value={variant}>{variant}</MenuItem>);
+                        })}
+                    </Select>
+                </ListItem>
+                <ListItem className={classes.themeItem}>
+                    <Typography variant='body1'>Body Font</Typography>
+                    <Select
+                        defaultValue='Select a font'
+                        value={secondaryFont.family}
+                        onChange={handleSecondaryFontFamilyChange}
+                        className={classes.select}>
+                        {fonts.map((font) => {
+                            return (<MenuItem value={font.family}>{font.family}</MenuItem>);
+                        })}
+                    </Select>
+                </ListItem>
+                <ListItem className={classes.themeItem}>
+                    <Typography variant='body1'>Style</Typography>
+                    <Select
+                    defaultValue='Select a style'
+                        value={secondaryFont.variant}
+                        onChange={handleSecondaryFontVariantChange}
+                        className={classes.select}>
+                        {secondaryFont.family && fonts.find(font=>font.family === secondaryFont.family).variants.map((variant) => {
+                            return (<MenuItem value={variant}>{variant}</MenuItem>);
+                        })}
+                    </Select>
+                </ListItem>
+            </List> :
+            <List>
+                <ListItem>
+                    {/** Drop down of colour themes we have */}
+                </ListItem>
+            </List>}
+            
+            {error.length !== 0 && <Typography variant='body1'></Typography>}
+            <Button
+                variant='contained' 
+                color='primary'
+                classes={{
+                    label: theme.buttonLabel
+                }}
+                onClick={save}>
+                SAVE
+            </Button>
+        </Box>
+    );
+}
+
+PortfolioTheme.propTypes = {
+    getFonts: PropTypes.func.isRequired,
+    fonts: PropTypes.arrayOf(PropTypes.object).isRequired,
+    saveTheme: PropTypes.func.isRequired,
+    theme: PropTypes.object.isRequired,
+};
+  
+const mapStateToProps = (state) => ({
+    fonts: state.googleFonts.fonts,
+    theme: state.eportfolio.theme
+});
+  
+export default connect(mapStateToProps, {getFonts, saveTheme})(PortfolioTheme);

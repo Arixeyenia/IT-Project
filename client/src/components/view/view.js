@@ -11,6 +11,8 @@ import Comment from '../comments/Comment';
 import { useThemeStyle } from '../../styles/themes';
 import StarIcon from '@material-ui/icons/Star';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
+import { ThemeProvider } from '../node_modules/@material-ui/core/styles';
+import { customTheme } from '../portfolioThemeOverride/theme';
 
 const useStyles = makeStyles((theme) => ({
   cardRoot: {
@@ -97,17 +99,19 @@ const View = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated
   else{
     return (
       <Fragment>
-        <Box className={classes.content}>
-          <Typography variant='h1'>{portfolio.name}
-          <IconButton aria-label="save" onClick={() => savePortfolio(portfolio._id)}>
-              {isSaved ? <StarIcon/> : <StarBorderIcon/>}
-          </IconButton>
-          </Typography>
-        </Box>
-        {groupedItems.map((item, i)=>
-        <Grid container spacing={3} className={`${themeStyle.content} ${classes.content}`}>
-        {item.map((object) => card(classes, rowLengths, params.id, object, history, portfolio.user))}  
-        </Grid>)}
+        <ThemeProvider theme={customTheme}>
+          <Box className={classes.content}>
+            <Typography variant='h1'>{portfolio.name}
+            <IconButton aria-label="save" onClick={() => savePortfolio(portfolio._id)}>
+                {isSaved ? <StarIcon/> : <StarBorderIcon/>}
+            </IconButton>
+            </Typography>
+          </Box>
+          {groupedItems.map((item, i)=>
+          <Grid container spacing={3} className={`${themeStyle.content} ${classes.content}`}>
+          {item.map((object) => card(classes, rowLengths, params.id, object, history, portfolio.user))}  
+          </Grid>)}
+        </ThemeProvider>
       </Fragment>
     );
   }
