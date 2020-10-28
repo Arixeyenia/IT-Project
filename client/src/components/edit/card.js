@@ -42,7 +42,7 @@ export default function card(classes, rowLengths, portfolioID, object, history, 
       {(rowLengths[object.row]===object.column+1) ?
       <div className={classes.wrapper}> 
       <IconButton
-        color='primary'
+        color='default'
         onClick = {() => addItemWrapper(object.row, object.column+1)}
         className={classes.addCol}        
         children={<AddCircleOutlineIcon classes={{root:classes.addIcon}}/>}

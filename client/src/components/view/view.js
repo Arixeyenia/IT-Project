@@ -102,7 +102,7 @@ const View = ({portfolio, page, error, savePortfolio, savedPortfolios, muiTheme 
   
 }
 
-const ViewTheme  = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated, error, getPortfolioAsGuest, getSaved, savePortfolio, savedPortfolios, getPageAsGuest, getTheme, muiTheme, getFonts, fonts }) => {
+const ViewTheme = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated, error, getPortfolioAsGuest, getSaved, savePortfolio, savedPortfolios, getPageAsGuest, getTheme, muiTheme, getFonts, fonts }) => {
   const params = useParams();
 
   useEffect(() => {
@@ -151,6 +151,12 @@ const card = (classes, rowLengths, portfolioID, object, history, owner) => {
           classes={{title:classes.titleText}}
           title={object.title}
           subheader={object.subtitle}
+          titleTypographyProps={{
+            variant:'h3'
+          }}
+          subheaderTypographyProps={{
+            variant:'subtitle1'
+          }}
         />}
         {object.paragraph&& <CardContent className={classes.viewCardContent}>
           {object.paragraph && <Typography variant='body2' component='p'>

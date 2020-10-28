@@ -89,7 +89,6 @@ const Navbar = ({
 }) => {
   const classes = useStyles();
   const theme = useThemeStyle();
-  console.log(user);
   //navbar for users signed in
   const [anchorEl, setAnchorEl] = React.useState(null);
   const handleClick = (event) => {

@@ -43,7 +43,6 @@ export const useStyles = makeStyles((theme) => ({
     },
     content: {
       flexGrow: 1,
-      padding: theme.spacing(3),
       transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
@@ -67,6 +66,7 @@ export const useStyles = makeStyles((theme) => ({
     },
     cardRoot: {
       minWidth: 275,
+      backgroundColor: 'inherit'
     },
     unflex: {
       flex: '0 1 7em',
@@ -83,7 +83,8 @@ export const useStyles = makeStyles((theme) => ({
     },
     addRow:{
       marginLeft: 'auto',
-      marginRight: 'auto'
+      marginRight: 'auto',
+      display: 'block'
     },
     addCol:{
       position: 'absolute',
@@ -128,5 +129,16 @@ export const useStyles = makeStyles((theme) => ({
       minWidth: '80%',
       marginLeft: '10px',
       marginRight: '10px'
+    },
+    contentPadding: {
+      paddingTop: '20px !important',
+      paddingBottom: '20px !important',
+      paddingLeft: '10% !important',
+    },
+    contentEven: {
+      backgroundColor: theme.palette.primary.main
+    },
+    contentOdd: {
+      backgroundColor: theme.palette.secondary.main
     }
   }));

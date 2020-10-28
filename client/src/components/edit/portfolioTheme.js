@@ -17,9 +17,8 @@ const PortfolioTheme = ({getFonts, fonts, saveTheme, theme, portfolioID}) => {
 
     useEffect(() => {
         if (fonts.length === 0) getFonts();
-        console.log(fonts);
-    }, [fonts, getFonts]);
 
+    }, [fonts, getFonts]);
     const [custom, setCustom] = React.useState(false);
     const handleCustomChange = (event) => {
         setCustom(event.target.checked);
@@ -46,7 +45,6 @@ const PortfolioTheme = ({getFonts, fonts, saveTheme, theme, portfolioID}) => {
         });
     }
     const handleSecondaryFontFamilyChange = (event) => {
-        console.log(event.target.value);
         setSecondaryFont({
             ...secondaryFont,
             family: event.target.value
@@ -66,6 +64,27 @@ const PortfolioTheme = ({getFonts, fonts, saveTheme, theme, portfolioID}) => {
     const [secondaryColor, setSecondaryColor] = React.useState('');
     const handleSecondaryColorChange = (color) => {
         setSecondaryColor(color.hex);
+    }
+
+    const checkEmpty = (obj) => {
+        for (var key in obj) {
+            if (obj[key] !== null && obj[key] != "")
+                return false;
+        }
+        return true;
+    }
+
+    if (Object.keys(theme).length !== 0 && (checkEmpty(primaryFont) || checkEmpty(secondaryFont) || primaryColor === '' || secondaryColor === '')){
+        setPrimaryFont({
+            family: theme.primaryFontFamily,
+            variant: theme.primaryFontVariant
+        });
+        setSecondaryFont({
+            family: theme.secondaryFontFamily,
+            variant: theme.secondaryFontVariant
+        });
+        setPrimaryColor(theme.primaryColor);
+        setSecondaryColor(theme.secondaryColor);
     }
 
     const [error, setError] = React.useState('');
@@ -89,14 +108,6 @@ const PortfolioTheme = ({getFonts, fonts, saveTheme, theme, portfolioID}) => {
             }
             saveTheme(theme);
         }
-    }
-
-    const checkEmpty = (obj) => {
-        for (var key in obj) {
-            if (obj[key] !== null && obj[key] != "")
-                return false;
-        }
-        return true;
     }
 
     return (
@@ -166,7 +177,7 @@ const PortfolioTheme = ({getFonts, fonts, saveTheme, theme, portfolioID}) => {
                         onChange={handleSecondaryFontVariantChange}
                         className={classes.select}>
                         {secondaryFont.family && fonts.find(font=>font.family === secondaryFont.family).variants.map((variant) => {
-                            return (<MenuItem value={variant}>{variant}</MenuItem>);
+                            return (<MenuItem value={variant}>{VariantToStyleString(variant)}</MenuItem>);
                         })}
                     </Select>
                 </ListItem>
@@ -192,7 +203,6 @@ const PortfolioTheme = ({getFonts, fonts, saveTheme, theme, portfolioID}) => {
 }
 
 const VariantToStyleString = (variant) => {
-    console.log(variant);
     switch (variant) {
         case 'regular':
             return 'Regular';

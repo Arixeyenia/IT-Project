@@ -447,7 +447,6 @@ export const sharePortfolio = (email, add, portfolioID) => async (dispatch) => {
 
 export const saveTheme = (newTheme) => async (dispatch) => {
   try {
-    console.log(newTheme);
     const res = await api.put('/portfolio/theme', newTheme);
     dispatch({
       type: SAVE_THEME,
