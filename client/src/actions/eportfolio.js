@@ -1,5 +1,6 @@
 import { red } from '@material-ui/core/colors';
 import api from '../utils/api';
+import { createMuiTheme } from '@material-ui/core/styles';
 
 import {
   GET_USER_EPORTFOLIOS,
@@ -31,7 +32,8 @@ import {
   SET_PRIVACY,
   SHARE_PORTFOLIO,
   SAVE_PORTFOLIO,
-  SAVE_THEME
+  SAVE_THEME,
+  GET_THEME
 } from './types';
 
 export const getUserEPortfolios = () => async (dispatch) => {
@@ -445,6 +447,7 @@ export const sharePortfolio = (email, add, portfolioID) => async (dispatch) => {
 
 export const saveTheme = (newTheme) => async (dispatch) => {
   try {
+    console.log(newTheme);
     const res = await api.put('/portfolio/theme', newTheme);
     dispatch({
       type: SAVE_THEME,
@@ -456,6 +459,112 @@ export const saveTheme = (newTheme) => async (dispatch) => {
       payload: { msg: err.message }
     });
   }
+}
+
+export const getTheme = (theme, fonts) => (dispatch) => {
+  const primaryFont5 = {
+    fontFamily: theme.primaryFontFamily,
+    fontStyle: theme.primaryFontVariant.search('itallic') === -1 ? 'normal' : 'itallic',
+    fontDisplay: 'swap',
+    fontWeight: '500',
+    src: `local(${theme.primaryFontFamily}),
+    url(${fonts.find(font=>font.family===theme.primaryFontFamily).files['500']}) format('ttf')`
+  }
+
+  const primaryFont4 = {
+      fontFamily: theme.primaryFontFamily,
+      fontStyle: theme.primaryFontVariant.search('itallic') === -1 ? 'normal' : 'itallic',
+      fontDisplay: 'swap',
+      fontWeight: '400',
+      src: `local(${theme.primaryFontFamily}),
+      local(${theme.primaryFontFamily}-Regular),
+      url(${fonts.find(font=>font.family===theme.primaryFontFamily).files['400']}) format('ttf')`
+  }
+
+  const secondaryFont2 = {
+      fontFamily: theme.secondaryFontFamily,
+      fontStyle: theme.secondaryFontVariant.search('itallic') === -1 ? 'normal' : 'itallic',
+      fontDisplay: 'swap',
+      fontWeight: '200',
+      src: `local(${theme.secondaryFontFamily}),
+      url(${fonts.find(font=>font.family===theme.secondaryFontFamily).files['200']}) format('ttf')`
+  }
+
+  const secondaryFont3 = {
+      fontFamily: theme.secondaryFontFamily,
+      fontStyle: theme.secondaryFontVariant.search('itallic') === -1 ? 'normal' : 'itallic',
+      fontDisplay: 'swap',
+      fontWeight: '300',
+      src: `local(${theme.secondaryFontFamily}),
+      url(${fonts.find(font=>font.family===theme.secondaryFontFamily).files['300']}) format('ttf')`
+  }
+
+  const secondaryFont4 = {
+      fontFamily: theme.secondaryFontFamily,
+      fontStyle: theme.secondaryFontVariant.search('itallic') === -1 ? 'normal' : 'itallic',
+      fontDisplay: 'swap',
+      fontWeight: '400',
+      src: `local(${theme.secondaryFontFamily}),
+      local(${theme.secondaryFontFamily}-Regular),
+      url(${fonts.find(font=>font.family===theme.secondaryFontFamily).files['400']}) format('ttf')`
+  }
+
+  const customTheme = createMuiTheme({
+      palette: {
+          primary: {
+              main: theme.primaryColor
+          },
+          secondary: {
+              main: theme.secondaryColor
+          }
+      },
+      typography: {
+          fontFamily: `${theme.primaryFontFamily}, ${theme.secondaryFontFamily}, Roboto, SourceSansPro, Helvetica, Arial`,
+          h1: {
+              fontFamily: theme.primaryFontFamily,
+              fontWeight: 500,
+              fontSize: '3rem',
+          },
+          h3: {
+              fontFamily: theme.primaryFontFamily,
+              fontWeight: 400,
+              fontSize: '2rem',
+          },
+          body1: {
+              fontFamily: theme.secondaryFontFamily,
+              fontWeight: 200
+          },
+          body2: {
+              fontFamily: theme.secondaryFontFamily,
+              fontWeight: 400
+          },
+          subtitle1: {
+              fontFamily: theme.secondaryFontFamily,
+              fontWeight: 300
+          },
+          button: {
+              fontFamily: theme.secondaryFontFamily,
+              fontWeight: 300
+          }
+      },
+      overrides: {
+          MuiCssBaseline: {
+              '@global': {
+                  '@font-face': [
+                      primaryFont4,
+                      primaryFont5,
+                      secondaryFont2,
+                      secondaryFont3,
+                      secondaryFont4
+                  ]
+              }
+          }
+      }
+  });
+  dispatch({
+    type: GET_THEME,
+    payload: customTheme
+  });
 }
 
 export const getError = () => async (dispatch) => {

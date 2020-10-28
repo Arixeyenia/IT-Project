@@ -1,9 +1,10 @@
 import React, { Fragment, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { Typography, Grid, Box, Card, CardContent, CardHeader, CardMedia, CardActions, Button, IconButton } from '@material-ui/core';
-import {getPortfolio, getPage, getPortfolioAsGuest, getError, getSaved, savePortfolio, getPageAsGuest} from '../../actions/eportfolio';
+import { makeStyles, useTheme, ThemeProvider } from '@material-ui/core/styles';
+import { CssBaseline, Typography, Grid, Box, Card, CardContent, CardHeader, CardMedia, CardActions, Button, IconButton } from '@material-ui/core';
+import {getPortfolio, getPage, getPortfolioAsGuest, getError, getSaved, savePortfolio, getPageAsGuest, getTheme } from '../../actions/eportfolio';
+import { getFonts } from '../../actions/googleFonts';
 import { loadUser } from '../../actions/auth';
 import { Link, useParams, useHistory } from 'react-router-dom';
 import store from '../../store';
@@ -11,8 +12,6 @@ import Comment from '../comments/Comment';
 import { useThemeStyle } from '../../styles/themes';
 import StarIcon from '@material-ui/icons/Star';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
-import { ThemeProvider } from '../node_modules/@material-ui/core/styles';
-import { customTheme } from '../portfolioThemeOverride/theme';
 
 const useStyles = makeStyles((theme) => ({
   cardRoot: {
@@ -45,41 +44,26 @@ const useStyles = makeStyles((theme) => ({
   content: {
     paddingTop: '20px !important',
     paddingBottom: '20px !important',
-    paddingLeft: '10% !important'
+    paddingLeft: '10% !important',
+  },
+  contentEven: {
+    backgroundColor: theme.palette.primary.main
+  },
+  contentOdd: {
+    backgroundColor: theme.palette.secondary.main
   }
 }));
 
-const View = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated, error, getPortfolioAsGuest, getSaved, savePortfolio, savedPortfolios, getPageAsGuest}) => {
-  const classes = useStyles();
+const View = ({portfolio, page, error, savePortfolio, savedPortfolios, muiTheme }) => {
   const theme = useTheme();
+  const classes = useStyles();
   const themeStyle = useThemeStyle();
-  const params = useParams();
   const history = useHistory();
-
-  useEffect(() => {
-    if (Object.keys(portfolio).length === 0 || portfolio._id !== params.id) {
-        if (store.getState().auth.isAuthenticated){
-          getPortfolio(params.id);
-        }
-        else{
-            getPortfolioAsGuest(params.id);
-        }
-    }
-    if (Object.keys(page).length === 0 || portfolio._id !== params.id || !(page.url === params.pagename || (page.main && params.pagename===undefined))) {
-      if (store.getState().auth.isAuthenticated){
-        getPage(params.id, params.pagename);
-      }
-      else{
-        getPageAsGuest(params.id, params.pagename);
-      }
-    }
-  }, [getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated]);
-
+  const params = useParams();
   const items = (Object.keys(page).length !== 0) ? page.items : [];
   const rowLengths = {};
   const groupedItems = [];
   const isSaved = savedPortfolios.some((e) => e._id === portfolio._id);
-  console.log(page);
   items.forEach(element => {
     if ([element.row] in Object.keys(rowLengths)){
       rowLengths[element.row]++;
@@ -99,23 +83,59 @@ const View = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated
   else{
     return (
       <Fragment>
-        <ThemeProvider theme={customTheme}>
-          <Box className={classes.content}>
-            <Typography variant='h1'>{portfolio.name}
-            <IconButton aria-label="save" onClick={() => savePortfolio(portfolio._id)}>
-                {isSaved ? <StarIcon/> : <StarBorderIcon/>}
-            </IconButton>
-            </Typography>
-          </Box>
-          {groupedItems.map((item, i)=>
-          <Grid container spacing={3} className={`${themeStyle.content} ${classes.content}`}>
-          {item.map((object) => card(classes, rowLengths, params.id, object, history, portfolio.user))}  
-          </Grid>)}
-        </ThemeProvider>
+        <Box className={classes.content}>
+          <Typography variant='h1'>{portfolio.name}
+          <IconButton aria-label="save" onClick={() => savePortfolio(portfolio._id)}>
+              {isSaved ? <StarIcon/> : <StarBorderIcon/>}
+          </IconButton>
+          </Typography>
+        </Box>
+        {groupedItems.map((item, i)=>
+          <Grid container
+            spacing={3}
+            className={`${themeStyle.content} ${classes.content} ${i%2 == 0 ? classes.contentEven : classes.contentOdd}`}>
+        {item.map((object) => card(classes, rowLengths, params.id, object, history, portfolio.user))}  
+        </Grid>)}
       </Fragment>
     );
   }
   
+}
+
+const ViewTheme  = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated, error, getPortfolioAsGuest, getSaved, savePortfolio, savedPortfolios, getPageAsGuest, getTheme, muiTheme, getFonts, fonts }) => {
+  const params = useParams();
+
+  useEffect(() => {
+    if (fonts.length === 0){
+      getFonts();
+    }
+    if (Object.keys(portfolio).length === 0 || portfolio._id !== params.id) {
+        if (store.getState().auth.isAuthenticated){
+          getPortfolio(params.id);
+        }
+        else{
+            getPortfolioAsGuest(params.id);
+        }
+    }
+    if (Object.keys(page).length === 0 || portfolio._id !== params.id || !(page.url === params.pagename || (page.main && params.pagename===undefined))) {
+      if (store.getState().auth.isAuthenticated){
+        getPage(params.id, params.pagename);
+      }
+      else{
+        getPageAsGuest(params.id, params.pagename);
+      }
+    }
+    if (Object.keys(portfolio).length !== 0 && Object.keys(page).length !== 0 && fonts.length !== 0){
+      getTheme(portfolio.theme, fonts);
+    }
+  }, [getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated, getFonts, fonts, getTheme]);
+
+  return (
+    <ThemeProvider theme={muiTheme}>
+      <CssBaseline/>
+      <View portfolio={portfolio} page={page} error={error} savePortfolio={savePortfolio} savedPortfolios={savedPortfolios} muiTheme={muiTheme}></View>
+    </ThemeProvider>
+  )
 }
 
 const card = (classes, rowLengths, portfolioID, object, history, owner) => {
@@ -147,7 +167,7 @@ const card = (classes, rowLengths, portfolioID, object, history, owner) => {
 }
 
 
-View.propTypes = {
+ViewTheme.propTypes = {
   getPage: PropTypes.func.isRequired,
   page: PropTypes.object.isRequired,
   getPortfolio: PropTypes.func.isRequired,
@@ -158,7 +178,11 @@ View.propTypes = {
   getPortfolioAsGuest: PropTypes.func.isRequired,
   getSaved: PropTypes.func.isRequired,
   savePortfolio: PropTypes.func.isRequired,
-  getPageAsGuest: PropTypes.func.isRequired
+  getPageAsGuest: PropTypes.func.isRequired,
+  getTheme: PropTypes.func.isRequired,
+  muiTheme: PropTypes.object.isRequired,
+  getFonts: PropTypes.func.isRequired,
+  fonts: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -166,7 +190,9 @@ const mapStateToProps = (state) => ({
   savedPortfolios: state.eportfolio.savedPortfolios,
   portfolio: state.eportfolio.portfolio,
   isAuthenticated: state.auth.isAuthenticated,
-  error: state.eportfolio.error
+  error: state.eportfolio.error,
+  muiTheme: state.eportfolio.muiTheme,
+  fonts: state.googleFonts.fonts
 });
 
-export default connect(mapStateToProps, {getPage, getPortfolio, loadUser, getPortfolioAsGuest, getSaved, savePortfolio, getPageAsGuest})(View);
+export default connect(mapStateToProps, {getPage, getPortfolio, loadUser, getPortfolioAsGuest, getSaved, savePortfolio, getPageAsGuest, getTheme, getFonts})(ViewTheme);

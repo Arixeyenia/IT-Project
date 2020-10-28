@@ -46,6 +46,7 @@ const PortfolioTheme = ({getFonts, fonts, saveTheme, theme, portfolioID}) => {
         });
     }
     const handleSecondaryFontFamilyChange = (event) => {
+        console.log(event.target.value);
         setSecondaryFont({
             ...secondaryFont,
             family: event.target.value
@@ -82,7 +83,7 @@ const PortfolioTheme = ({getFonts, fonts, saveTheme, theme, portfolioID}) => {
                     secondaryFontFamily: secondaryFont.family,
                     secondaryFontVariant: secondaryFont.variant,
                     primaryColor: primaryColor,
-                    secondaryFontFamily: secondaryColor,
+                    secondaryColor: secondaryColor,
                 },
                 portfolio: portfolioID
             }
@@ -141,7 +142,7 @@ const PortfolioTheme = ({getFonts, fonts, saveTheme, theme, portfolioID}) => {
                         onChange={handlePrimaryFontVariantChange}
                         className={classes.select}>
                         {primaryFont.family && fonts.find(font=>font.family === primaryFont.family).variants.map((variant) => {
-                            return (<MenuItem value={variant}>{variant}</MenuItem>);
+                            return (<MenuItem value={variant}>{VariantToStyleString(variant)}</MenuItem>);
                         })}
                     </Select>
                 </ListItem>
@@ -188,6 +189,37 @@ const PortfolioTheme = ({getFonts, fonts, saveTheme, theme, portfolioID}) => {
             </Button>
         </Box>
     );
+}
+
+const VariantToStyleString = (variant) => {
+    console.log(variant);
+    switch (variant) {
+        case 'regular':
+            return 'Regular';
+        case '100':
+            return 'Thin';
+        case '100italic':
+            return 'Thin Itallic';
+        case '300':
+            return 'Light';
+        case '300italic':
+            return 'Light Itallic';
+        case 'itallic':
+            return 'Regular Itallic';
+        case '500':
+            return 'Medium';
+        case '500itallic':
+            return 'Medium Itallic';
+        case '700':
+            return 'Bold';
+        case '700itallic':
+            return 'Bold Itallic';
+        case '900':
+            return 'Black';
+        case '900itallic':
+            return 'Black Itallic';
+        default: return 'Regular';
+    }
 }
 
 PortfolioTheme.propTypes = {

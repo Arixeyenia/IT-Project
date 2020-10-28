@@ -23,7 +23,7 @@ export const getFonts = () => async (dispatch) => {
       }
 }
 
-export const retrieveFonts = () => async (dispatch) => {
+export const retrieveFonts = () => (dispatch) => {
     dispatch({
         type: RETRIEVE_FONTS,
     });

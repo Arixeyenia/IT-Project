@@ -379,7 +379,7 @@ router.get('/templates', async (req, res) => {
 // @route   PUT api/portfolio/theme
 // @desc    Post theme of portfolio
 // @access  Private
-router.put('/theme', async (req, res) => {
+router.put('/theme', auth, async (req, res) => {
   try {
     const portfolio = await Portfolio.findById(req.body.portfolio);
     // check if portfolio exists

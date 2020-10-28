@@ -28,7 +28,8 @@ import {
   SHARE_PORTFOLIO,
   SAVE_PORTFOLIO,
   GET_ERROR,
-  SAVE_THEME
+  SAVE_THEME,
+  GET_THEME
 } from '../actions/types';
 
 const initialState = {
@@ -42,6 +43,7 @@ const initialState = {
   comments: {},
   templates: [],
   theme: {},
+  muiTheme: {},
   error: {},
 };
 
@@ -269,6 +271,13 @@ export default function (state = initialState, action) {
           ...state,
           theme: payload.theme,
           portfolio: { ...state.portfolio, theme: payload.theme },
+          loading: false,
+          error: {}
+        }
+    case GET_THEME:
+        return {
+          ...state,
+          muiTheme: payload,
           loading: false,
           error: {}
         }
