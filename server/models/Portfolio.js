@@ -95,6 +95,10 @@ const PortfolioSchema = new mongoose.Schema({
     secondaryColor: {
       type: String,
       default: '#FFF'
+    },
+    headerBackgroundColor: {
+      type: String,
+      default: '#FFF'
     }
   }
 });

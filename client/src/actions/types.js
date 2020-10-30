@@ -45,3 +45,5 @@ export const FONTS_ERROR = 'FONTS_ERROR';
 export const RETRIEVE_FONTS = 'RETRIEVE_FONTS';
 export const SAVE_THEME = 'SAVE_THEME';
 export const GET_THEME = 'GET_THEME';
+export const GET_ITEM_THEME = 'GET_ITEM_THEME';
+export const SAVE_ITEM_THEME = 'SAVE_ITEM_THEME';

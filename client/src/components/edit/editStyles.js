@@ -13,7 +13,6 @@ export const useStyles = makeStyles((theme) => ({
       }),
     },
     appBarShift: {
-      width: `calc(100% - ${drawerWidth}px)`,
       marginLeft: drawerWidth,
       transition: theme.transitions.create(['margin', 'width'], {
         easing: theme.transitions.easing.easeOut,
@@ -42,19 +41,20 @@ export const useStyles = makeStyles((theme) => ({
       justifyContent: 'space-between',
     },
     content: {
+      backgroundColor: theme.palette.primary.main,
       flexGrow: 1,
       transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
       }),
-      marginLeft: -drawerWidth,
+      marginLeft: 0
     },
     contentShift: {
       transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.easeOut,
         duration: theme.transitions.duration.enteringScreen,
       }),
-      marginLeft: 0,
+      marginLeft: drawerWidth,
     },
     textinput: { 
       marginLeft: theme.spacing(2),
@@ -66,7 +66,13 @@ export const useStyles = makeStyles((theme) => ({
     },
     cardRoot: {
       minWidth: 275,
-      backgroundColor: 'inherit'
+      boxShadow: 'none',
+      borderRadius: 0,
+      backgroundColor: theme.palette.primary.main,
+      alignItems: 'stretch',
+      display: 'flex',
+      flexDirection: 'column',
+      flexGrow: 2
     },
     unflex: {
       flex: '0 1 7em',
@@ -135,10 +141,48 @@ export const useStyles = makeStyles((theme) => ({
       paddingBottom: '20px !important',
       paddingLeft: '10% !important',
     },
-    contentEven: {
+    primaryColor: {
       backgroundColor: theme.palette.primary.main
     },
-    contentOdd: {
+    secondaryColor: {
       backgroundColor: theme.palette.secondary.main
+    },
+    textSecondary: {
+      color: theme.palette.secondary.contrastText
+    },
+    cardActions: {
+      paddingLeft: theme.spacing(2),
+      justifyContent: 'space-between',
+      backgroundColor: theme.palette.primary.main,
+      flexGrow: 2
+    },
+    gridPadding: {
+      paddingLeft: '10% !important',
+      paddingRight: '10% !important',
+    },
+    cardPadding: {
+      paddingTop: '20px !important',
+      paddingBottom: '20px !important',
+      
+    },
+    gridItem: {
+      display: 'grid',
+      padding: '12px'
+    },
+    items: {
+      marginLeft: '-12px'
+    },
+    addItem: {
+      display: 'block'
+    },
+    row: {
+      display: 'flex',
+      flexGrow: 4
+    },
+    iconButton: {
+      display: 'contents'
+    },
+    cardGroup: {
+      display: 'flex'
     }
   }));

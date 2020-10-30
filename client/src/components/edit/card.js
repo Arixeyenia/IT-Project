@@ -1,14 +1,18 @@
 import React from 'react';
-import { Typography, Grid, Button, CardMedia, Card, CardContent, CardHeader, IconButton, CardActions } from '@material-ui/core';
+import { CssBaseline, Typography, CardMedia, Card, CardContent, CardHeader, IconButton, Box, CardActions, Button } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import DeleteIcon from '@material-ui/icons/Delete';
+import {useStyles} from './editStyles';
+import { ThemeProvider } from '@material-ui/core/styles';
 
 
-export default function card(classes, rowLengths, portfolioID, object, history, handleDrawerOpen, handleDialogOpen, addItemWrapper){
-    return (
-      <Grid item xs={12/rowLengths[object.row]} key={object._id}>
-      <Card className={classes.cardRoot} variant='outlined'>
+export default function ItemCard({classes, rowLengths, portfolioID, object, history, handleDrawerOpen, handleDialogOpen, addItemWrapper, headerTheme}){
+  classes = useStyles();
+  console.log(headerTheme);
+  return (
+    <Box className={classes.cardGroup}>
+      <Card className={classes.cardRoot}>
         {object.mediaType === 'image' && <CardMedia
             className={classes.media}
             image={object.mediaLink}
@@ -16,6 +20,15 @@ export default function card(classes, rowLengths, portfolioID, object, history, 
          <CardHeader
           classes={{title:classes.titleText, action:classes.unflex}}
           title={object.title}
+          subheader={object.subtitle}
+          titleTypographyProps={{
+            variant:'h3',
+            color: 'textPrimary'
+          }}
+          subheaderTypographyProps={{
+            variant:'subtitle1',
+            color: 'textPrimary'
+          }}
           action={
             <div>
             <IconButton aria-label='edit' onClick={() => handleDrawerOpen(object._id)}>
@@ -27,27 +40,30 @@ export default function card(classes, rowLengths, portfolioID, object, history, 
           </div>
           }
         />
-        <CardContent>
-          <Typography className={classes.pos} color='textSecondary'>
-              {object.subtitle}
-          </Typography>
-          <Typography variant='body2' component='p'>
+          {object.paragraph&& <CardContent>
+          {object.paragraph && <Typography variant='body2' component='p' color='textPrimary'>
             {object.paragraph}
-          </Typography>
-        </CardContent>
-        <CardActions>
-          <Button size='small' onClick={()=> {if(!/^(f|ht)tps?:\/\//i.test(object.linkAddress)){ history.push('/view/' + portfolioID + '/' + object.linkAddress);}else{ window.location.href = object.linkAddress;}window.location.reload(false);}}>{object.linkText}</Button>
-        </CardActions>
+          </Typography>}
+        </CardContent>}
+        <ThemeProvider theme={headerTheme}>
+          <CssBaseline/>
+          <CardActionsThemed classes={classes} object={object} history={history} portfolioID={portfolioID}></CardActionsThemed>
+        </ThemeProvider>
       </Card>
-      {(rowLengths[object.row]===object.column+1) ?
-      <div className={classes.wrapper}> 
-      <IconButton
-        color='default'
-        onClick = {() => addItemWrapper(object.row, object.column+1)}
-        className={classes.addCol}        
-        children={<AddCircleOutlineIcon classes={{root:classes.addIcon}}/>}
-        >
-        </IconButton></div> : <div/>}
-      </Grid>
+    </Box>
+    )
+  }
+
+  const CardActionsThemed = ({classes, object, history, portfolioID}) => {
+    classes = useStyles();
+  
+    return (
+      <CardActions className={classes.cardActions}>
+        <Button size='small'
+          color='textPrimary'
+          onClick={()=> {if(!/^(f|ht)tps?:\/\//i.test(object.linkAddress)){ history.push('/view/' + portfolioID + '/' + object.linkAddress);}else{ window.location.href = object.linkAddress;}window.location.reload(false);}}>
+            {object.linkText}
+        </Button>
+      </CardActions>
     )
   }

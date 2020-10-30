@@ -2,7 +2,7 @@ import React, { Fragment, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { makeStyles, useTheme, ThemeProvider } from '@material-ui/core/styles';
-import { CssBaseline, Typography, Grid, Box, Card, CardContent, CardHeader, CardMedia, CardActions, Button, IconButton } from '@material-ui/core';
+import { CssBaseline, Typography, Grid, Box, Card, CardContent, CardHeader, CardMedia, CardActions, Button, IconButton, CardActionArea } from '@material-ui/core';
 import {getPortfolio, getPage, getPortfolioAsGuest, getError, getSaved, savePortfolio, getPageAsGuest, getTheme } from '../../actions/eportfolio';
 import { getFonts } from '../../actions/googleFonts';
 import { loadUser } from '../../actions/auth';
@@ -15,11 +15,12 @@ import StarBorderIcon from '@material-ui/icons/StarBorder';
 
 const useStyles = makeStyles((theme) => ({
   cardRoot: {
-    minWidth: 275,
     boxShadow: 'none',
     borderRadius: 0,
-    backgroundColor: 'inherit',
-    paddingBottom: '20px'
+    backgroundColor: theme.palette.primary.main,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-end'
   },
   pos: {
   },
@@ -32,79 +33,44 @@ const useStyles = makeStyles((theme) => ({
   viewGridItem: {
     display: 'grid',
   },
-  viewGridItemCardHeader: {
-    paddingBottom: '0px !important',
-  },
   viewCardActions: {
-    paddingLeft: '20px !important',
-  },
-  viewCardContent: {
-    paddingBottom: '0px !important',
+    paddingLeft: theme.spacing(2),
+    justifyContent: 'space-between',
+    backgroundColor: theme.palette.primary.main,
   },
   content: {
     paddingTop: '20px !important',
-    paddingBottom: '20px !important',
+    paddingBottom: '50px !important',
     paddingLeft: '10% !important',
-  },
-  contentEven: {
     backgroundColor: theme.palette.primary.main
   },
-  contentOdd: {
+  primaryColor: {
+    backgroundColor: theme.palette.primary.main
+  },
+  secondaryColor: {
     backgroundColor: theme.palette.secondary.main
-  }
+  },
+  contentInherit: {
+    backgroundColor: 'inherit'
+  },
+  cardPadding: {
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2)
+  },
+  gridPadding: {
+    paddingLeft: '10% !important',
+    paddingRight: '10% !important',
+  },
 }));
 
-const View = ({portfolio, page, error, savePortfolio, savedPortfolios, muiTheme }) => {
+const ViewTheme = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated, error, getPortfolioAsGuest, getSaved, savePortfolio, savedPortfolios, getPageAsGuest, getTheme, muiTheme, getFonts, fonts, itemMuiThemes, headerTheme }) => {
+  const params = useParams();
   const theme = useTheme();
   const classes = useStyles();
   const themeStyle = useThemeStyle();
   const history = useHistory();
-  const params = useParams();
-  const items = (Object.keys(page).length !== 0) ? page.items : [];
-  const rowLengths = {};
-  const groupedItems = [];
-  const isSaved = savedPortfolios.some((e) => e._id === portfolio._id);
-  items.forEach(element => {
-    if ([element.row] in Object.keys(rowLengths)){
-      rowLengths[element.row]++;
-      groupedItems[element.row].push(element);
-    }
-    else{
-      rowLengths[element.row] = 1;
-      groupedItems[element.row] = [element];
-    }
-  });
-  if (Object.keys(error).length!==0){
-    return (
-    <Box className={themeStyle.content}>
-      <Typography variant='h3'>You are not authorised to view this portfolio.</Typography>
-    </Box>);
-  }
-  else{
-    return (
-      <Fragment>
-        <Box className={classes.content}>
-          <Typography variant='h1'>{portfolio.name}
-          <IconButton aria-label="save" onClick={() => savePortfolio(portfolio._id)}>
-              {isSaved ? <StarIcon/> : <StarBorderIcon/>}
-          </IconButton>
-          </Typography>
-        </Box>
-        {groupedItems.map((item, i)=>
-          <Grid container
-            spacing={3}
-            className={`${themeStyle.content} ${classes.content} ${i%2 == 0 ? classes.contentEven : classes.contentOdd}`}>
-        {item.map((object) => card(classes, rowLengths, params.id, object, history, portfolio.user))}  
-        </Grid>)}
-      </Fragment>
-    );
-  }
-  
-}
-
-const ViewTheme = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated, error, getPortfolioAsGuest, getSaved, savePortfolio, savedPortfolios, getPageAsGuest, getTheme, muiTheme, getFonts, fonts }) => {
-  const params = useParams();
-
   useEffect(() => {
     if (fonts.length === 0){
       getFonts();
@@ -126,49 +92,147 @@ const ViewTheme = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenti
       }
     }
     if (Object.keys(portfolio).length !== 0 && Object.keys(page).length !== 0 && fonts.length !== 0){
-      getTheme(portfolio.theme, fonts);
+      getTheme(portfolio.theme, fonts, 'portfolio', '');
+    }
+    if (Object.keys(items).length !== 0 && fonts.length !== 0){
+      items.forEach(object => {
+        if (object.theme)
+        getTheme(object.theme, fonts, 'item', object._id);
+      });
     }
   }, [getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated, getFonts, fonts, getTheme]);
+  
+
+  const items = (Object.keys(page).length !== 0) ? page.items : [];
+  const rowLengths = {};
+  const groupedItems = [];
+  items.forEach(element => {
+    if ([element.row] in Object.keys(rowLengths)){
+      rowLengths[element.row]++;
+      groupedItems[element.row].push(element);
+    }
+    else{
+      rowLengths[element.row] = 1;
+      groupedItems[element.row] = [element];
+    }
+  });
 
   return (
-    <ThemeProvider theme={muiTheme}>
-      <CssBaseline/>
-      <View portfolio={portfolio} page={page} error={error} savePortfolio={savePortfolio} savedPortfolios={savedPortfolios} muiTheme={muiTheme}></View>
-    </ThemeProvider>
+    <Box>
+      {Object.keys(error).length!==0 ? 
+        <Box className={themeStyle.content}>
+          <Typography variant='h3' color='textPrimary'>You are not authorised to view this portfolio.</Typography>
+        </Box> :
+        <Box>
+          <ThemeProvider theme={headerTheme}>
+            <CssBaseline/>
+            <PortfolioHeader classes={classes} portfolio={portfolio} savePortfolio={savePortfolio} savedPortfolios={savedPortfolios}></PortfolioHeader>
+          </ThemeProvider>
+          <ThemeProvider theme={muiTheme}>
+            <CssBaseline/>
+            <View portfolio={portfolio} error={error} savePortfolio={savePortfolio} savedPortfolios={savedPortfolios} itemMuiThemes={itemMuiThemes} groupedItems={groupedItems} rowLengths={rowLengths} params={params} classes={classes} themeStyle={themeStyle} history={history} muiTheme={muiTheme} headerTheme={headerTheme}></View>
+          </ThemeProvider>
+        </Box>
+      }
+    </Box>
   )
 }
 
-const card = (classes, rowLengths, portfolioID, object, history, owner) => {
+const PortfolioHeader = ({classes, portfolio, savePortfolio, savedPortfolios}) => {
+  classes = useStyles();
+
+  const isSaved = savedPortfolios.some((e) => e._id === portfolio._id);
+
   return (
-    <Grid item xs={12/rowLengths[object.row]} className={classes.viewGridItem} key={object._id}>
-      <Card className={classes.cardRoot}>
-        {object.mediaType === 'image' && <CardMedia
-            className={classes.media}
-            image={object.mediaLink}
-          />}
-        {object.title && <CardHeader
-          className={classes.viewGridItemCardHeader}
-          classes={{title:classes.titleText}}
-          title={object.title}
-          subheader={object.subtitle}
-          titleTypographyProps={{
-            variant:'h3'
-          }}
-          subheaderTypographyProps={{
-            variant:'subtitle1'
-          }}
-        />}
-        {object.paragraph&& <CardContent className={classes.viewCardContent}>
-          {object.paragraph && <Typography variant='body2' component='p'>
-            {object.paragraph}
-          </Typography>}
-        </CardContent>}
-        {object.linkAddress && <CardActions className={classes.viewCardActions}>
-            <Button size='small' onClick={()=> {if(!/^(f|ht)tps?:\/\//i.test(object.linkAddress)){ history.push('/view/' + portfolioID + '/' + object.linkAddress);}else{ window.location.href = object.linkAddress;}window.location.reload(false);}}>{object.linkText}</Button>
-        </CardActions>}
-        <Comment itemID={object._id} owner={owner} />
-      </Card>
+    <Box className={classes.content}>
+        <Typography variant='h1' color='textPrimary'>{portfolio.name}
+        <IconButton aria-label="save" onClick={() => savePortfolio(portfolio._id)}>
+            {isSaved ? <StarIcon/> : <StarBorderIcon/>}
+        </IconButton>
+        </Typography>
+    </Box>
+  );
+}
+
+const View = ({portfolio, itemMuiThemes, groupedItems, rowLengths, params, classes, history, muiTheme, headerTheme }) => {
+  classes = useStyles();
+  const getItemTheme = (itemID) => {
+    if (itemMuiThemes.length > 0){
+      return itemMuiThemes.find((theme)=>{
+        return theme.id === itemID
+      });
+    }
+  }
+    return (
+      <Fragment>
+        {groupedItems.map((item, i)=>
+          <Grid container
+            className={`${classes.gridPadding} ${classes.secondaryColor}`}>
+              {item.map((object) => CardTheme(classes, rowLengths, params.id, object, history, portfolio.user, getItemTheme(object._id), muiTheme, headerTheme))}
+          </Grid>)}
+      </Fragment>
+    );
+  
+}
+
+const CardTheme = (classes, rowLengths, portfolioID, object, history, owner, customTheme, muiTheme, headerTheme ) => {
+  return (
+    <Grid item xs={12/rowLengths[object.row]} className={`${classes.viewGridItem} ${classes.cardPadding} ${classes.secondaryColo}`} key={object._id}>
+      <ThemeProvider theme={customTheme ? customTheme.theme : muiTheme}>
+        <CssBaseline/>
+          <ItemCard classes={classes} rowLengths={rowLengths} portfolioID={portfolioID} object={object} history={history} owner={owner} muiTheme={muiTheme} headerTheme={headerTheme}></ItemCard>
+      </ThemeProvider>
     </Grid>
+  );
+}
+
+const ItemCard = ({classes, rowLengths, portfolioID, object, history, owner, muiTheme, headerTheme}) => {
+  classes = useStyles();
+  return (
+    <Card className={`${classes.cardRoot} ${classes.primaryColor}`}>
+      {object.mediaType === 'image' && <CardMedia
+          className={classes.media}
+          image={object.mediaLink}
+        />}
+      {(object.title || object.subtitle) && <CardHeader
+        className={classes.viewGridItemCardHeader}
+        classes={{title:classes.titleText}}
+        title={object.title}
+        subheader={object.subtitle}
+        titleTypographyProps={{
+          variant:'h3',
+          color: 'textPrimary'
+        }}
+        subheaderTypographyProps={{
+          variant:'subtitle1',
+          color: 'textPrimary'
+        }}
+      />}
+      {object.paragraph&& <CardContent>
+        {object.paragraph && <Typography variant='body2' component='p' color='textPrimary'>
+          {object.paragraph}
+        </Typography>}
+      </CardContent>}
+      <ThemeProvider theme={headerTheme}>
+        <CssBaseline/>
+        <CardActionsThemed classes={classes} object={object} history={history} owner={owner} portfolioID={portfolioID}></CardActionsThemed>
+      </ThemeProvider>
+    </Card>
+  )
+}
+
+const CardActionsThemed = ({classes, object, history, owner, portfolioID}) => {
+  classes = useStyles();
+
+  return (
+    <CardActions className={classes.viewCardActions}>
+      <Button size='small'
+        color='textPrimary'
+        onClick={()=> {if(!/^(f|ht)tps?:\/\//i.test(object.linkAddress)){ history.push('/view/' + portfolioID + '/' + object.linkAddress);}else{ window.location.href = object.linkAddress;}window.location.reload(false);}}>
+          {object.linkText}
+      </Button>  
+      <Comment itemID={object._id} owner={owner}/>
+    </CardActions>
   )
 }
 
@@ -188,7 +252,9 @@ ViewTheme.propTypes = {
   getTheme: PropTypes.func.isRequired,
   muiTheme: PropTypes.object.isRequired,
   getFonts: PropTypes.func.isRequired,
-  fonts: PropTypes.arrayOf(PropTypes.object).isRequired
+  fonts: PropTypes.arrayOf(PropTypes.object).isRequired,
+  itemMuiThemes: PropTypes.arrayOf(PropTypes.object).isRequired,
+  headerTheme: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -198,7 +264,9 @@ const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
   error: state.eportfolio.error,
   muiTheme: state.eportfolio.muiTheme,
-  fonts: state.googleFonts.fonts
+  fonts: state.googleFonts.fonts,
+  itemMuiThemes: state.eportfolio.itemMuiThemes,
+  headerTheme: state.eportfolio.headerTheme
 });
 
 export default connect(mapStateToProps, {getPage, getPortfolio, loadUser, getPortfolioAsGuest, getSaved, savePortfolio, getPageAsGuest, getTheme, getFonts})(ViewTheme);

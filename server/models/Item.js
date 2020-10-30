@@ -47,6 +47,26 @@ const ItemSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  theme: {
+    primaryFontFamily: {
+      type: String,
+    },
+    primaryFontVariant: {
+      type: String,
+    },
+    secondaryFontFamily: {
+      type: String,
+    },
+    secondaryFontVariant: {
+      type: String,
+    },
+    primaryColor: {
+      type: String,
+    },
+    secondaryColor: {
+      type: String,
+    }
+  }
 });
 
 module.exports = Item = mongoose.model('item', ItemSchema);

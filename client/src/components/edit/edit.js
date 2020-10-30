@@ -27,7 +27,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import card from './card';
+import ItemCard from './card';
 import MenuIcon from '@material-ui/icons/Menu';
 import HomeIcon from '@material-ui/icons/Home';
 import ExpandLess from '@material-ui/icons/ExpandLess';
@@ -36,7 +36,7 @@ import AddIcon from '@material-ui/icons/Add';
 import ClearIcon from '@material-ui/icons/Clear';
 import {Instagram, Facebook, LinkedIn, Twitter} from '@material-ui/icons';
 
-const Edit = ({ portfolio, page, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, error, addSocialMedia, setPrivacy, sharePortfolio}) => {
+const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, loadUser, isAuthenticated, error, addSocialMedia, setPrivacy, sharePortfolio, getTheme, muiTheme, getFonts, fonts, headerTheme, itemMuiThemes}) => {
   const classes = useStyles();
   const theme = useTheme();
   const themeStyle = useThemeStyle();
@@ -54,10 +54,28 @@ const Edit = ({ portfolio, page, editItem, addItem, deleteItem, createPage, edit
   const [toDelete, setToDelete] = React.useState('');
 
   useEffect(() => {
+    if (fonts.length === 0){
+      getFonts();
+    }
+    if (Object.keys(portfolio).length === 0 || portfolio._id !== params.id) {
+        getPortfolio(params.id);
+    }
+    if (Object.keys(page).length === 0 || !(page.url === params.pagename || (page.main && params.pagename=== undefined))) {
+      getPage(params.id, params.pagename);
+    }
     if (Object.keys(portfolio).includes("socialmedia")){
       resetSocialMedia(portfolio.socialmedia);
     }
-  }, [portfolio]);
+    if (Object.keys(portfolio).length !== 0 && Object.keys(page).length !== 0 && fonts.length !== 0){
+      getTheme(portfolio.theme, fonts, 'portfolio', '');
+    }
+    if (Object.keys(items).length !== 0 && fonts.length !== 0){
+      items.forEach(object => {
+        if (object.theme)
+        getTheme(object.theme, fonts, 'item', object._id);
+      });
+    }
+  }, [getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated, getFonts, fonts, getTheme]);
 
   const openCurrPage = () => {
     setCurrPageOpen(!currPageOpen);
@@ -171,12 +189,130 @@ const Edit = ({ portfolio, page, editItem, addItem, deleteItem, createPage, edit
       groupedItems[element.row] = [element];
     }
   });
+  return (
+    <Box className={classes.mainContent}>
+      {Object.keys(error).length!==0 ?
+        <Box className={themeStyle.content}>
+        <Typography variant='h3' color='textPrimary'>You are not authorised to edit this portfolio.</Typography>
+        </Box> :
+        <Box>
+          <EditDrawer classes={classes} drawerOpen={drawerOpen} editID={editID} theme={theme} handleEditTheme={handleEditTheme} handleDrawerClose={handleDrawerClose} editTheme={editTheme} portfolio={portfolio} items={items} params={params} openCurrPage={openCurrPage} history={history} currPageOpen={currPageOpen} handleEditPage={handleEditPage} editPageWrapper={editPageWrapper} registerEditPage={registerEditPage} handleDialogOpen={handleDialogOpen} handleCreatePage={handleCreatePage} createPageWrapper={createPageWrapper} registerCreatePage={registerCreatePage} shareWrapper={shareWrapper} handleSocialMedia={handleSocialMedia} socialMediaWrapper={socialMediaWrapper} registerSocialMedia={registerSocialMedia} handleSubmit={handleSubmit} editItemWrapper={editItemWrapper} getField={getField} register={register}></EditDrawer>
+          <ThemeProvider theme={headerTheme}>
+            <CssBaseline/>
+            <PortfolioHeader classes={classes} portfolio={portfolio} themeStyle={themeStyle} error={error} drawerOpen={drawerOpen} handleDrawerClose={handleDrawerClose} handleDrawerOpen={handleDrawerOpen}></PortfolioHeader>
+          </ThemeProvider>
+          <ThemeProvider theme={muiTheme}>
+            <CssBaseline/>
+            <Edit classes={classes} drawerOpen={drawerOpen} groupedItems={groupedItems} themeStyle={themeStyle} portfolio={portfolio} rowLengths={rowLengths} history={history} handleDrawerOpen={handleDrawerOpen} handleDialogOpen={handleDialogOpen} addItemWrapper={addItemWrapper} dialogOpen={dialogOpen} toDelete={toDelete} handleDialogClose={handleDialogClose} itemMuiThemes={itemMuiThemes} muiTheme={muiTheme} headerTheme={headerTheme}></Edit>
+          </ThemeProvider>
+        </Box>
+      }
+    </Box>
+  )
+}
 
-  return (    
-    <Box>
-    <div className={classes.root}>
-    <ThemeProvider theme={globalTheme}>
-    <CssBaseline />
+const Edit = ({ classes, drawerOpen, groupedItems, themeStyle, portfolio, rowLengths, history, handleDrawerOpen, handleDialogOpen, addItemWrapper, dialogOpen, toDelete, handleDialogClose, itemMuiThemes, muiTheme, headerTheme}) => {
+  classes = useStyles();
+  const getItemTheme = (itemID) => {
+    if (itemMuiThemes.length > 0){
+      return itemMuiThemes.find((theme)=>{
+        return theme.id === itemID
+      });
+    }
+  }
+
+  return (
+    <Box className={classes.items}>
+      
+      {groupedItems.map((item, i)=> 
+        <Grid container
+          className={`${classes.gridPadding} ${classes.secondaryColor} ${clsx(classes.content, {
+            [classes.contentShift]: drawerOpen,
+          })}`}>
+            <Box className={classes.row}>
+              {item.map((object) => CardTheme(classes, rowLengths, portfolio._id, object, history, handleDrawerOpen, handleDialogOpen, addItemWrapper, getItemTheme(object._id), muiTheme, headerTheme))}
+            </Box>
+        <Box className={classes.iconButton}> 
+          <IconButton
+            onClick = {() => addItemWrapper(i, item.length + 1)}
+            className={`${classes.textSecondary}`}        
+            children={<AddCircleOutlineIcon classes={{root:classes.addIcon}}/>}
+            >
+          </IconButton>
+        </Box>
+      </Grid>)}
+      
+      <Box className={`${classes.gridPadding} ${classes.secondaryColor}`}>
+        {Object.keys(portfolio).length > 0 && <IconButton 
+          onClick = {() => addItemWrapper(Object.keys(rowLengths).length, 0)}
+          children={<AddCircleOutlineIcon classes={{root:classes.addIcon}}/>}
+          className={`${classes.addRow} ${classes.textSecondary}`}>
+          </IconButton>}
+      </Box>
+  <Dialog
+        open={dialogOpen}
+        onClose={() => handleDialogClose(false)}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle id="alert-dialog-title">{(toDelete === 'ITEM') ? "Do you want to delete this item?" : "Do you want to delete this page?"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            {(toDelete === 'ITEM') ? "Once deleted, this item will not be able to be restored." : "Once deleted, this page will not be able to be restored."}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => handleDialogClose(false)} color='primary' autoFocus>
+            No
+          </Button>
+          <Button onClick={() =>handleDialogClose(true)} color='primary'>
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
+  );
+}
+
+const CardTheme = (classes, rowLengths, portfolioID, object, history, handleDrawerOpen, handleDialogOpen, addItemWrapper, customTheme, muiTheme, headerTheme ) => {
+  return (
+    <Grid item xs={12/rowLengths[object.row]} className={`${classes.gridItem} ${classes.cardPadding} ${classes.secondaryColor}`} key={object._id}>
+      <ThemeProvider theme={customTheme ? customTheme.theme : muiTheme}>
+        <CssBaseline/>
+          <ItemCard classes={classes} rowLengths={rowLengths} portfolioID={portfolioID} object={object} history={history} handleDrawerOpen={handleDrawerOpen} handleDialogOpen={handleDialogOpen} addItemWrapper={addItemWrapper} headerTheme={headerTheme}></ItemCard>
+      </ThemeProvider>
+    </Grid>
+  );
+}
+
+const PortfolioHeader = ({classes, portfolio, themeStyle, error, drawerOpen, handleDrawerClose, handleDrawerOpen}) => {
+  classes = useStyles();
+
+  return (
+    <Box className={clsx(classes.content, {
+      [classes.contentShift]: drawerOpen,
+    })}>
+      <Box className={classes.contentPadding}>
+        <Typography variant='h1' color='textPrimary'>{portfolio.name}</Typography>
+      </Box>
+      <Box className={classes.contentPadding}>
+      {Object.keys(portfolio).length > 0 && <IconButton onClick={() => {if(drawerOpen){handleDrawerClose();}else{handleDrawerOpen('')}}}>
+          <MenuIcon/>&nbsp;Options
+        </IconButton>}
+        <div className={classes.socialLinks}>
+            {Object.keys(portfolio).includes("socialmedia") && portfolio.socialmedia.facebook !== "" && <Button className={classes.socialMedia} style={{backgroundColor:"#4267B2"}} onClick={() => window.location.href=portfolio.socialmedia.facebook}><Facebook/></Button>}
+            {Object.keys(portfolio).includes("socialmedia") && portfolio.socialmedia.instagram !== "" && <Button className={classes.socialMedia} style={{backgroundColor:"#DD2A7B"}} onClick={() => window.location.href=portfolio.socialmedia.instagram}><Instagram/></Button>}
+            {Object.keys(portfolio).includes("socialmedia") && portfolio.socialmedia.twitter !== "" && <Button className={classes.socialMedia} style={{backgroundColor:"#1DA1F2"}} onClick={() => window.location.href=portfolio.socialmedia.twitter}><Twitter/></Button>}
+            {Object.keys(portfolio).includes("socialmedia") && portfolio.socialmedia.linkedin !== "" && <Button className={classes.socialMedia} style={{backgroundColor:"#2867B2"}} onClick={() => window.location.href=portfolio.socialmedia.linkedin}><LinkedIn/></Button>}
+        </div>
+      </Box>
+    </Box>
+    
+  );
+}
+
+const EditDrawer = ({classes, drawerOpen, editID, theme, handleEditTheme, handleDrawerClose, editTheme, portfolio, items, params, openCurrPage, history, currPageOpen, handleEditPage, editPageWrapper, registerEditPage, handleDialogOpen, handleCreatePage, createPageWrapper, registerCreatePage, shareWrapper, handleSocialMedia, socialMediaWrapper, registerSocialMedia, handleSubmit, editItemWrapper, getField, register}) => {
+  return (
     <Drawer
       className={classes.drawer}
       variant='persistent'
@@ -187,7 +323,7 @@ const Edit = ({ portfolio, page, editItem, addItem, deleteItem, createPage, edit
       }}
     >
       <div className={classes.drawerHeader}>
-        <Typography variant='h4' className={classes.drawerTitle}>{editID === '' ? 'Options' : 'Edit'}</Typography>
+        <Typography variant='h4' color='textPrimary' className={classes.drawerTitle}>{editID === '' ? 'Options' : 'Edit'}</Typography>
         <Button
           variant='contained' 
           color='primary'
@@ -203,11 +339,11 @@ const Edit = ({ portfolio, page, editItem, addItem, deleteItem, createPage, edit
       </div>
       <Divider />
       {editTheme ? 
-      <PortfolioTheme portfolioID={portfolio._id}/>
+      <PortfolioTheme portfolioID={portfolio._id} itemID={editID} item={items.find(item=>editID === item._id)}/>
       :
       (editID === '' && Object.keys(portfolio).length !== 0) ?
         (<div>
-        <Typography variant='h5'>Pages</Typography>
+        <Typography variant='h5' color='textPrimary'>Pages</Typography>
         <List>
             {portfolio.pages.map(page => (<div key={page.url}><ListItem button onClick={() => {if (page.name === params.pagename){openCurrPage();} else{history.push('/edit/' + portfolio._id + '/' + page.url);history.go(0);}}} selected={page.url === params.pagename}>
             <ListItemText primary={page.name}/>
@@ -252,7 +388,7 @@ const Edit = ({ portfolio, page, editItem, addItem, deleteItem, createPage, edit
           ))}
         <form noValidate autoComplete="off" onSubmit={handleCreatePage(createPageWrapper)}><span className={classes.inline}><TextField className={classes.inlineTextInput} label='New Page' variant="outlined" name="pagename" inputRef={registerCreatePage}/><Button variant="outlined" color="primary" className={classes.inlineTextInput} startIcon={<AddIcon />} type="submit">Add</Button></span></form>
         </List>
-        <Typography variant='h5'>Privacy</Typography>
+        <Typography variant='h5' color='textPrimary'>Privacy</Typography>
         <FormControlLabel
           control={<Checkbox 
             checked={portfolio.private} 
@@ -264,7 +400,7 @@ const Edit = ({ portfolio, page, editItem, addItem, deleteItem, createPage, edit
         />
         {portfolio.private && 
         <div>
-        <Typography variant='subtitle1' className={classes.indented}>Share</Typography>
+        <Typography variant='subtitle1' color='textPrimary' className={classes.indented}>Share</Typography>
         <TextField
           id='standard'          
           variant='outlined'
@@ -283,7 +419,7 @@ const Edit = ({ portfolio, page, editItem, addItem, deleteItem, createPage, edit
         </List>
         </div>
         }
-        <Typography variant='h5'>Social Media</Typography>
+        <Typography variant='h5' color='textPrimary'>Social Media</Typography>
         <form noValidate autoComplete="off" onSubmit={handleSocialMedia(socialMediaWrapper)}>
           {['facebook', 'instagram', 'twitter', 'linkedin'].map(name => (<TextField className={classes.textinput} label={name} variant="outlined" name={name} key={name} inputRef={registerSocialMedia}/>))}
           <Button variant="outlined" color="primary" className={classes.textinput} type="submit">Save</Button>
@@ -300,94 +436,7 @@ const Edit = ({ portfolio, page, editItem, addItem, deleteItem, createPage, edit
       </form>
       )}
     </Drawer>
-    </ThemeProvider>
-    <main
-      className={clsx(classes.content, {
-        [classes.contentShift]: drawerOpen,
-      })}
-    >
-      <Box className={classes.contentPadding}>
-        <Typography variant="h1">{portfolio.name}</Typography>
-      </Box>
-      {Object.keys(error).length!==0 && <Box className={themeStyle.content}>
-      <Typography variant='h3'>You are not authorised to edit this portfolio.</Typography>
-      </Box>}
-      <Box className={classes.contentPadding}>
-      {Object.keys(portfolio).length > 0 && <IconButton onClick={() => {if(drawerOpen){handleDrawerClose();}else{handleDrawerOpen('')}}}>
-          <MenuIcon/>&nbsp;Options
-        </IconButton>}
-        <div className={classes.socialLinks}>
-            {Object.keys(portfolio).includes("socialmedia") && portfolio.socialmedia.facebook !== "" && <Button className={classes.socialMedia} style={{backgroundColor:"#4267B2"}} onClick={() => window.location.href=portfolio.socialmedia.facebook}><Facebook/></Button>}
-            {Object.keys(portfolio).includes("socialmedia") && portfolio.socialmedia.instagram !== "" && <Button className={classes.socialMedia} style={{backgroundColor:"#DD2A7B"}} onClick={() => window.location.href=portfolio.socialmedia.instagram}><Instagram/></Button>}
-            {Object.keys(portfolio).includes("socialmedia") && portfolio.socialmedia.twitter !== "" && <Button className={classes.socialMedia} style={{backgroundColor:"#1DA1F2"}} onClick={() => window.location.href=portfolio.socialmedia.twitter}><Twitter/></Button>}
-            {Object.keys(portfolio).includes("socialmedia") && portfolio.socialmedia.linkedin !== "" && <Button className={classes.socialMedia} style={{backgroundColor:"#2867B2"}} onClick={() => window.location.href=portfolio.socialmedia.linkedin}><LinkedIn/></Button>}
-        </div>
-      </Box>
-      {groupedItems.map((item, i)=> 
-        <Grid container 
-          spacing={3}
-          className={`${themeStyle.content} ${classes.contentPadding} ${i%2 == 0 ? classes.contentEven : classes.contentOdd}`}>
-      {item.map((object) => card(classes, rowLengths, portfolio._id, object, history, handleDrawerOpen, handleDialogOpen, addItemWrapper)
-        )}
-      </Grid>)}
-      
-
-      {Object.keys(portfolio).length > 0 && <IconButton
-        color='default'   
-        onClick = {() => addItemWrapper(Object.keys(rowLengths).length, 0)}
-        children={<AddCircleOutlineIcon classes={{root:classes.addIcon}}/>}
-        className={classes.addRow}>
-        </IconButton>}
-    </main>
-  </div>
-  <Dialog
-        open={dialogOpen}
-        onClose={() => handleDialogClose(false)}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <DialogTitle id="alert-dialog-title">{(toDelete === 'ITEM') ? "Do you want to delete this item?" : "Do you want to delete this page?"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            {(toDelete === 'ITEM') ? "Once deleted, this item will not be able to be restored." : "Once deleted, this page will not be able to be restored."}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => handleDialogClose(false)} color='primary' autoFocus>
-            No
-          </Button>
-          <Button onClick={() =>handleDialogClose(true)} color='primary'>
-            Yes
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
   );
-}
-
-const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, loadUser, isAuthenticated, error, addSocialMedia, setPrivacy, sharePortfolio, getTheme, muiTheme, getFonts, fonts}) => {
-  const params = useParams();
-  useEffect(() => {
-    if (fonts.length === 0){
-      getFonts();
-    }
-    if (Object.keys(portfolio).length === 0 || portfolio._id !== params.id) {
-        getPortfolio(params.id);
-    }
-    if (Object.keys(page).length === 0 || !(page.url === params.pagename || (page.main && params.pagename=== undefined))) {
-      getPage(params.id, params.pagename);
-    }
-    if (Object.keys(portfolio).length !== 0 && Object.keys(page).length !== 0 && fonts.length !== 0){
-      getTheme(portfolio.theme, fonts);
-    }
-  }, [getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated, getFonts, fonts, getTheme]);
-
-  return (
-    <ThemeProvider theme={muiTheme}>
-      <CssBaseline/>
-      <Edit portfolio={portfolio} page={page} editItem={editItem} addItem={addItem} deleteItem={deleteItem} createPage={createPage} editPagename={editPagename} makeMain={makeMain} deletePage={deletePage} error={error} addSocialMedia={addSocialMedia} setPrivacy={setPrivacy} sharePortfolio={sharePortfolio}></Edit>
-    </ThemeProvider>
-  )
 }
 
 EditTheme.propTypes = {
@@ -411,7 +460,9 @@ EditTheme.propTypes = {
   getTheme: PropTypes.func.isRequired,
   muiTheme: PropTypes.object.isRequired,
   getFonts: PropTypes.func.isRequired,
-  fonts: PropTypes.arrayOf(PropTypes.object).isRequired
+  fonts: PropTypes.arrayOf(PropTypes.object).isRequired,
+  itemMuiThemes: PropTypes.arrayOf(PropTypes.object).isRequired,
+  headerTheme: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -420,7 +471,9 @@ const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
   error: state.eportfolio.error,
   muiTheme: state.eportfolio.muiTheme,
-  fonts: state.googleFonts.fonts
+  fonts: state.googleFonts.fonts,
+  itemMuiThemes: state.eportfolio.itemMuiThemes,
+  headerTheme: state.eportfolio.headerTheme
 });
 
 export default connect(mapStateToProps, {getPage, getPortfolio, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, loadUser, addSocialMedia, setPrivacy, sharePortfolio, getFonts, getTheme})(EditTheme);

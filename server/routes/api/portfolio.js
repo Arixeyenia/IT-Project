@@ -381,7 +381,7 @@ router.get('/templates', async (req, res) => {
 // @access  Private
 router.put('/theme', auth, async (req, res) => {
   try {
-    const portfolio = await Portfolio.findById(req.body.portfolio);
+    const portfolio = await Portfolio.findById(req.body.id);
     // check if portfolio exists
     if (!portfolio) return res.status(404).json({ msg: 'Portfolio not found' });
     // check if user is authorized
@@ -389,7 +389,7 @@ router.put('/theme', auth, async (req, res) => {
       return res.status(401).json({ msg: 'User not authorized' });
     res.json(
       await Portfolio.findByIdAndUpdate(
-        req.body.portfolio,
+        req.body.id,
         { $set: { theme: req.body.theme } },
         { new: true }
       )

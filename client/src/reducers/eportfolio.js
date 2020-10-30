@@ -29,7 +29,9 @@ import {
   SAVE_PORTFOLIO,
   GET_ERROR,
   SAVE_THEME,
-  GET_THEME
+  GET_THEME,
+  GET_ITEM_THEME,
+  SAVE_ITEM_THEME
 } from '../actions/types';
 
 const initialState = {
@@ -44,6 +46,8 @@ const initialState = {
   templates: [],
   theme: {},
   muiTheme: {},
+  headerTheme: {},
+  itemMuiThemes: [],
   error: {},
 };
 
@@ -277,7 +281,27 @@ export default function (state = initialState, action) {
     case GET_THEME:
         return {
           ...state,
-          muiTheme: payload,
+          muiTheme: payload.mainTheme,
+          headerTheme: payload.headerTheme,
+          loading: false,
+          error: {}
+        }
+    case GET_ITEM_THEME:
+        return {
+          ...state,
+          itemMuiThemes: [].concat(payload, state.itemMuiThemes.filter(theme=>theme.id===payload.id)),
+          loading: false,
+          error: {}
+        }
+    case SAVE_ITEM_THEME: 
+        return {
+          ...state,
+          page: {
+            ...state.page,
+            items: state.page.items.map((item) =>
+              item._id === payload.id ? item.theme = payload.theme : item
+            ),
+          },
           loading: false,
           error: {}
         }

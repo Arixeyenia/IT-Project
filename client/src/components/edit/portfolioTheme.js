@@ -7,18 +7,17 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import store from '../../store';
 import { getFonts } from '../../actions/googleFonts';
-import { saveTheme } from '../../actions/eportfolio';
+import { saveItemTheme, saveTheme } from '../../actions/eportfolio';
 
 import { SketchPicker } from 'react-color';
 
-const PortfolioTheme = ({getFonts, fonts, saveTheme, theme, portfolioID}) => {
+const PortfolioTheme = ({getFonts, fonts, saveTheme, theme, portfolioID, itemID, item, saveItemTheme}) => {
     const classes = useStyles();
     const themeStyle = useThemeStyle();
-
-    useEffect(() => {
-        if (fonts.length === 0) getFonts();
-
-    }, [fonts, getFonts]);
+    const [itemTheme, setItemTheme] = React.useState({});
+    if (item && 'theme' in item){
+        setItemTheme(item.theme);
+    }
     const [custom, setCustom] = React.useState(false);
     const handleCustomChange = (event) => {
         setCustom(event.target.checked);
@@ -66,6 +65,11 @@ const PortfolioTheme = ({getFonts, fonts, saveTheme, theme, portfolioID}) => {
         setSecondaryColor(color.hex);
     }
 
+    const [headerBackgroundColor, setHeaderBackgroundColor] = React.useState('');
+    const handleHeaderBackgroundColorChange = (color) => {
+        setHeaderBackgroundColor(color.hex);
+    }
+
     const checkEmpty = (obj) => {
         for (var key in obj) {
             if (obj[key] !== null && obj[key] != "")
@@ -74,23 +78,86 @@ const PortfolioTheme = ({getFonts, fonts, saveTheme, theme, portfolioID}) => {
         return true;
     }
 
-    if (Object.keys(theme).length !== 0 && (checkEmpty(primaryFont) || checkEmpty(secondaryFont) || primaryColor === '' || secondaryColor === '')){
-        setPrimaryFont({
-            family: theme.primaryFontFamily,
-            variant: theme.primaryFontVariant
-        });
-        setSecondaryFont({
-            family: theme.secondaryFontFamily,
-            variant: theme.secondaryFontVariant
-        });
-        setPrimaryColor(theme.primaryColor);
-        setSecondaryColor(theme.secondaryColor);
+    const checkEmptyTheme = (theme) => {
+        if (theme && Object.keys(theme).length > 0)
+        return (checkEmpty(theme.primaryFontFamily) || checkEmpty(theme.secondaryFontFamily) || checkEmpty(theme.primaryFontVariant) || checkEmpty(theme.secondaryFontVariant) || primaryColor === '' || secondaryColor === '' || headerBackgroundColor === '');
+        else {
+            return true;
+        }
     }
+
+    const checkEmptyVariables = () => {
+        return (checkEmpty(primaryFont) || checkEmpty(secondaryFont) || primaryColor === '' || secondaryColor === '' || headerBackgroundColor === '');
+    }
+
+    const checkThemeEqualsVariables = (theme) => {
+        if (!theme || Object.keys(theme).length === 0){
+            return true;
+        } 
+        return (
+            (theme.primaryFontFamily === primaryFont.family) &&
+            (theme.primaryFontVariant === primaryFont.variant) &&
+            (theme.secondaryFontFamily === secondaryFont.family) &&
+            (theme.secondaryFontVariant === secondaryFont.variant) &&
+            (theme.primaryColor === primaryColor) &&
+            (theme.secondaryColor === secondaryColor) &&
+            (theme.headerBackgroundColor === headerBackgroundColor)
+        )
+    }
+
+    const setVariablesFromTheme = (theme) => {
+        if (theme && Object.keys(theme).length > 0){
+            setPrimaryFont({
+                family: theme.primaryFontFamily,
+                variant: theme.primaryFontVariant
+            });
+            setSecondaryFont({
+                family: theme.secondaryFontFamily,
+                variant: theme.secondaryFontVariant
+            });
+            setPrimaryColor(theme.primaryColor);
+            setSecondaryColor(theme.secondaryColor);
+            setHeaderBackgroundColor(theme.headerBackgroundColor);
+        }
+        else if (!theme || Object.keys(theme).length === 0){
+            setPrimaryFont({
+                family: '',
+                variant: ''
+            });
+            setSecondaryFont({
+                family: '',
+                variant: ''
+            });
+            setPrimaryColor('');
+            setSecondaryColor('');
+            setHeaderBackgroundColor('');
+        }
+    }
+
+    if (Object.keys(theme).length !== 0 && checkEmptyVariables()){
+        if (itemID === ''){
+            setVariablesFromTheme(theme);
+        }
+    }
+
+    useEffect(() => {
+        if (fonts.length === 0) getFonts();
+        if (itemID !== '' && !checkEmptyVariables() && checkEmptyTheme(itemTheme)){
+            console.log('pls set empty');
+            setVariablesFromTheme(null);
+        }
+        else if (itemID !== '' && !checkThemeEqualsVariables(itemTheme)){
+            setVariablesFromTheme(itemTheme);
+        }
+        else if (itemID === '' && !checkThemeEqualsVariables(theme)){
+            setVariablesFromTheme(theme);
+        }
+    }, [fonts, itemID]);
 
     const [error, setError] = React.useState('');
 
     const save = () => {
-        if (checkEmpty(primaryFont) || checkEmpty(secondaryFont) || primaryColor === '' || secondaryColor === ''){
+        if (checkEmptyVariables()){
             setError('Cannot save with empty field');
             return;
         } else {
@@ -103,10 +170,18 @@ const PortfolioTheme = ({getFonts, fonts, saveTheme, theme, portfolioID}) => {
                     secondaryFontVariant: secondaryFont.variant,
                     primaryColor: primaryColor,
                     secondaryColor: secondaryColor,
+                    headerBackgroundColor: headerBackgroundColor
                 },
-                portfolio: portfolioID
+                id: portfolioID
             }
-            saveTheme(theme);
+            if (itemID === ''){
+                saveTheme(theme);
+                console.log(theme);
+            }
+            else {
+                theme.id = itemID;
+                saveItemTheme(theme);
+            }
         }
     }
 
@@ -131,6 +206,13 @@ const PortfolioTheme = ({getFonts, fonts, saveTheme, theme, portfolioID}) => {
                     <SketchPicker
                         color={secondaryColor}
                         onChangeComplete={handleSecondaryColorChange}>
+                    </SketchPicker>
+                </ListItem>
+                <ListItem className={classes.themeItem}>
+                    <Typography variant='body1'>Header Background Color</Typography>
+                    <SketchPicker
+                        color={headerBackgroundColor}
+                        onChangeComplete={handleHeaderBackgroundColorChange}>
                     </SketchPicker>
                 </ListItem>
                 <ListItem className={classes.themeItem}>
@@ -209,25 +291,37 @@ const VariantToStyleString = (variant) => {
         case '100':
             return 'Thin';
         case '100italic':
-            return 'Thin Itallic';
+            return 'Thin Italic';
+        case '200':
+            return 'Extra Light';
+        case '200italic':
+            return 'Extra Light Italic';
         case '300':
             return 'Light';
         case '300italic':
-            return 'Light Itallic';
-        case 'itallic':
-            return 'Regular Itallic';
+            return 'Light Italic';
+        case 'italic':
+            return 'Regular Italic';
         case '500':
             return 'Medium';
-        case '500itallic':
-            return 'Medium Itallic';
+        case '500italic':
+            return 'Medium Italic';
+        case '600':
+            return 'Semi-Bold';
+        case '600italic':
+            return 'Semi-Bold Italic';
         case '700':
             return 'Bold';
-        case '700itallic':
-            return 'Bold Itallic';
+        case '700italic':
+            return 'Bold Italic';
+        case '800':
+            return 'Extra Bold';
+        case '800italic':
+            return 'Extra Bold Italic';
         case '900':
             return 'Black';
-        case '900itallic':
-            return 'Black Itallic';
+        case '900italic':
+            return 'Black Italic';
         default: return 'Regular';
     }
 }
@@ -237,6 +331,7 @@ PortfolioTheme.propTypes = {
     fonts: PropTypes.arrayOf(PropTypes.object).isRequired,
     saveTheme: PropTypes.func.isRequired,
     theme: PropTypes.object.isRequired,
+    saveItemTheme: PropTypes.func.isRequired
 };
   
 const mapStateToProps = (state) => ({
@@ -244,4 +339,4 @@ const mapStateToProps = (state) => ({
     theme: state.eportfolio.theme
 });
   
-export default connect(mapStateToProps, {getFonts, saveTheme})(PortfolioTheme);
+export default connect(mapStateToProps, {getFonts, saveTheme, saveItemTheme})(PortfolioTheme);
