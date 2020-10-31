@@ -87,8 +87,8 @@ router.get('/files', (req, res) => {
 
 // @route   GET api/media/:filename
 // @desc    Get file object
-// @access  Private
-router.get('/:filename', auth, (req, res) => {
+// @access  Public
+router.get('/:filename', (req, res) => {
   gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
     // Check if file
     if (!file || file.length === 0) {
