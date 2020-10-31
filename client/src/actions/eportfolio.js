@@ -460,6 +460,11 @@ export const uploadImage = (file) => {
       'Content-Type': `multipart/form-data; boundary=${data._boundary}`
     }
   });
-  console.log(res);
+  //const { filename }  = await iAmAPromise.then(result => result.data);
+  res.then(function(result) {
+    console.log(result.data);
+ });
+ 
+ 
   //return res.data.;
 };
