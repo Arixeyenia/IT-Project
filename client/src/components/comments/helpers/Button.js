@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button as MuiButton, makeStyles } from '@material-ui/core';
+import { Button as MuiButton, makeStyles, Badge } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -9,8 +9,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Button(props) {
-  const { variant, onClick, ...other } = props;
+  const { variant, onClick, badgeNumber, ...other } = props;
   const classes = useStyles();
 
-  return <MuiButton onClick={onClick} {...other} />;
+  return <Badge badgeContent={badgeNumber}><MuiButton onClick={onClick} {...other} /></Badge>;
 }

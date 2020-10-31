@@ -81,6 +81,7 @@ const Comment = ({
   };
   return (
     <>
+      {(comments[itemID])? (
       <Helpers.Button
         variant='outlined'
         startIcon={<ChatIcon />}
@@ -88,7 +89,16 @@ const Comment = ({
         onClick={() => {
           setOpenPopup(true);
         }}
-      />
+        badgeNumber = {comments[itemID].length}
+      />) : (
+      <Helpers.Button
+        variant='outlined'
+        startIcon={<ChatIcon />}
+        className={classes.button}
+        onClick={() => {
+          setOpenPopup(true);
+        }}
+      />)}
       <Helpers.Popup
         title='Comments'
         openPopup={openPopup}
