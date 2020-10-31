@@ -63,8 +63,8 @@ router.get('/', (req, res) => res.send('Media route'));
 // @route   POST api/media
 // @desc    Upload a media file to database
 // @access  Private
-router.post('/', [auth, upload.single('file')], (req, res) => {
-  res.json({ file: req.file });
+router.post('/', [auth, upload.single('file')], async (req, res) => {
+  await res.json({ file: req.file });
   //res.status(200).send('Uploaded image');
 });
 
