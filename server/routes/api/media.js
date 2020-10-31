@@ -29,7 +29,7 @@ const collectionName = 'uploads';
 const bucketName = 'uploads';
 
 conn.once('open', () => {
-  gfs = Grid(conn, mongoose.mongo);
+  gfs = Grid(conn.db, mongoose.mongo);
   gfs.collection(collectionName);
 });
 
