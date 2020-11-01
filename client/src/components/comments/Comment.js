@@ -159,6 +159,11 @@ const Comment = ({
                     onClick={() => {
                       postCommentWrapper(itemID, textValue);
                     }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        postCommentWrapper(itemID, textValue);
+                      }
+                   }}
                   >
                     <ArrowUpwardIcon />
                   </IconButton>
