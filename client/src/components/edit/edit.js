@@ -195,6 +195,7 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
       filename = String(result.data);
       var newMediaLink = "http://localhost:5000/api/media/image/"+ String(filename);
       values.mediaLink = newMediaLink;	
+      values.mediaType = 'image';
       editItem(values);	
       handleDrawerClose(); 	
     });
@@ -264,14 +265,14 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
   };	
 
   const getField = (index) => {	
-    return ['title', 'subtitle', 'paragraph', 'mediaLink', 'mediaType', 'linkText', 'linkAddress', 'private', 'row', 'column'][index];	
+    return ['title', 'subtitle', 'paragraph', 'linkText', 'linkAddress', 'private', 'row', 'column'][index];	
   }	
 
 
   const getItem = (id) => {	
     const curr = items.filter(item => item._id === id);	
     let item = {};	
-    ['title', 'subtitle', 'paragraph', 'mediaLink', 'mediaType', 'linkText', 'linkAddress', 'private', 'row', 'column'].forEach(field => {if (curr.length > 0 && Object.keys(curr[0]).includes(field)) item[field] = curr[0][field];});	
+    ['title', 'subtitle', 'paragraph', 'linkText', 'linkAddress', 'private', 'row', 'column', 'mediaLink', 'mediaType'].forEach(field => {if (curr.length > 0 && Object.keys(curr[0]).includes(field)) item[field] = curr[0][field];});	
     return item;	
   }	
 
@@ -390,10 +391,10 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
       {editID !== '' &&	
       <form className={classes.root} noValidate autoComplete="off" onSubmit={handleSubmit(editItemWrapper)}>	
       <List>	
-        {['Title', 'Subtitle', 'Paragraph', 'Media Link', 'Media Type', 'Link Text', 'Link Address', 'private', 'row', 'column'].map((text, index) => (	
+        {['Title', 'Subtitle', 'Paragraph', 'Link Text', 'Link Address', 'private', 'row', 'column'].map((text, index) => (	
           <TextField key={getField(index)} className={classes.textinput} id='standard-basic' label={text} variant='outlined' name={getField(index)} inputRef={register}/>	
         ))}	
-        <TextField onChange={onImageChanged} name="upload"  type="file"/>	
+        <TextField onChange={onImageChanged} className="upload"  type="file" id='standard-basic' label='choose image' variant='outlined'/>	
         <Button variant='outlined' color='primary' className={classes.textinput} type='submit'>Save</Button>	
       </List>      	
       </form>	
