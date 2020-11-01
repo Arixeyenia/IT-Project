@@ -163,7 +163,7 @@ const Comment = ({
                       if (e.key === "Enter") {
                         postCommentWrapper(itemID, textValue);
                       }
-                   }}
+                    }}
                   >
                     <ArrowUpwardIcon />
                   </IconButton>
@@ -241,6 +241,16 @@ function CommentMenu(props) {
                     );
                     setOpen(false);
                   }}
+                  onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        () => {
+                          editComment(
+                            props.editComment(props.comment._id, commentValue)
+                          );
+                          setOpen(false);
+                        }
+                      }
+                    }}
                   color='primary'
                 >
                   Edit Comment
