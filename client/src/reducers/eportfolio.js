@@ -27,7 +27,11 @@ import {
   SET_PRIVACY,
   SHARE_PORTFOLIO,
   SAVE_PORTFOLIO,
-  GET_ERROR
+  GET_ERROR,
+  SAVE_THEME,
+  GET_THEME,
+  GET_ITEM_THEME,
+  SAVE_ITEM_THEME
 } from '../actions/types';
 
 const initialState = {
@@ -40,6 +44,10 @@ const initialState = {
   loading: true,
   comments: {},
   templates: [],
+  theme: {},
+  muiTheme: {},
+  headerTheme: {},
+  itemMuiThemes: [],
   error: {},
 };
 
@@ -103,6 +111,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         portfolio: payload,
+        theme: payload.theme,
         loading: false,
         error: {},
       };
@@ -110,6 +119,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         portfolio: payload,
+        theme: payload.theme,
         loading: false,
         error: {},
       };
@@ -260,6 +270,41 @@ export default function (state = initialState, action) {
           loading: false,
           error: {},
         };
+    case SAVE_THEME: 
+        return {
+          ...state,
+          theme: payload.theme,
+          portfolio: { ...state.portfolio, theme: payload.theme },
+          loading: false,
+          error: {}
+        }
+    case GET_THEME:
+        return {
+          ...state,
+          muiTheme: payload.mainTheme,
+          headerTheme: payload.headerTheme,
+          loading: false,
+          error: {}
+        }
+    case GET_ITEM_THEME:
+        return {
+          ...state,
+          itemMuiThemes: state.itemMuiThemes.findIndex(i=>i.id===payload.id) === -1 ? [...state.itemMuiThemes, payload] : state.itemMuiThemes,
+          loading: false,
+          error: {}
+        }
+    case SAVE_ITEM_THEME: 
+        return {
+          ...state,
+          page: {
+            ...state.page,
+            items: state.page.items.map((item) =>
+              item._id === payload.id ? item.theme = payload.theme : item
+            ),
+          },
+          loading: false,
+          error: {}
+        }
     case GET_ERROR:
       return state;
     default:

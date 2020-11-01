@@ -8,9 +8,10 @@ import firebase from 'firebase';
 import 'whatwg-fetch';
 import api from '../../utils/api';
 import { signIn, signOut } from '../../actions/auth';
-import logo from '../../images/Quaranteam.png'
+import logo from '../../images/Quaranteam.png';
 import { makeStyles } from '@material-ui/core/styles';
-import { useThemeStyle } from '../../styles/themes'
+import { useThemeStyle } from '../../styles/themes';
+import { getFonts } from '../../actions/googleFonts';
 
 const useStyles = makeStyles((theme) => ({
   logo: {
@@ -58,7 +59,7 @@ provider.addScope('email');
 
 
 //function for google sign in
-export const GSignIn = (signIn) => {
+export const GSignIn = (signIn, getFonts) => {
   //sign in google with pop up window
   firebase
     .auth()
@@ -69,6 +70,7 @@ export const GSignIn = (signIn) => {
         .auth()
         .currentUser.getIdToken(true)
         .then(function (idToken) {
+          getFonts();
           signIn(idToken);
         })
         .catch(function (error) {
@@ -82,11 +84,11 @@ const Navbar = ({
   auth: { isAuthenticated, loading, user },
   signIn,
   signOut,
-  scrolled
+  scrolled,
+  getFonts
 }) => {
   const classes = useStyles();
   const theme = useThemeStyle();
-  console.log(user);
   //navbar for users signed in
   const [anchorEl, setAnchorEl] = React.useState(null);
   const handleClick = (event) => {
@@ -171,7 +173,7 @@ const Navbar = ({
           </ListItem>
           <ListItem disableGutters dense className={classes.listItem}>
           <Link to='/'>
-            <Button onClick={() => GSignIn(signIn)} 
+            <Button onClick={() => GSignIn(signIn, getFonts)} 
               variant='contained' 
               color='primary'
               className={classes.buttonBase}
@@ -203,6 +205,7 @@ Navbar.propTypes = {
   signIn: PropTypes.func.isRequired,
   signOut: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
+  getFonts: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -212,4 +215,5 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
   signOut,
   signIn,
+  getFonts,
 })(Navbar);
