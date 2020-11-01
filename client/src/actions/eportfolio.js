@@ -1,6 +1,6 @@
 import { red } from '@material-ui/core/colors';
 import api from '../utils/api';
-import FormData from 'form-data';
+
 
 import {
   GET_USER_EPORTFOLIOS,
@@ -448,23 +448,3 @@ export const getError = () => async (dispatch) => {
     type: GET_ERROR
   })
 }
-
-export const uploadImage = (file) => {
-  let data = new FormData();
-  data.append('file', file);
-
-  const res = api.post('/media', data, {
-    headers: {
-      'accept': 'application/json',
-      'Accept-Language': 'en-US,en;q=0.8',
-      'Content-Type': `multipart/form-data; boundary=${data._boundary}`
-    }
-  });
-  //const { filename }  = await iAmAPromise.then(result => result.data);
-  res.then(function(result) {
-    console.log(result.data);
- });
- 
- 
-  //return res.data.;
-};

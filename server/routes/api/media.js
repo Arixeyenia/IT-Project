@@ -65,7 +65,6 @@ router.get('/', (req, res) => res.send('Media route'));
 // @access  Private
 router.post('/', [auth, upload.single('file')], async (req, res) => {
   const filename = req.file.filename;
-  console.log(filename);
   return res.json(filename);
   //res.status(200).send('Uploaded image');
 });

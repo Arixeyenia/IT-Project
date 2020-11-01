@@ -2,13 +2,13 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';	
 import { connect } from 'react-redux';	
 import { Typography, Drawer, Grid, Button, CardMedia, TextField, Divider, Box, List, ListItem, ListItemText, ListItemIcon, Collapse, IconButton, Icon, FormControlLabel, CardActions, Checkbox } from '@material-ui/core';	
-import {getPortfolio, getPage, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, isAuthenticated, error, getPortfolioAsGuest, addSocialMedia, uploadImage} from '../../actions/eportfolio';	
+import {getPortfolio, getPage, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, isAuthenticated, error, getPortfolioAsGuest, addSocialMedia} from '../../actions/eportfolio';	
 import { loadUser } from '../../actions/auth';	
 import { Link, useHistory, useParams } from 'react-router-dom';	
 import { useForm } from 'react-hook-form';	
 import store from '../../store'	
 import { useThemeStyle } from '../../styles/themes';	
-
+import api from '../../utils/api';
 
 import clsx from 'clsx';	
 import { makeStyles, useTheme } from '@material-ui/core/styles';	
@@ -30,6 +30,7 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';	
 import AddIcon from '@material-ui/icons/Add';	
 import {Instagram, Facebook, LinkedIn, Twitter} from '@material-ui/icons';	
+import FormData from 'form-data';
 
 const drawerWidth = 300;	
 
@@ -173,13 +174,34 @@ const Edit = ({getPortfolio, portfolio, getPage, page, editItem, addItem, delete
     setCurrPageOpen(!currPageOpen);	
   };	
 
+
   const editItemWrapper = (values) => {	
     values.item = editID;
-    uploadImage(image);	
-    //values.mediaLink = "localhost:3000/api/media/" + uploadImage(image).toString();	
-    editItem(values);	
-    handleDrawerClose(); 	
+
+    //upload image
+    var filename;
+    let data = new FormData();
+    data.append('file', image);
+    var res = api.post('/media', data, {
+      headers: {
+        'accept': 'application/json',
+        'Accept-Language': 'en-US,en;q=0.8',
+        'Content-Type': `multipart/form-data; boundary=${data._boundary}`
+      }
+    });
+
+    //save the media link and other text user typed in into item
+    res.then(function(result) {
+      filename = String(result.data);
+      var newMediaLink = "http://localhost:5000/api/media/image/"+ String(filename);
+      values.mediaLink = newMediaLink;	
+      editItem(values);	
+      handleDrawerClose(); 	
+    });
+    
   }	
+
+
 
   const addItemWrapper = (row, column) => {	
     addItem({	
