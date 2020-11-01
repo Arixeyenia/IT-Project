@@ -152,7 +152,6 @@ router.get('/:id', auth, async (req, res) => {
 // @desc    Post theme of item
 // @access  Private
 router.put('/theme', auth, async (req, res) => {
-  console.log(req.body.theme);
   try {
     const item = await Item.findById(req.body.id);
     // check if portfolio exists

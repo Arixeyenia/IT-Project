@@ -9,7 +9,6 @@ import { ThemeProvider } from '@material-ui/core/styles';
 
 export default function ItemCard({classes, rowLengths, portfolioID, object, history, handleDrawerOpen, handleDialogOpen, addItemWrapper, headerTheme}){
   classes = useStyles();
-  console.log(headerTheme);
   return (
     <Box className={classes.cardGroup}>
       <Card className={classes.cardRoot}>

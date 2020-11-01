@@ -275,6 +275,7 @@ const Edit = ({ classes, drawerOpen, groupedItems, themeStyle, portfolio, rowLen
 }
 
 const CardTheme = (classes, rowLengths, portfolioID, object, history, handleDrawerOpen, handleDialogOpen, addItemWrapper, customTheme, muiTheme, headerTheme ) => {
+
   return (
     <Grid item xs={12/rowLengths[object.row]} className={`${classes.gridItem} ${classes.cardPadding} ${classes.secondaryColor}`} key={object._id}>
       <ThemeProvider theme={customTheme ? customTheme.theme : muiTheme}>
@@ -312,6 +313,7 @@ const PortfolioHeader = ({classes, portfolio, themeStyle, error, drawerOpen, han
 }
 
 const EditDrawer = ({classes, drawerOpen, editID, theme, handleEditTheme, handleDrawerClose, editTheme, portfolio, items, params, openCurrPage, history, currPageOpen, handleEditPage, editPageWrapper, registerEditPage, handleDialogOpen, handleCreatePage, createPageWrapper, registerCreatePage, shareWrapper, handleSocialMedia, socialMediaWrapper, registerSocialMedia, handleSubmit, editItemWrapper, getField, register}) => {
+  const item = items.find(item=>editID === item._id);
   return (
     <Drawer
       className={classes.drawer}
@@ -339,7 +341,7 @@ const EditDrawer = ({classes, drawerOpen, editID, theme, handleEditTheme, handle
       </div>
       <Divider />
       {editTheme ? 
-      <PortfolioTheme portfolioID={portfolio._id} itemID={editID} item={items.find(item=>editID === item._id)}/>
+      <PortfolioTheme portfolioID={portfolio._id} itemID={editID} item={item}/>
       :
       (editID === '' && Object.keys(portfolio).length !== 0) ?
         (<div>

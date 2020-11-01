@@ -15,9 +15,8 @@ const PortfolioTheme = ({getFonts, fonts, saveTheme, theme, portfolioID, itemID,
     const classes = useStyles();
     const themeStyle = useThemeStyle();
     const [itemTheme, setItemTheme] = React.useState({});
-    if (item && 'theme' in item){
-        setItemTheme(item.theme);
-    }
+
+    
     const [custom, setCustom] = React.useState(false);
     const handleCustomChange = (event) => {
         setCustom(event.target.checked);
@@ -72,7 +71,7 @@ const PortfolioTheme = ({getFonts, fonts, saveTheme, theme, portfolioID, itemID,
 
     const checkEmpty = (obj) => {
         for (var key in obj) {
-            if (obj[key] !== null && obj[key] != "")
+            if (obj[key] !== null && obj[key] != '')
                 return false;
         }
         return true;
@@ -80,7 +79,7 @@ const PortfolioTheme = ({getFonts, fonts, saveTheme, theme, portfolioID, itemID,
 
     const checkEmptyTheme = (theme) => {
         if (theme && Object.keys(theme).length > 0)
-        return (checkEmpty(theme.primaryFontFamily) || checkEmpty(theme.secondaryFontFamily) || checkEmpty(theme.primaryFontVariant) || checkEmpty(theme.secondaryFontVariant) || primaryColor === '' || secondaryColor === '' || headerBackgroundColor === '');
+        return checkEmpty(theme);
         else {
             return true;
         }
@@ -143,7 +142,6 @@ const PortfolioTheme = ({getFonts, fonts, saveTheme, theme, portfolioID, itemID,
     useEffect(() => {
         if (fonts.length === 0) getFonts();
         if (itemID !== '' && !checkEmptyVariables() && checkEmptyTheme(itemTheme)){
-            console.log('pls set empty');
             setVariablesFromTheme(null);
         }
         else if (itemID !== '' && !checkThemeEqualsVariables(itemTheme)){
@@ -152,7 +150,13 @@ const PortfolioTheme = ({getFonts, fonts, saveTheme, theme, portfolioID, itemID,
         else if (itemID === '' && !checkThemeEqualsVariables(theme)){
             setVariablesFromTheme(theme);
         }
-    }, [fonts, itemID]);
+        if (item && 'theme' in item  && itemTheme !== item.theme){
+            setItemTheme(item.theme);
+        }
+        else if (item && !('theme' in item) && itemTheme !== null){
+            setItemTheme(null);
+        }
+    }, [fonts, itemID, itemTheme]);
 
     const [error, setError] = React.useState('');
 
@@ -176,7 +180,6 @@ const PortfolioTheme = ({getFonts, fonts, saveTheme, theme, portfolioID, itemID,
             }
             if (itemID === ''){
                 saveTheme(theme);
-                console.log(theme);
             }
             else {
                 theme.id = itemID;

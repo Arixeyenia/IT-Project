@@ -121,7 +121,6 @@ router.get('/single/:id', auth, async (req, res) => {
     ) {
       return res.status(401).json({ msg: 'User not authorized' });
     }
-    console.log(portfolio);
     res.json(portfolio);
   } catch (err) {
     console.error(err.message);
@@ -294,7 +293,6 @@ router.put('/permission', auth, async (req, res) => {
     if (portfolio.user.toString() !== req.user.uid)
       return res.status(401).json({ msg: 'User not authorized' });
     if (req.body.add === true) {
-      console.log(req.body.email);  
       res.json(
         await Portfolio.findByIdAndUpdate(
           req.body.portfolio,

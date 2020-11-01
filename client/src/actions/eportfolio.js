@@ -580,8 +580,6 @@ export const getTheme = (theme, fonts, type, itemID) => (dispatch) => {
     const headerTheme = createMuiTheme(customTheme);
     headerTheme.palette.primary.main = theme.headerBackgroundColor;
     const portfolioThemes = {mainTheme: customTheme, headerTheme: headerTheme};
-    console.log(headerTheme);
-    console.log(customTheme);
     dispatch({
       type: GET_THEME,
       payload: portfolioThemes

@@ -289,7 +289,7 @@ export default function (state = initialState, action) {
     case GET_ITEM_THEME:
         return {
           ...state,
-          itemMuiThemes: [].concat(payload, state.itemMuiThemes.filter(theme=>theme.id===payload.id)),
+          itemMuiThemes: state.itemMuiThemes.findIndex(i=>i.id===payload.id) === -1 ? [...state.itemMuiThemes, payload] : state.itemMuiThemes,
           loading: false,
           error: {}
         }
