@@ -14,8 +14,8 @@ const useStyles = makeStyles((theme) => ({
   dialogWrapper: {
     padding: theme.spacing(2),
     position: 'fixed',
-    bottom: theme.spacing.unit,
-    right: theme.spacing.unit,
+    bottom: theme.spacing(1),
+    right: theme.spacing(1),
     width: 500,
     height: 450,
   },

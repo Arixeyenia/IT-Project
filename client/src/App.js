@@ -30,7 +30,7 @@ const App = () => {
   const [scrolled, setScrolled] = React.useState(false);
   const handleScroll = () => {
     const offset = window.scrollY;
-    if (offset > 0){
+    if (offset > 100){
       setScrolled(true);
     }
     else setScrolled(false);

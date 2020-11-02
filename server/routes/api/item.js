@@ -148,4 +148,32 @@ router.get('/:id', auth, async (req, res) => {
   res.json(item);
 });
 
+// @route   PUT api/item/theme
+// @desc    Post theme of item
+// @access  Private
+router.put('/theme', auth, async (req, res) => {
+  try {
+    const item = await Item.findById(req.body.id);
+    // check if portfolio exists
+    if (!item) return res.status(404).json({ msg: 'Item not found' });
+    // check if user is authorized
+    const portfolio = await Portfolio.findById(item.portfolio);
+    if (portfolio.user.toString() !== req.user.uid)
+      return res.status(401).json({ msg: 'User not authorized' });
+    res.json(
+      await Item.findByIdAndUpdate(
+        req.body.id,
+        { $set: { theme: req.body.theme } },
+        { new: true }
+      )
+    );
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'Item not found' });
+    }
+    res.status(500).send('Server Error');
+  }
+});
+
 module.exports = router;
