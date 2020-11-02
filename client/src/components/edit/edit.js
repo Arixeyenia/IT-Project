@@ -12,7 +12,8 @@ import { useThemeStyle } from '../../styles/themes';
 import { useStyles } from './editStyles';
 import PortfolioTheme from './portfolioTheme'
 import globalTheme from '../../styles/themes';
-
+import api from '../../utils/api';
+import FormData from 'form-data';
 
 import clsx from 'clsx';
 import { makeStyles, useTheme, ThemeProvider } from '@material-ui/core/styles';
@@ -52,6 +53,7 @@ const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, d
   const [editID, setEditID] = React.useState('');
   const [deleteID, setDeleteID] = React.useState('');
   const [toDelete, setToDelete] = React.useState('');
+  const [image, setImage] =  React.useState([]);
 
   useEffect(() => {
     if (fonts.length === 0){
@@ -81,11 +83,36 @@ const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, d
     setCurrPageOpen(!currPageOpen);
   };
 
+  const onImageChanged = (image) => { 
+    setImage(image.target.files[0]);
+  } 
+
   const editItemWrapper = (values) => {
     values.item = editID;
-    editItem(values);
-    handleDrawerClose(); 
-  }
+
+    //upload image
+    var filename;
+    let data = new FormData();
+    data.append('file', image);
+    var res = api.post('/media', data, {
+      headers: {
+        'accept': 'application/json',
+        'Accept-Language': 'en-US,en;q=0.8',
+        'Content-Type': `multipart/form-data; boundary=${data._boundary}`
+      }
+    });
+ 
+    //save the media link and other text user typed in into item
+    res.then(function(result) {
+      filename = String(result.data);
+      var newMediaLink = "http://localhost:5000/api/media/image/"+ String(filename);
+      values.mediaLink = newMediaLink;  
+      values.mediaType = 'image';
+      editItem(values); 
+      handleDrawerClose();  
+    });
+    
+  } 
 
   const addItemWrapper = (row, column) => {
     addItem({
@@ -148,7 +175,7 @@ const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, d
   };
 
   const getField = (index) => {
-    return ['title', 'subtitle', 'paragraph', 'mediaLink', 'mediaType', 'linkText', 'linkAddress', 'private', 'row', 'column'][index];
+    return ['title', 'subtitle', 'paragraph', 'linkText', 'linkAddress', 'private', 'row', 'column'][index];
   }
 
   const getItem = (id) => {
@@ -157,6 +184,7 @@ const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, d
     ['title', 'subtitle', 'paragraph', 'mediaLink', 'mediaType', 'linkText', 'linkAddress', 'private', 'row', 'column'].forEach(field => {if (curr.length > 0 && Object.keys(curr[0]).includes(field)) item[field] = curr[0][field];});
     return item;
   }
+
 
   const shareWrapper = (e, portfolioID) => {
     if(e.key === 'Enter'){
@@ -196,7 +224,7 @@ const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, d
         <Typography variant='h3' color='textPrimary'>You are not authorised to edit this portfolio.</Typography>
         </Box> :
         <Box>
-          <EditDrawer classes={classes} drawerOpen={drawerOpen} editID={editID} theme={theme} handleEditTheme={handleEditTheme} handleDrawerClose={handleDrawerClose} editTheme={editTheme} portfolio={portfolio} items={items} params={params} openCurrPage={openCurrPage} history={history} currPageOpen={currPageOpen} handleEditPage={handleEditPage} editPageWrapper={editPageWrapper} registerEditPage={registerEditPage} handleDialogOpen={handleDialogOpen} handleCreatePage={handleCreatePage} createPageWrapper={createPageWrapper} registerCreatePage={registerCreatePage} shareWrapper={shareWrapper} handleSocialMedia={handleSocialMedia} socialMediaWrapper={socialMediaWrapper} registerSocialMedia={registerSocialMedia} handleSubmit={handleSubmit} editItemWrapper={editItemWrapper} getField={getField} register={register}></EditDrawer>
+          <EditDrawer classes={classes} drawerOpen={drawerOpen} editID={editID} theme={theme} handleEditTheme={handleEditTheme} handleDrawerClose={handleDrawerClose} editTheme={editTheme} portfolio={portfolio} items={items} params={params} openCurrPage={openCurrPage} history={history} currPageOpen={currPageOpen} handleEditPage={handleEditPage} editPageWrapper={editPageWrapper} registerEditPage={registerEditPage} handleDialogOpen={handleDialogOpen} handleCreatePage={handleCreatePage} createPageWrapper={createPageWrapper} registerCreatePage={registerCreatePage} shareWrapper={shareWrapper} handleSocialMedia={handleSocialMedia} socialMediaWrapper={socialMediaWrapper} registerSocialMedia={registerSocialMedia} handleSubmit={handleSubmit} editItemWrapper={editItemWrapper} getField={getField} register={register} onImageChanged={onImageChanged}></EditDrawer>
           <ThemeProvider theme={headerTheme}>
             <CssBaseline/>
             <PortfolioHeader classes={classes} portfolio={portfolio} themeStyle={themeStyle} error={error} drawerOpen={drawerOpen} handleDrawerClose={handleDrawerClose} handleDrawerOpen={handleDrawerOpen}></PortfolioHeader>
@@ -312,8 +340,9 @@ const PortfolioHeader = ({classes, portfolio, themeStyle, error, drawerOpen, han
   );
 }
 
-const EditDrawer = ({classes, drawerOpen, editID, theme, handleEditTheme, handleDrawerClose, editTheme, portfolio, items, params, openCurrPage, history, currPageOpen, handleEditPage, editPageWrapper, registerEditPage, handleDialogOpen, handleCreatePage, createPageWrapper, registerCreatePage, shareWrapper, handleSocialMedia, socialMediaWrapper, registerSocialMedia, handleSubmit, editItemWrapper, getField, register}) => {
+const EditDrawer = ({classes, drawerOpen, editID, theme, handleEditTheme, handleDrawerClose, editTheme, portfolio, items, params, openCurrPage, history, currPageOpen, handleEditPage, editPageWrapper, registerEditPage, handleDialogOpen, handleCreatePage, createPageWrapper, registerCreatePage, shareWrapper, handleSocialMedia, socialMediaWrapper, registerSocialMedia, handleSubmit, editItemWrapper, getField, register, onImageChanged}) => {
   const item = items.find(item=>editID === item._id);
+  
   return (
     <Drawer
       className={classes.drawer}
@@ -430,9 +459,10 @@ const EditDrawer = ({classes, drawerOpen, editID, theme, handleEditTheme, handle
       :
       (<form className={classes.root} noValidate autoComplete="off" onSubmit={handleSubmit(editItemWrapper)}>
       <List>
-        {['Title', 'Subtitle', 'Paragraph', 'Media Link', 'Media Type', 'Link Text', 'Link Address', 'private', 'row', 'column'].map((text, index) => (
+        {['Title', 'Subtitle', 'Paragraph',  'Link Text', 'Link Address', 'private', 'row', 'column'].map((text, index) => (
           <TextField key={getField(index)} className={classes.textinput} id='standard-basic' label={text} variant='outlined' name={getField(index)} inputRef={register}/>
         ))}
+        <TextField onChange={onImageChanged} className="upload"  type="file" id='standard-basic' label='choose image' variant='outlined'/>  
         <Button variant='outlined' color='primary' className={classes.textinput} type='submit'>Save</Button>
       </List>      
       </form>
