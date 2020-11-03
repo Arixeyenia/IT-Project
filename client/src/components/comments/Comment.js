@@ -151,6 +151,12 @@ const Comment = ({
               variant='outlined'
               width='100%'
               onChange={(e) => setValue(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  postCommentWrapper(itemID, textValue);
+                  e.preventDefault();
+                }
+              }}
               InputProps={{
                 endAdornment: (
                   <IconButton

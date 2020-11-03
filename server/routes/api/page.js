@@ -79,7 +79,7 @@ router.delete('/:portfolio/:url', auth, async (req, res) => {
     if (portfolio.user.toString() !== req.user.uid)
       return res.status(401).json({ msg: 'User not authorized' });
     // retrieve id, assume no duplicate page
-    const page = portfolio.pages.filter(page => page.url === req.params.url);
+    const page = portfolio.pages.filter(page => page.url === encodeURI(req.params.url));
     if (page.main){
       res.status(500).send('Cannot delete main page');
     }

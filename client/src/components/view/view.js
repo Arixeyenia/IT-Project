@@ -12,6 +12,7 @@ import Comment from '../comments/Comment';
 import { useThemeStyle } from '../../styles/themes';
 import StarIcon from '@material-ui/icons/Star';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
+import {Instagram, Facebook, LinkedIn, Twitter} from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
   cardRoot: {
@@ -63,6 +64,17 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: '10% !important',
     paddingRight: '10% !important',
   },
+  socialLinks:{      
+    display: 'flex',
+    alignItems: 'center'
+  },
+  socialMedia:{
+    marginTop: theme.spacing(2),
+    marginRight: theme.spacing(2),
+    fontSize: '20px',
+    color: 'white',
+    padding: theme.spacing(2),
+  },
 }));
 
 const ViewTheme = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated, error, getPortfolioAsGuest, getSaved, savePortfolio, savedPortfolios, getPageAsGuest, getTheme, muiTheme, getFonts, fonts, itemMuiThemes, headerTheme }) => {
@@ -75,12 +87,13 @@ const ViewTheme = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenti
     if (fonts.length === 0){
       getFonts();
     }
+    if (Object.keys(error).length===0){
     if (Object.keys(portfolio).length === 0 || portfolio._id !== params.id) {
         if (store.getState().auth.isAuthenticated){
           getPortfolio(params.id);
         }
         else{
-            getPortfolioAsGuest(params.id);
+          getPortfolioAsGuest(params.id);
         }
     }
     if (Object.keys(page).length === 0 || portfolio._id !== params.id || !(page.url === params.pagename || (page.main && params.pagename===undefined))) {
@@ -100,9 +113,8 @@ const ViewTheme = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenti
         getTheme(object.theme, fonts, 'item', object._id);
       });
     }
+  }
   }, [getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated, getFonts, fonts, getTheme]);
-  
-
   const items = (Object.keys(page).length !== 0) ? page.items : [];
   const rowLengths = {};
   const groupedItems = [];
@@ -150,6 +162,12 @@ const PortfolioHeader = ({classes, portfolio, savePortfolio, savedPortfolios}) =
             {isSaved ? <StarIcon/> : <StarBorderIcon/>}
         </IconButton>
         </Typography>
+        <div className={classes.socialLinks}>
+            {Object.keys(portfolio).includes("socialmedia") && portfolio.socialmedia.facebook !== "" && <Button className={classes.socialMedia} style={{backgroundColor:"#4267B2"}} onClick={() => window.location.href=portfolio.socialmedia.facebook}><Facebook/></Button>}
+            {Object.keys(portfolio).includes("socialmedia") && portfolio.socialmedia.instagram !== "" && <Button className={classes.socialMedia} style={{backgroundColor:"#DD2A7B"}} onClick={() => window.location.href=portfolio.socialmedia.instagram}><Instagram/></Button>}
+            {Object.keys(portfolio).includes("socialmedia") && portfolio.socialmedia.twitter !== "" && <Button className={classes.socialMedia} style={{backgroundColor:"#1DA1F2"}} onClick={() => window.location.href=portfolio.socialmedia.twitter}><Twitter/></Button>}
+            {Object.keys(portfolio).includes("socialmedia") && portfolio.socialmedia.linkedin !== "" && <Button className={classes.socialMedia} style={{backgroundColor:"#2867B2"}} onClick={() => window.location.href=portfolio.socialmedia.linkedin}><LinkedIn/></Button>}
+        </div>
     </Box>
   );
 }
@@ -228,7 +246,7 @@ const CardActionsThemed = ({classes, object, history, owner, portfolioID}) => {
     <CardActions className={classes.viewCardActions}>
       <Button size='small'
         color='textPrimary'
-        onClick={()=> {if(!/^(f|ht)tps?:\/\//i.test(object.linkAddress)){ history.push('/view/' + portfolioID + '/' + object.linkAddress);}else{ window.location.href = object.linkAddress;}window.location.reload(false);}}>
+        onClick={()=> {window.location.href = object.linkAddress}}>
           {object.linkText}
       </Button>  
       <Comment itemID={object._id} owner={owner}/>

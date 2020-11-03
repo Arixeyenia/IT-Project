@@ -109,11 +109,9 @@ router.get('/single/:id', auth, async (req, res) => {
     if (!portfolio) return res.status(404).json({ msg: 'Portfolio not found' });
     const user = await User.findOne({ googleId: req.user.uid });
     // check that user is authorized
-    
-    const isAllowed = portfolio.allowedUsers.some(function(user){
-      return user.equals(req.user.uid);
+    const isAllowed = portfolio.allowedUsers.some(function(allowedUser){
+      return allowedUser.email.trim() === user.email.trim();
     });
-
     if (
       portfolio.private &&
       portfolio.user.toString() !== req.user.uid &&
