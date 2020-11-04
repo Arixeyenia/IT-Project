@@ -107,7 +107,7 @@ const ViewTheme = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenti
   const rowLengths = {};
   const groupedItems = [];
   items.forEach(element => {
-    if ([element.row] in Object.keys(rowLengths)){
+    if (rowLengths.hasOwnProperty(element.row)){
       rowLengths[element.row]++;
       groupedItems[element.row].push(element);
     }

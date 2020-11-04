@@ -61,9 +61,8 @@ const View = ({portfolio, getPage, page, error, getPortfolioAsGuest, portfolioID
   const items = (Object.keys(page).length !== 0) ? page.items : [];
   const rowLengths = {};
   const groupedItems = [];
-
   items.forEach(element => {
-    if ([element.row] in Object.keys(rowLengths)){
+    if (rowLengths.hasOwnProperty(element.row)){
       rowLengths[element.row]++;
       groupedItems[element.row].push(element);
     }

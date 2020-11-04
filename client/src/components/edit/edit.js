@@ -213,7 +213,7 @@ const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, d
   const groupedItems = [];
   const items = (Object.keys(page).length !== 0) ? page.items : [];
   items.forEach(element => {
-    if ([element.row] in Object.keys(rowLengths)){
+    if (rowLengths.hasOwnProperty(element.row)){
       rowLengths[element.row]++;
       groupedItems[element.row].push(element);
     }
