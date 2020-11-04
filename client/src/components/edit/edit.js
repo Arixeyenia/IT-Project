@@ -92,25 +92,30 @@ const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, d
 
     //upload image
     var filename;
-    let data = new FormData();
-    data.append('file', image);
-    var res = api.post('/media', data, {
-      headers: {
-        'accept': 'application/json',
-        'Accept-Language': 'en-US,en;q=0.8',
-        'Content-Type': `multipart/form-data; boundary=${data._boundary}`
-      }
-    });
- 
-    //save the media link and other text user typed in into item
-    res.then(function(result) {
-      filename = String(result.data);
-      var newMediaLink = "http://localhost:5000/api/media/image/"+ String(filename);
-      values.mediaLink = newMediaLink;  
-      values.mediaType = 'image';
-      editItem(values); 
-      handleDrawerClose();  
-    });
+    if (image.length !== 0){
+      let data = new FormData();
+      data.append('file', image);
+      var res = api.post('/media', data, {
+        headers: {
+          'accept': 'application/json',
+          'Accept-Language': 'en-US,en;q=0.8',
+          'Content-Type': `multipart/form-data; boundary=${data._boundary}`
+        }
+      });
+      //save the media link and other text user typed in into item
+      res.then(function(result) {
+        filename = String(result.data);
+        var newMediaLink = "http://localhost:5000/api/media/image/"+ String(filename);
+        values.mediaLink = newMediaLink;  
+        values.mediaType = 'image';
+        editItem(values); 
+        handleDrawerClose();  
+      });
+    }
+    else {
+      editItem(values);
+      handleDrawerClose();
+    }
     
   } 
 
