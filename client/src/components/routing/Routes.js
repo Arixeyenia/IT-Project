@@ -1,6 +1,8 @@
 import React, { Fragment } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Dashboard from '../dashboard/dashboard';
+import About from '../layout/About'
+import Contact from '../layout/Contact'
 import CreateEPortfolio from '../eportfolio/createPortfolio';
 import PickTemplate from '../eportfolio/PickTemplate';
 import PrivateRoute from '../routing/PrivateRoute';
@@ -13,6 +15,8 @@ const Routes = (props) => {
       <Switch>
         <Route exact path='/view/:id/:pagename?' component={View} />
         <Route exact path='/edit/:id/:pagename?' component={Edit} />
+        <Route exact path='/about' component={About} />
+        <Route exact path='/contact' component={Contact} />
         <PrivateRoute exact path='/dashboard' component={Dashboard} />
         <PrivateRoute
           exact
