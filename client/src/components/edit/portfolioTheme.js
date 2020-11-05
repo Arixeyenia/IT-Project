@@ -190,10 +190,10 @@ const PortfolioTheme = ({getFonts, fonts, saveTheme, theme, portfolioID, itemID,
 
     return (
         <Box>
-            <Typography variant='h5'>Theme</Typography>
             <FormControlLabel
-                control={<Checkbox checked={custom} onChange={handleCustomChange}/>}
-                label="Use a custom theme?"
+                control={<Checkbox checked={custom} onChange={(e) => {handleCustomChange(e)}} color = 'primary'/>}
+                label="Use custom theme"
+                labelPlacement = 'start'
             />
             {custom ?
             <List>
@@ -275,9 +275,10 @@ const PortfolioTheme = ({getFonts, fonts, saveTheme, theme, portfolioID, itemID,
             
             {error.length !== 0 && <Typography variant='body1'></Typography>}
             <Button
-                variant='contained' 
+                variant='outlined' 
                 color='primary'
                 classes={{
+                    root: classes.textinput,
                     label: theme.buttonLabel
                 }}
                 onClick={save}>

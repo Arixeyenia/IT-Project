@@ -184,5 +184,9 @@ export const useStyles = makeStyles((theme) => ({
     },
     cardGroup: {
       display: 'flex'
+    },
+    accordionDetails:{
+      display: 'block',
+      padding: 0
     }
   }));

@@ -1,17 +1,15 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Typography, Drawer, Grid, Button, CardMedia, TextField, Divider, Box, List, ListItem, ListItemText, ListItemIcon, Collapse, IconButton, Icon, FormControlLabel, CardActions, Checkbox, Switch } from '@material-ui/core';
+import { Typography, Drawer, Grid, Button, Accordion, AccordionSummary, AccordionDetails, TextField, Divider, Box, List, ListItem, ListItemText, ListItemIcon, Collapse, IconButton, Icon, FormControlLabel, CardActions, Checkbox, Switch } from '@material-ui/core';
 import {getPortfolio, getPage, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, setPrivacy, addSocialMedia, sharePortfolio, getTheme} from '../../actions/eportfolio';
 import { getFonts } from '../../actions/googleFonts';
 import { loadUser } from '../../actions/auth';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import store from '../../store'
 import { useThemeStyle } from '../../styles/themes';
 import { useStyles } from './editStyles';
 import PortfolioTheme from './portfolioTheme'
-import globalTheme from '../../styles/themes';
 import api from '../../utils/api';
 import FormData from 'form-data';
 
@@ -54,6 +52,7 @@ const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, d
   const [deleteID, setDeleteID] = React.useState('');
   const [toDelete, setToDelete] = React.useState('');
   const [image, setImage] =  React.useState([]);
+  const [test, setTest] = React.useState(false);
 
   useEffect(() => {
     if (fonts.length === 0){
@@ -200,11 +199,6 @@ const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, d
       }
     }
   }
-
-  const [editTheme, setTheme] = React.useState(false);
-  const handleEditTheme = () => {
-    setTheme(!editTheme);
-  }
   const rowLengths = {};
   const groupedItems = [];
   const items = (Object.keys(page).length !== 0) ? page.items : [];
@@ -225,7 +219,7 @@ const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, d
         <Typography variant='h3'>You are not authorised to edit this portfolio.</Typography>
         </Box> :
         <Box>
-          <EditDrawer classes={classes} drawerOpen={drawerOpen} editID={editID} theme={theme} handleEditTheme={handleEditTheme} handleDrawerClose={handleDrawerClose} editTheme={editTheme} portfolio={portfolio} items={items} params={params} openCurrPage={openCurrPage} history={history} currPageOpen={currPageOpen} handleEditPage={handleEditPage} handleEditItem={handleEditItem} editPageWrapper={editPageWrapper} registerEditItem={registerEditItem} registerEditPage={registerEditPage} handleDialogOpen={handleDialogOpen} handleCreatePage={handleCreatePage} createPageWrapper={createPageWrapper} registerCreatePage={registerCreatePage} shareWrapper={shareWrapper} handleSocialMedia={handleSocialMedia} socialMediaWrapper={socialMediaWrapper} registerSocialMedia={registerSocialMedia} editItemWrapper={editItemWrapper} getField={getField} onImageChanged={onImageChanged} sharePortfolio={sharePortfolio} makeMain={makeMain} setPrivacy={setPrivacy}></EditDrawer>
+          <EditDrawer classes={classes} drawerOpen={drawerOpen} editID={editID} theme={theme} handleDrawerClose={handleDrawerClose} portfolio={portfolio} items={items} params={params} openCurrPage={openCurrPage} history={history} currPageOpen={currPageOpen} handleEditPage={handleEditPage} handleEditItem={handleEditItem} editPageWrapper={editPageWrapper} registerEditItem={registerEditItem} registerEditPage={registerEditPage} handleDialogOpen={handleDialogOpen} handleCreatePage={handleCreatePage} createPageWrapper={createPageWrapper} registerCreatePage={registerCreatePage} shareWrapper={shareWrapper} handleSocialMedia={handleSocialMedia} socialMediaWrapper={socialMediaWrapper} registerSocialMedia={registerSocialMedia} editItemWrapper={editItemWrapper} getField={getField} onImageChanged={onImageChanged} sharePortfolio={sharePortfolio} makeMain={makeMain} setPrivacy={setPrivacy}></EditDrawer>
           <ThemeProvider theme={headerTheme}>
             <CssBaseline/>
             <PortfolioHeader classes={classes} portfolio={portfolio} themeStyle={themeStyle} error={error} drawerOpen={drawerOpen} handleDrawerClose={handleDrawerClose} handleDrawerOpen={handleDrawerOpen}></PortfolioHeader>
@@ -342,7 +336,7 @@ const PortfolioHeader = ({classes, portfolio, themeStyle, error, drawerOpen, han
   );
 }
 
-const EditDrawer = ({classes, drawerOpen, editID, theme, handleEditTheme, handleDrawerClose, editTheme, portfolio, items, params, openCurrPage, history, currPageOpen, handleEditPage, editPageWrapper, registerEditItem, handleEditItem, registerEditPage, handleDialogOpen, handleCreatePage, createPageWrapper, registerCreatePage, shareWrapper, handleSocialMedia, socialMediaWrapper, registerSocialMedia, editItemWrapper, getField, register, onImageChanged, sharePortfolio, makeMain, setPrivacy}) => {
+const EditDrawer = ({classes, drawerOpen, editID, theme, handleDrawerClose, portfolio, items, params, openCurrPage, history, currPageOpen, handleEditPage, editPageWrapper, registerEditItem, handleEditItem, registerEditPage, handleDialogOpen, handleCreatePage, createPageWrapper, registerCreatePage, shareWrapper, handleSocialMedia, socialMediaWrapper, registerSocialMedia, editItemWrapper, getField, register, onImageChanged, sharePortfolio, makeMain, setPrivacy}) => {
   const item = items.find(item=>editID === item._id);
   
   return (
@@ -357,26 +351,22 @@ const EditDrawer = ({classes, drawerOpen, editID, theme, handleEditTheme, handle
     >
       <div className={classes.drawerHeader}>
         <Typography variant='h4' color='textPrimary' className={classes.drawerTitle}>{editID === '' ? 'Options' : 'Edit'}</Typography>
-        <Button
-          variant='contained' 
-          color='primary'
-          classes={{
-            label: theme.buttonLabel
-          }}
-          onClick={handleEditTheme}>
-            Theme
-        </Button>
         <IconButton onClick={() => handleDrawerClose()}>
           {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
         </IconButton>
       </div>
       <Divider />
-      {editTheme ? 
-      <PortfolioTheme portfolioID={portfolio._id} itemID={editID} item={item}/>
-      :
-      (editID === '' && Object.keys(portfolio).length !== 0) ?
-        (<div>
-        <Typography variant='h5' color='textPrimary'>Pages</Typography>
+      {(editID === '' && Object.keys(portfolio).length !== 0) ?
+        <div>
+          <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMore />}
+          aria-controls="panel2a-content"
+          id="panel2a-header"
+        >
+          <Typography variant='h5' color='textPrimary'>Pages</Typography>
+        </AccordionSummary>
+        <AccordionDetails classes={{root:classes.accordionDetails}}>
         <List>
             {portfolio.pages.map(page => (<div key={page.url}><ListItem button onClick={() => {if (page.name === params.pagename){openCurrPage();} else{history.push('/edit/' + portfolio._id + '/' + page.url);history.go(0);}}} selected={page.url === params.pagename}>
             <ListItemText primary={page.name}/>
@@ -422,7 +412,17 @@ const EditDrawer = ({classes, drawerOpen, editID, theme, handleEditTheme, handle
           ))}
         <form noValidate autoComplete="off" onSubmit={handleCreatePage(createPageWrapper)}><span className={classes.inline}><TextField className={classes.inlineTextInput} label='New Page' variant="outlined" name="pagename" inputRef={registerCreatePage}/><Button variant="outlined" color="primary" className={classes.inlineTextInput} startIcon={<AddIcon />} type="submit">Add</Button></span></form>
         </List>
-        <Typography variant='h5' color='textPrimary'>Privacy</Typography>
+        </AccordionDetails>
+      </Accordion>
+        <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMore />}
+          aria-controls="panel2a-content"
+          id="panel2a-header"
+        >
+          <Typography variant='h5' color='textPrimary'>Privacy</Typography>
+        </AccordionSummary>
+        <AccordionDetails classes={{root:classes.accordionDetails}}>
         <FormControlLabel
           control={<Checkbox 
             checked={portfolio.private} 
@@ -453,12 +453,36 @@ const EditDrawer = ({classes, drawerOpen, editID, theme, handleEditTheme, handle
         </List>
         </div>
         }
+        </AccordionDetails>
+      </Accordion>
+        <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMore />}
+          aria-controls="panel2a-content"
+          id="panel2a-header"
+        >
         <Typography variant='h5' color='textPrimary'>Social Media</Typography>
+        </AccordionSummary>
+        <AccordionDetails classes={{root:classes.accordionDetails}}>
         <form noValidate autoComplete="off" onSubmit={handleSocialMedia(socialMediaWrapper)}>
           {['facebook', 'instagram', 'twitter', 'linkedin'].map(name => (<TextField className={classes.textinput} label={name} variant="outlined" name={name} key={name} inputRef={registerSocialMedia}/>))}
           <Button variant="outlined" color="primary" className={classes.textinput} type="submit">Save</Button>
         </form>
-        </div>)
+        </AccordionDetails>
+      </Accordion>
+        <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMore />}
+          aria-controls="panel2a-content"
+          id="panel2a-header"
+        >
+          <Typography variant='h5'>Theme</Typography>
+        </AccordionSummary>
+        <AccordionDetails classes={{root:classes.accordionDetails}}>
+          <PortfolioTheme portfolioID={portfolio._id} itemID={editID} item={item}/>
+        </AccordionDetails>
+      </Accordion>
+        </div>
       :
       (<form className={classes.root} noValidate autoComplete="off" onSubmit={handleEditItem(editItemWrapper)}>
       <List>
