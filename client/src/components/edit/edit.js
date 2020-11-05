@@ -89,27 +89,31 @@ const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, d
 
   const editItemWrapper = (values) => {
     values.item = editID;
-    console.log(values);
     if (image !== []){
     //upload image
-    let data = new FormData();
-    data.append('file', image);
-    var res = api.post('/media', data, {
-      headers: {
-        'accept': 'application/json',
-        'Accept-Language': 'en-US,en;q=0.8',
-        'Content-Type': `multipart/form-data; boundary=${data._boundary}`
-      }
-    });
-    //save the media link and other text user typed in into item
-    res.then(function(result) {
-      values.mediaLink = "http://localhost:5000/api/media/image/"+ String(result.data); 
-      values.mediaType = 'image';
+    if (image.length !== 0){
+      let data = new FormData();
+      data.append('file', image);
+      var res = api.post('/media', data, {
+        headers: {
+          'accept': 'application/json',
+          'Accept-Language': 'en-US,en;q=0.8',
+          'Content-Type': `multipart/form-data; boundary=${data._boundary}`
+        }
+      });
+      //save the media link and other text user typed in into item
+      res.then(function(result) {
+        var newMediaLink = "http://localhost:5000/api/media/image/"+ String(result.data);
+        values.mediaLink = newMediaLink;  
+        values.mediaType = 'image';
+        editItem(values); 
+        handleDrawerClose();  
       });
     }
-    console.log(values);
-    editItem(values); 
-    handleDrawerClose(); 
+    else {
+      editItem(values);
+      handleDrawerClose();
+    }
   } 
 
   const addItemWrapper = (row, column) => {
@@ -206,7 +210,7 @@ const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, d
   const groupedItems = [];
   const items = (Object.keys(page).length !== 0) ? page.items : [];
   items.forEach(element => {
-    if ([element.row] in Object.keys(rowLengths)){
+    if (rowLengths.hasOwnProperty(element.row)){
       rowLengths[element.row]++;
       groupedItems[element.row].push(element);
     }
