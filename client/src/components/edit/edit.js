@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Typography, Drawer, Grid, Button, Accordion, AccordionSummary, AccordionDetails, TextField, Divider, Box, List, ListItem, ListItemText, ListItemIcon, Collapse, IconButton, Icon, FormControlLabel, CardActions, Checkbox, Switch } from '@material-ui/core';
+import { Typography, Drawer, Grid, Button, Accordion, AccordionSummary, AccordionDetails, TextField, Divider, Box, List, ListItem, ListItemText, ListItemIcon, Collapse, IconButton, Icon, FormControlLabel, Checkbox } from '@material-ui/core';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import {getPortfolio, getPage, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, setPrivacy, addSocialMedia, sharePortfolio, getTheme} from '../../actions/eportfolio';
 import { getFonts } from '../../actions/googleFonts';
 import { loadUser } from '../../actions/auth';
@@ -18,6 +19,8 @@ import { makeStyles, useTheme, ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import EditIcon from '@material-ui/icons/Edit';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -52,7 +55,8 @@ const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, d
   const [deleteID, setDeleteID] = React.useState('');
   const [toDelete, setToDelete] = React.useState('');
   const [image, setImage] =  React.useState([]);
-  const [test, setTest] = React.useState(false);
+  const [currMedia, setCurrMedia] = React.useState('');
+  const [move, setMove] = React.useState('');
 
   useEffect(() => {
     if (fonts.length === 0){
@@ -61,7 +65,7 @@ const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, d
     if (Object.keys(portfolio).length === 0 || portfolio._id !== params.id) {
         getPortfolio(params.id);
     }
-    if (Object.keys(page).length === 0 || !(page.url === params.pagename || (page.main && params.pagename=== undefined))) {
+    if (Object.keys(page).length === 0 || !(page.name === params.pagename || (page.main && params.pagename=== undefined))) {
       getPage(params.id, params.pagename);
     }
     if (Object.keys(portfolio).includes("socialmedia")){
@@ -88,6 +92,7 @@ const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, d
 
   const editItemWrapper = (values) => {
     values.item = editID;
+    //values.move = move;
     //upload image
     if (image.length !== 0){
       let data = new FormData();
@@ -101,7 +106,7 @@ const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, d
       });
       //save the media link and other text user typed in into item
       res.then(function(result) {
-        var newMediaLink = "http://localhost:5000/api/media/image/"+ String(result.data);
+        var newMediaLink = "http://eportfolio-quaranteam.herokuapp.com/api/media/image/"+ String(result.data);
         values.mediaLink = newMediaLink;  
         values.mediaType = 'image';
         editItem(values); 
@@ -109,6 +114,8 @@ const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, d
       });
     }
     else {
+      values.mediaLink = "";
+      values.mediaType = "";
       editItem(values);
       handleDrawerClose();
     }
@@ -167,19 +174,23 @@ const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, d
   const handleDrawerOpen = (id) => {
     setEditID(id);
     setDrawerOpen(true);
-    resetEditItem(getItem(id));
+    if (id !== ""){
+      resetEditItem(getItem(id));
+    }
   };
 
   const handleDrawerClose = () => {
     setDrawerOpen(false);
+    setMove('');
   };
 
   const getField = (index) => {
-    return ['title', 'subtitle', 'paragraph', 'linkText', 'linkAddress', 'row', 'column'][index];
+    return ['title', 'subtitle', 'paragraph', 'linkText'][index];
   }
 
   const getItem = (id) => {
     const curr = items.filter(item => item._id === id);
+    setCurrMedia(curr[0].mediaType);
     let item = {};
     ['title', 'subtitle', 'paragraph', 'mediaLink', 'mediaType', 'linkText', 'linkAddress', 'private', 'row', 'column'].forEach(field => {if (curr.length > 0 && Object.keys(curr[0]).includes(field)) item[field] = curr[0][field];});
     return item;
@@ -219,7 +230,7 @@ const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, d
         <Typography variant='h3'>You are not authorised to edit this portfolio.</Typography>
         </Box> :
         <Box>
-          <EditDrawer classes={classes} drawerOpen={drawerOpen} editID={editID} theme={theme} handleDrawerClose={handleDrawerClose} portfolio={portfolio} items={items} params={params} openCurrPage={openCurrPage} history={history} currPageOpen={currPageOpen} handleEditPage={handleEditPage} handleEditItem={handleEditItem} editPageWrapper={editPageWrapper} registerEditItem={registerEditItem} registerEditPage={registerEditPage} handleDialogOpen={handleDialogOpen} handleCreatePage={handleCreatePage} createPageWrapper={createPageWrapper} registerCreatePage={registerCreatePage} shareWrapper={shareWrapper} handleSocialMedia={handleSocialMedia} socialMediaWrapper={socialMediaWrapper} registerSocialMedia={registerSocialMedia} editItemWrapper={editItemWrapper} getField={getField} onImageChanged={onImageChanged} sharePortfolio={sharePortfolio} makeMain={makeMain} setPrivacy={setPrivacy}></EditDrawer>
+          <EditDrawer classes={classes} drawerOpen={drawerOpen} editID={editID} theme={theme} handleDrawerClose={handleDrawerClose} portfolio={portfolio} items={items} params={params} openCurrPage={openCurrPage} history={history} currPageOpen={currPageOpen} handleEditPage={handleEditPage} handleEditItem={handleEditItem} editPageWrapper={editPageWrapper} registerEditItem={registerEditItem} registerEditPage={registerEditPage} handleDialogOpen={handleDialogOpen} handleCreatePage={handleCreatePage} createPageWrapper={createPageWrapper} registerCreatePage={registerCreatePage} shareWrapper={shareWrapper} handleSocialMedia={handleSocialMedia} socialMediaWrapper={socialMediaWrapper} registerSocialMedia={registerSocialMedia} editItemWrapper={editItemWrapper} getField={getField} onImageChanged={onImageChanged} sharePortfolio={sharePortfolio} makeMain={makeMain} setPrivacy={setPrivacy} currMedia={currMedia} setImage={setImage} image={image} rowLengths={rowLengths} setMove={setMove} move={move}></EditDrawer>
           <ThemeProvider theme={headerTheme}>
             <CssBaseline/>
             <PortfolioHeader classes={classes} portfolio={portfolio} themeStyle={themeStyle} error={error} drawerOpen={drawerOpen} handleDrawerClose={handleDrawerClose} handleDrawerOpen={handleDrawerOpen}></PortfolioHeader>
@@ -258,7 +269,7 @@ const Edit = ({ classes, drawerOpen, groupedItems, themeStyle, portfolio, rowLen
             </Box>
         <Box className={classes.iconButton}> 
           <IconButton
-            onClick = {() => addItemWrapper(i, item.length + 1)}
+            onClick = {() => addItemWrapper(i, item.length)}
             className={`${classes.textSecondary}`}        
             children={<AddCircleOutlineIcon classes={{root:classes.addIcon}}/>}
             >
@@ -336,9 +347,9 @@ const PortfolioHeader = ({classes, portfolio, themeStyle, error, drawerOpen, han
   );
 }
 
-const EditDrawer = ({classes, drawerOpen, editID, theme, handleDrawerClose, portfolio, items, params, openCurrPage, history, currPageOpen, handleEditPage, editPageWrapper, registerEditItem, handleEditItem, registerEditPage, handleDialogOpen, handleCreatePage, createPageWrapper, registerCreatePage, shareWrapper, handleSocialMedia, socialMediaWrapper, registerSocialMedia, editItemWrapper, getField, register, onImageChanged, sharePortfolio, makeMain, setPrivacy}) => {
+const EditDrawer = ({classes, drawerOpen, editID, theme, handleDrawerClose, portfolio, items, params, openCurrPage, history, currPageOpen, handleEditPage, editPageWrapper, registerEditItem, handleEditItem, registerEditPage, handleDialogOpen, handleCreatePage, createPageWrapper, registerCreatePage, shareWrapper, handleSocialMedia, socialMediaWrapper, registerSocialMedia, editItemWrapper, getField, register, onImageChanged, sharePortfolio, makeMain, setPrivacy, currMedia, setImage, image, rowLengths, setMove, move}) => {
   const item = items.find(item=>editID === item._id);
-  
+  console.log(rowLengths);
   return (
     <Drawer
       className={classes.drawer}
@@ -448,7 +459,7 @@ const EditDrawer = ({classes, drawerOpen, editID, theme, handleDrawerClose, port
           {portfolio.allowedUsers.map((object)=>
           <ListItem key={object.email}>
             <ListItemText primary={object.email}></ListItemText>
-            <IconButton onClick={() => {console.log("test");sharePortfolio(object.email, false, portfolio._id);}}><ClearIcon></ClearIcon></IconButton>
+            <IconButton onClick={() => {sharePortfolio(object.email, false, portfolio._id);}}><ClearIcon></ClearIcon></IconButton>
           </ListItem>)}
         </List>
         </div>
@@ -487,21 +498,26 @@ const EditDrawer = ({classes, drawerOpen, editID, theme, handleDrawerClose, port
       (<form className={classes.root} noValidate autoComplete="off" onSubmit={handleEditItem(editItemWrapper)}>
       <List>
         <FormControlLabel
-        control={
-          <Switch
-            name="private"
-            color="primary"
-            inputRef={registerEditItem}
-          />
-        }
-        labelPlacement="start"
-        label="Private"
-      />
-        {['Title', 'Subtitle', 'Paragraph',  'Link Text', 'Link Address', 'row', 'column'].map((text, index) => (
-          <TextField key={getField(index)} className={classes.textinput} id='standard-basic' label={text} variant='outlined' name={getField(index)} inputRef={registerEditItem}/>
+          control={<input type="checkbox"  name="private"
+          ref={registerEditItem}/>}
+          label="Private"
+          labelPlacement = "start"
+        />
+        {['Title', 'Subtitle', 'Paragraph',  'Link Text'].map((text, index) => (
+          <TextField key={getField(index)} className={classes.textinput} label={text} variant='outlined' name={getField(index)} inputRef={registerEditItem}/>
         ))}
-        <TextField onChange={onImageChanged} className="upload"  type="file" id='standard-basic' label='choose image' variant='outlined'/>  
+        <Autocomplete
+          freeSolo
+          options={portfolio.pages}
+          getOptionLabel={(option) => option.name}
+          style={{ width: 300 }}
+          renderInput={(params) => <TextField {...params}  className={classes.textinput} label={'Link Address'} name='linkAddress' variant="outlined" inputRef={registerEditItem}/>}
+        />
+        {currMedia!=="" && ((image==="") ? <div className={classes.textinput}><Typography variant="p">{currMedia} removed</Typography></div>: <div className={classes.textinput}><Typography variant="p">Remove {currMedia}</Typography><IconButton onClick={() => {setImage("")}}><ClearIcon></ClearIcon></IconButton></div>)}
+        <input onChange={onImageChanged} className={classes.textinput} type="file" variant='outlined'/>
+        <div className={classes.textinput}><IconButton disabled={item===undefined || item.column===0} onClick={()=>{if(move==""){setMove("left")}else{setMove("")}}} color={(move==='left')? 'primary':'default'}><ChevronLeftIcon></ChevronLeftIcon></IconButton><IconButton disabled={item===undefined || item.row === 0} onClick={()=>{if(move==""){setMove("up")}else{setMove("")}}} color={(move==='up')? 'primary':'default'}><KeyboardArrowUpIcon></KeyboardArrowUpIcon></IconButton><IconButton disabled={item===undefined || item.row===Object.keys(rowLengths).length-1} onClick={()=>{if(move==""){setMove("down")}else{setMove("")}}} color={(move==='down')? 'primary':'default'}><KeyboardArrowDownIcon></KeyboardArrowDownIcon></IconButton><IconButton disabled={item===undefined || item.column===rowLengths[item.row.toString()]-1} onClick={()=>{if(move==""){setMove("right")}else{setMove("")}}} color={(move==='right')? 'primary':'default'}><ChevronRightIcon></ChevronRightIcon></IconButton></div>
         <Button variant='outlined' color='primary' className={classes.textinput} type='submit'>Save</Button>
+      <PortfolioTheme portfolioID={portfolio._id} itemID={editID} item={item}/>
       </List>      
       </form>
       )}

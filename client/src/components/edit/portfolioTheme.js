@@ -282,7 +282,7 @@ const PortfolioTheme = ({getFonts, fonts, saveTheme, theme, portfolioID, itemID,
                     label: theme.buttonLabel
                 }}
                 onClick={save}>
-                SAVE
+                SAVE THEME  
             </Button>
         </Box>
     );

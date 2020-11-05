@@ -89,18 +89,18 @@ const ViewTheme = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenti
     }
     if (Object.keys(error).length===0){
     if (Object.keys(portfolio).length === 0 || portfolio._id !== params.id) {
-        if (store.getState().auth.isAuthenticated){
+        if (isAuthenticated){
           getPortfolio(params.id);
         }
-        else{
+        else if (isAuthenticated===false){
           getPortfolioAsGuest(params.id);
         }
     }
-    if (Object.keys(page).length === 0 || portfolio._id !== params.id || !(page.url === params.pagename || (page.main && params.pagename===undefined))) {
-      if (store.getState().auth.isAuthenticated){
+    if (Object.keys(page).length === 0 || portfolio._id !== params.id || !(page.name === params.pagename || (page.main && params.pagename===undefined))) {
+      if (isAuthenticated){
         getPage(params.id, params.pagename);
       }
-      else{
+      else if (isAuthenticated===false){
         getPageAsGuest(params.id, params.pagename);
       }
     }
@@ -246,7 +246,7 @@ const CardActionsThemed = ({classes, object, history, owner, portfolioID}) => {
     <CardActions className={classes.viewCardActions}>
       <Button size='small'
         color='textPrimary'
-        onClick={()=> {window.location.href = object.linkAddress}}>
+        onClick={()=> {if (object.linkAddress.includes("http")){window.location.href = object.linkAddress} else {history.push('/view/' + portfolioID + '/' + object.linkAddress); history.go(0);}}}>
           {object.linkText}
       </Button>  
       <Comment itemID={object._id} owner={owner}/>
