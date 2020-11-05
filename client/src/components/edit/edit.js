@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Typography, Drawer, Grid, Button, CardMedia, TextField, Divider, Box, List, ListItem, ListItemText, ListItemIcon, Collapse, IconButton, Icon, FormControlLabel, CardActions, Checkbox } from '@material-ui/core';
+import { Typography, Drawer, Grid, Button, CardMedia, TextField, Divider, Box, List, ListItem, ListItemText, ListItemIcon, Collapse, IconButton, Icon, FormControlLabel, CardActions, Checkbox, Switch } from '@material-ui/core';
 import {getPortfolio, getPage, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, setPrivacy, addSocialMedia, sharePortfolio, getTheme} from '../../actions/eportfolio';
 import { getFonts } from '../../actions/googleFonts';
 import { loadUser } from '../../actions/auth';
@@ -43,7 +43,7 @@ const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, d
   const themeStyle = useThemeStyle();
   const history = useHistory();
   const params = useParams();
-  const { handleSubmit, register, reset } = useForm();
+  const { handleSubmit:handleEditItem, register:registerEditItem, reset:resetEditItem} = useForm();
   const { handleSubmit:handleCreatePage, register:registerCreatePage, reset:resetCreatePage} = useForm();
   const { handleSubmit:handleEditPage, register:registerEditPage, reset:resetEditPage} = useForm();
   const { handleSubmit:handleSocialMedia, register:registerSocialMedia, reset:resetSocialMedia} = useForm();
@@ -89,9 +89,8 @@ const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, d
 
   const editItemWrapper = (values) => {
     values.item = editID;
-
+    if (image !== []){
     //upload image
-    var filename;
     if (image.length !== 0){
       let data = new FormData();
       data.append('file', image);
@@ -104,8 +103,7 @@ const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, d
       });
       //save the media link and other text user typed in into item
       res.then(function(result) {
-        filename = String(result.data);
-        var newMediaLink = "http://localhost:5000/api/media/image/"+ String(filename);
+        var newMediaLink = "http://localhost:5000/api/media/image/"+ String(result.data);
         values.mediaLink = newMediaLink;  
         values.mediaType = 'image';
         editItem(values); 
@@ -116,7 +114,6 @@ const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, d
       editItem(values);
       handleDrawerClose();
     }
-    
   } 
 
   const addItemWrapper = (row, column) => {
@@ -172,7 +169,7 @@ const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, d
   const handleDrawerOpen = (id) => {
     setEditID(id);
     setDrawerOpen(true);
-    reset(getItem(id));
+    resetEditItem(getItem(id));
   };
 
   const handleDrawerClose = () => {
@@ -180,7 +177,7 @@ const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, d
   };
 
   const getField = (index) => {
-    return ['title', 'subtitle', 'paragraph', 'linkText', 'linkAddress', 'private', 'row', 'column'][index];
+    return ['title', 'subtitle', 'paragraph', 'linkText', 'linkAddress', 'row', 'column'][index];
   }
 
   const getItem = (id) => {
@@ -226,10 +223,10 @@ const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, d
     <Box className={classes.mainContent}>
       {Object.keys(error).length!==0 ?
         <Box className={themeStyle.content}>
-        <Typography variant='h3' color='textPrimary'>You are not authorised to edit this portfolio.</Typography>
+        <Typography variant='h3'>You are not authorised to edit this portfolio.</Typography>
         </Box> :
         <Box>
-          <EditDrawer classes={classes} drawerOpen={drawerOpen} editID={editID} theme={theme} handleEditTheme={handleEditTheme} handleDrawerClose={handleDrawerClose} editTheme={editTheme} portfolio={portfolio} items={items} params={params} openCurrPage={openCurrPage} history={history} currPageOpen={currPageOpen} handleEditPage={handleEditPage} editPageWrapper={editPageWrapper} registerEditPage={registerEditPage} handleDialogOpen={handleDialogOpen} handleCreatePage={handleCreatePage} createPageWrapper={createPageWrapper} registerCreatePage={registerCreatePage} shareWrapper={shareWrapper} handleSocialMedia={handleSocialMedia} socialMediaWrapper={socialMediaWrapper} registerSocialMedia={registerSocialMedia} handleSubmit={handleSubmit} editItemWrapper={editItemWrapper} getField={getField} register={register} onImageChanged={onImageChanged}></EditDrawer>
+          <EditDrawer classes={classes} drawerOpen={drawerOpen} editID={editID} theme={theme} handleEditTheme={handleEditTheme} handleDrawerClose={handleDrawerClose} editTheme={editTheme} portfolio={portfolio} items={items} params={params} openCurrPage={openCurrPage} history={history} currPageOpen={currPageOpen} handleEditPage={handleEditPage} handleEditItem={handleEditItem} editPageWrapper={editPageWrapper} registerEditItem={registerEditItem} registerEditPage={registerEditPage} handleDialogOpen={handleDialogOpen} handleCreatePage={handleCreatePage} createPageWrapper={createPageWrapper} registerCreatePage={registerCreatePage} shareWrapper={shareWrapper} handleSocialMedia={handleSocialMedia} socialMediaWrapper={socialMediaWrapper} registerSocialMedia={registerSocialMedia} editItemWrapper={editItemWrapper} getField={getField} onImageChanged={onImageChanged} sharePortfolio={sharePortfolio} makeMain={makeMain} setPrivacy={setPrivacy}></EditDrawer>
           <ThemeProvider theme={headerTheme}>
             <CssBaseline/>
             <PortfolioHeader classes={classes} portfolio={portfolio} themeStyle={themeStyle} error={error} drawerOpen={drawerOpen} handleDrawerClose={handleDrawerClose} handleDrawerOpen={handleDrawerOpen}></PortfolioHeader>
@@ -259,6 +256,7 @@ const Edit = ({ classes, drawerOpen, groupedItems, themeStyle, portfolio, rowLen
       
       {groupedItems.map((item, i)=> 
         <Grid container
+          key = {i}
           className={`${classes.gridPadding} ${classes.secondaryColor} ${clsx(classes.content, {
             [classes.contentShift]: drawerOpen,
           })}`}>
@@ -295,10 +293,10 @@ const Edit = ({ classes, drawerOpen, groupedItems, themeStyle, portfolio, rowLen
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => handleDialogClose(false)} color='primary' autoFocus>
+          <Button onClick={() => handleDialogClose(false)} autoFocus>
             No
           </Button>
-          <Button onClick={() =>handleDialogClose(true)} color='primary'>
+          <Button onClick={() =>handleDialogClose(true)}>
             Yes
           </Button>
         </DialogActions>
@@ -345,7 +343,7 @@ const PortfolioHeader = ({classes, portfolio, themeStyle, error, drawerOpen, han
   );
 }
 
-const EditDrawer = ({classes, drawerOpen, editID, theme, handleEditTheme, handleDrawerClose, editTheme, portfolio, items, params, openCurrPage, history, currPageOpen, handleEditPage, editPageWrapper, registerEditPage, handleDialogOpen, handleCreatePage, createPageWrapper, registerCreatePage, shareWrapper, handleSocialMedia, socialMediaWrapper, registerSocialMedia, handleSubmit, editItemWrapper, getField, register, onImageChanged}) => {
+const EditDrawer = ({classes, drawerOpen, editID, theme, handleEditTheme, handleDrawerClose, editTheme, portfolio, items, params, openCurrPage, history, currPageOpen, handleEditPage, editPageWrapper, registerEditItem, handleEditItem, registerEditPage, handleDialogOpen, handleCreatePage, createPageWrapper, registerCreatePage, shareWrapper, handleSocialMedia, socialMediaWrapper, registerSocialMedia, editItemWrapper, getField, register, onImageChanged, sharePortfolio, makeMain, setPrivacy}) => {
   const item = items.find(item=>editID === item._id);
   
   return (
@@ -386,7 +384,7 @@ const EditDrawer = ({classes, drawerOpen, editID, theme, handleEditTheme, handle
             {page.main && <ListItemIcon><HomeIcon></HomeIcon></ListItemIcon>}
             {page.name === params.pagename && (currPageOpen ? <ExpandLess /> : <ExpandMore />)}
           </ListItem>
-          {page.name === params.pagename && <Collapse in={currPageOpen} timeout="auto" unmountOnExit>
+          {(page.name === params.pagename || (page.main && params.pagename === undefined)) && <Collapse in={currPageOpen} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
             <ListItem className={classes.nested}>
               <form noValidate autoComplete="off" onSubmit={handleEditPage(editPageWrapper)}>
@@ -408,6 +406,7 @@ const EditDrawer = ({classes, drawerOpen, editID, theme, handleEditTheme, handle
             Make Main
             </Button>
             </ListItem>}
+            {!page.main && 
             <ListItem className={classes.nested}>
             <Button
             variant="outlined"
@@ -417,7 +416,7 @@ const EditDrawer = ({classes, drawerOpen, editID, theme, handleEditTheme, handle
             >
             Delete
             </Button>
-            </ListItem>
+            </ListItem>}
           </List>
         </Collapse>}
         </div>
@@ -450,7 +449,7 @@ const EditDrawer = ({classes, drawerOpen, editID, theme, handleEditTheme, handle
           {portfolio.allowedUsers.map((object)=>
           <ListItem key={object.email}>
             <ListItemText primary={object.email}></ListItemText>
-            <IconButton onClick={() => sharePortfolio(object.email, false, portfolio._id)}><ClearIcon></ClearIcon></IconButton>
+            <IconButton onClick={() => {console.log("test");sharePortfolio(object.email, false, portfolio._id);}}><ClearIcon></ClearIcon></IconButton>
           </ListItem>)}
         </List>
         </div>
@@ -462,10 +461,21 @@ const EditDrawer = ({classes, drawerOpen, editID, theme, handleEditTheme, handle
         </form>
         </div>)
       :
-      (<form className={classes.root} noValidate autoComplete="off" onSubmit={handleSubmit(editItemWrapper)}>
+      (<form className={classes.root} noValidate autoComplete="off" onSubmit={handleEditItem(editItemWrapper)}>
       <List>
-        {['Title', 'Subtitle', 'Paragraph',  'Link Text', 'Link Address', 'private', 'row', 'column'].map((text, index) => (
-          <TextField key={getField(index)} className={classes.textinput} id='standard-basic' label={text} variant='outlined' name={getField(index)} inputRef={register}/>
+        <FormControlLabel
+        control={
+          <Switch
+            name="private"
+            color="primary"
+            inputRef={registerEditItem}
+          />
+        }
+        labelPlacement="start"
+        label="Private"
+      />
+        {['Title', 'Subtitle', 'Paragraph',  'Link Text', 'Link Address', 'row', 'column'].map((text, index) => (
+          <TextField key={getField(index)} className={classes.textinput} id='standard-basic' label={text} variant='outlined' name={getField(index)} inputRef={registerEditItem}/>
         ))}
         <TextField onChange={onImageChanged} className="upload"  type="file" id='standard-basic' label='choose image' variant='outlined'/>  
         <Button variant='outlined' color='primary' className={classes.textinput} type='submit'>Save</Button>

@@ -97,7 +97,7 @@ router.delete('/:comment_id', auth, async (req, res) => {
     const comment = await Comment.findById(req.params.comment_id);
     const item = await Item.findById(comment.item);
     const portfolio = await Portfolio.findById(item.portfolio);
-
+    console.log(comment);
     // make sure comment exists
     if (!comment) {
       return res.status(404).json({ msg: 'Comment not found' });
@@ -117,7 +117,7 @@ router.delete('/:comment_id', auth, async (req, res) => {
     // find all comments with item_id
     const comments = await Comment.find()
       .where('item')
-      .in(item.id.toString())
+      .in(item._id.toString())
       .sort({ date: -1 })
       .exec();
 
