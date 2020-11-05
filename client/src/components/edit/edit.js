@@ -89,7 +89,6 @@ const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, d
 
   const editItemWrapper = (values) => {
     values.item = editID;
-    if (image !== []){
     //upload image
     if (image.length !== 0){
       let data = new FormData();
