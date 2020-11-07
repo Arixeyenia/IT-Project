@@ -104,6 +104,7 @@ const PickTemplate = ({createPortfolio, createPortfolioDetails, getTemplates, te
           <Button style={{marginBottom: '10px'}} 
             variant='contained' 
             color='primary' 
+            disabled={!Boolean(currTemplate)}
             onClick={()=>{createPortfolio(store.getState().eportfolio.createPortfolioDetails, currTemplate);}}
             classes={{
               label: theme.buttonLabel

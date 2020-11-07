@@ -47,3 +47,4 @@ export const SAVE_THEME = 'SAVE_THEME';
 export const GET_THEME = 'GET_THEME';
 export const GET_ITEM_THEME = 'GET_ITEM_THEME';
 export const SAVE_ITEM_THEME = 'SAVE_ITEM_THEME';
+export const GET_FONT_THEME = 'GET_FONT_THEME';

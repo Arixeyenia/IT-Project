@@ -1,6 +1,7 @@
 import { red } from '@material-ui/core/colors';
 import api from '../utils/api';
 import { createMuiTheme } from '@material-ui/core/styles';
+import WebFont from 'webfontloader';
 
 
 import {
@@ -36,7 +37,8 @@ import {
   SAVE_THEME,
   GET_THEME,
   GET_ITEM_THEME,
-  SAVE_ITEM_THEME
+  SAVE_ITEM_THEME,
+  GET_FONT_THEME
 } from './types';
 
 export const getUserEPortfolios = () => async (dispatch) => {
@@ -478,121 +480,116 @@ export const saveItemTheme = (newTheme) => async (dispatch) => {
   }
 }
 
-export const getTheme = (theme, fonts, type, itemID) => (dispatch) => {
-  const primaryFont5 = {
-    fontFamily: theme.primaryFontFamily,
-    fontStyle: theme.primaryFontVariant.search('italic') === -1 ? 'normal' : 'italic',
-    fontDisplay: 'swap',
-    fontWeight: '500',
-    src: `local(${theme.primaryFontFamily}),
-    url(${fonts.find(font=>font.family===theme.primaryFontFamily).files['500']}) format('ttf')`
-  }
-
-  const primaryFont4 = {
-      fontFamily: theme.primaryFontFamily,
-      fontStyle: theme.primaryFontVariant.search('italic') === -1 ? 'normal' : 'italic',
-      fontDisplay: 'swap',
-      fontWeight: '400',
-      src: `local(${theme.primaryFontFamily}),
-      local(${theme.primaryFontFamily}-Regular),
-      url(${fonts.find(font=>font.family===theme.primaryFontFamily).files['400']}) format('ttf')`
-  }
-
-  const secondaryFont2 = {
-      fontFamily: theme.secondaryFontFamily,
-      fontStyle: theme.secondaryFontVariant.search('italic') === -1 ? 'normal' : 'italic',
-      fontDisplay: 'swap',
-      fontWeight: '200',
-      src: `local(${theme.secondaryFontFamily}),
-      url(${fonts.find(font=>font.family===theme.secondaryFontFamily).files['200']}) format('ttf')`
-  }
-
-  const secondaryFont3 = {
-      fontFamily: theme.secondaryFontFamily,
-      fontStyle: theme.secondaryFontVariant.search('italic') === -1 ? 'normal' : 'italic',
-      fontDisplay: 'swap',
-      fontWeight: '300',
-      src: `local(${theme.secondaryFontFamily}),
-      url(${fonts.find(font=>font.family===theme.secondaryFontFamily).files['300']}) format('ttf')`
-  }
-
-  const secondaryFont4 = {
-      fontFamily: theme.secondaryFontFamily,
-      fontStyle: theme.secondaryFontVariant.search('italic') === -1 ? 'normal' : 'italic',
-      fontDisplay: 'swap',
-      fontWeight: '400',
-      src: `local(${theme.secondaryFontFamily}),
-      local(${theme.secondaryFontFamily}-Regular),
-      url(${fonts.find(font=>font.family===theme.secondaryFontFamily).files['400']}) format('ttf')`
-  }
-  const customTheme = createMuiTheme({
-      palette: {
-          primary: {
-              main: theme.primaryColor,
-          },
-          secondary: {
-              main: theme.secondaryColor
-          },
-      },
-      typography: {
-          fontFamily: `${theme.primaryFontFamily}, ${theme.secondaryFontFamily}, Roboto, SourceSansPro, Helvetica, Arial`,
-          h1: {
-              fontFamily: theme.primaryFontFamily,
-              fontWeight: 500,
-              fontSize: '3rem',
-          },
-          h3: {
-              fontFamily: theme.primaryFontFamily,
-              fontWeight: 400,
-              fontSize: '2rem',
-          },
-          body1: {
-              fontFamily: theme.secondaryFontFamily,
-              fontWeight: 200
-          },
-          body2: {
-              fontFamily: theme.secondaryFontFamily,
-              fontWeight: 400
-          },
-          subtitle1: {
-              fontFamily: theme.secondaryFontFamily,
-              fontWeight: 300
-          },
-          button: {
-              fontFamily: theme.secondaryFontFamily,
-              fontWeight: 300
-          }
-      },
-      overrides: {
-          MuiCssBaseline: {
-              '@global': {
-                  '@font-face': [
-                      primaryFont4,
-                      primaryFont5,
-                      secondaryFont2,
-                      secondaryFont3,
-                      secondaryFont4
-                  ]
-              }
-          }
+export const getTheme = (theme, type, itemID) => (dispatch) => {
+  WebFont.load({
+    google: {
+      families: [theme.primaryFontFamily, theme.secondaryFontFamily]
+    },
+    active: function () {
+      const customTheme = createMuiTheme({
+        palette: {
+            primary: {
+                main: theme.primaryColor,
+            },
+            secondary: {
+                main: theme.secondaryColor
+            },
+        },
+        typography: {
+            fontFamily: `${theme.primaryFontFamily}, ${theme.secondaryFontFamily}, Roboto, SourceSansPro, Helvetica, Arial`,
+            h1: {
+                fontFamily: theme.primaryFontFamily,
+                fontWeight: 500,
+                fontSize: '3rem',
+            },
+            h3: {
+                fontFamily: theme.primaryFontFamily,
+                fontWeight: 400,
+                fontSize: '2rem',
+            },
+            body1: {
+                fontFamily: theme.secondaryFontFamily,
+                fontWeight: 200
+            },
+            body2: {
+                fontFamily: theme.secondaryFontFamily,
+                fontWeight: 400
+            },
+            subtitle1: {
+                fontFamily: theme.secondaryFontFamily,
+                fontWeight: 300
+            },
+            button: {
+                fontFamily: theme.secondaryFontFamily,
+                fontWeight: 300
+            }
+        }
+      });
+      if (type === 'portfolio'){
+        const headerTheme = createMuiTheme(customTheme);
+        headerTheme.palette.primary.main = theme.headerBackgroundColor;
+        const portfolioThemes = {mainTheme: customTheme, headerTheme: headerTheme};
+        dispatch({
+          type: GET_THEME,
+          payload: portfolioThemes
+        });
       }
+      else {
+        const themeWithItemID = {id: itemID, theme: customTheme};
+        dispatch({
+          type: GET_ITEM_THEME,
+          payload: themeWithItemID
+        })
+      }
+    }
+  })
+  
+}
+
+export const getFontTheme = (theme) => (dispatch) => {
+  WebFont.load({
+    google: {
+      families: [theme.primaryFontFamily, theme.secondaryFontFamily],
+    },
+    active: function() {
+      const customTheme = createMuiTheme({
+        typography: {
+            fontFamily: `${theme.primaryFontFamily}, ${theme.secondaryFontFamily}, Roboto, SourceSansPro, Helvetica, Arial`,
+            h1: {
+                fontFamily: theme.primaryFontFamily,
+                fontWeight: 500,
+                fontSize: '3rem',
+            },
+            h3: {
+                fontFamily: theme.primaryFontFamily,
+                fontWeight: 400,
+                fontSize: '2rem',
+            },
+            body1: {
+                fontFamily: theme.secondaryFontFamily,
+                fontWeight: 200
+            },
+            body2: {
+                fontFamily: theme.secondaryFontFamily,
+                fontWeight: 400
+            },
+            subtitle1: {
+                fontFamily: theme.secondaryFontFamily,
+                fontWeight: 300
+            },
+            button: {
+                fontFamily: theme.secondaryFontFamily,
+                fontWeight: 300
+            }
+        }
+      });
+      console.log(customTheme);
+      dispatch({
+        type: GET_FONT_THEME,
+        payload: customTheme
+      });
+    }
   });
-  if (type === 'portfolio'){
-    const headerTheme = createMuiTheme(customTheme);
-    headerTheme.palette.primary.main = theme.headerBackgroundColor;
-    const portfolioThemes = {mainTheme: customTheme, headerTheme: headerTheme};
-    dispatch({
-      type: GET_THEME,
-      payload: portfolioThemes
-    });
-  }
-  else {
-    const themeWithItemID = {id: itemID, theme: customTheme};
-    dispatch({
-      type: GET_ITEM_THEME,
-      payload: themeWithItemID
-    })
-  }
 }
 
 export const getError = () => async (dispatch) => {

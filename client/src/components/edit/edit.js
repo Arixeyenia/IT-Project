@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Typography, Drawer, Grid, Button, CardMedia, TextField, Divider, Box, List, ListItem, ListItemText, ListItemIcon, Collapse, IconButton, Icon, FormControlLabel, CardActions, Checkbox, Switch } from '@material-ui/core';
 import {getPortfolio, getPage, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, setPrivacy, addSocialMedia, sharePortfolio, getTheme} from '../../actions/eportfolio';
-import { getFonts } from '../../actions/googleFonts';
 import { loadUser } from '../../actions/auth';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -37,7 +36,7 @@ import AddIcon from '@material-ui/icons/Add';
 import ClearIcon from '@material-ui/icons/Clear';
 import {Instagram, Facebook, LinkedIn, Twitter} from '@material-ui/icons';
 
-const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, loadUser, isAuthenticated, error, addSocialMedia, setPrivacy, sharePortfolio, getTheme, muiTheme, getFonts, fonts, headerTheme, itemMuiThemes}) => {
+const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, loadUser, isAuthenticated, error, addSocialMedia, setPrivacy, sharePortfolio, getTheme, muiTheme, headerTheme, itemMuiThemes}) => {
   const classes = useStyles();
   const theme = useTheme();
   const themeStyle = useThemeStyle();
@@ -56,9 +55,6 @@ const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, d
   const [image, setImage] =  React.useState([]);
 
   useEffect(() => {
-    if (fonts.length === 0){
-      getFonts();
-    }
     if (Object.keys(portfolio).length === 0 || portfolio._id !== params.id) {
         getPortfolio(params.id);
     }
@@ -68,16 +64,16 @@ const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, d
     if (Object.keys(portfolio).includes("socialmedia")){
       resetSocialMedia(portfolio.socialmedia);
     }
-    if (Object.keys(portfolio).length !== 0 && Object.keys(page).length !== 0 && fonts.length !== 0){
-      getTheme(portfolio.theme, fonts, 'portfolio', '');
+    if (Object.keys(portfolio).length !== 0 && Object.keys(page).length !== 0){
+      getTheme(portfolio.theme, 'portfolio', '');
     }
-    if (Object.keys(items).length !== 0 && fonts.length !== 0){
+    if (Object.keys(items).length !== 0){
       items.forEach(object => {
         if (object.theme)
-        getTheme(object.theme, fonts, 'item', object._id);
+        getTheme(object.theme, 'item', object._id);
       });
     }
-  }, [getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated, getFonts, fonts, getTheme]);
+  }, [getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated, getTheme]);
 
   const openCurrPage = () => {
     setCurrPageOpen(!currPageOpen);
@@ -505,8 +501,6 @@ EditTheme.propTypes = {
   sharePortfolio: PropTypes.func.isRequired,
   getTheme: PropTypes.func.isRequired,
   muiTheme: PropTypes.object.isRequired,
-  getFonts: PropTypes.func.isRequired,
-  fonts: PropTypes.arrayOf(PropTypes.object).isRequired,
   itemMuiThemes: PropTypes.arrayOf(PropTypes.object).isRequired,
   headerTheme: PropTypes.object.isRequired
 };
@@ -517,9 +511,8 @@ const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
   error: state.eportfolio.error,
   muiTheme: state.eportfolio.muiTheme,
-  fonts: state.googleFonts.fonts,
   itemMuiThemes: state.eportfolio.itemMuiThemes,
   headerTheme: state.eportfolio.headerTheme
 });
 
-export default connect(mapStateToProps, {getPage, getPortfolio, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, loadUser, addSocialMedia, setPrivacy, sharePortfolio, getFonts, getTheme})(EditTheme);
+export default connect(mapStateToProps, {getPage, getPortfolio, editItem, addItem, deleteItem, createPage, editPagename, makeMain, deletePage, loadUser, addSocialMedia, setPrivacy, sharePortfolio, getTheme})(EditTheme);
