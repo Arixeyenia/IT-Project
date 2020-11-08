@@ -184,5 +184,12 @@ export const useStyles = makeStyles((theme) => ({
     },
     cardGroup: {
       display: 'flex'
+    },
+    drawerPadding: {
+      paddingLeft: '10px'
+    },
+    displayColor: {
+      width: '20px',
+      height: '20px'
     }
   }));

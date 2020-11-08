@@ -31,7 +31,8 @@ import {
   SAVE_THEME,
   GET_THEME,
   GET_ITEM_THEME,
-  SAVE_ITEM_THEME
+  SAVE_ITEM_THEME,
+  GET_FONT_THEME
 } from '../actions/types';
 
 const initialState = {
@@ -48,6 +49,7 @@ const initialState = {
   muiTheme: {},
   headerTheme: {},
   itemMuiThemes: [],
+  fontTheme: {},
   error: {},
 };
 
@@ -305,6 +307,11 @@ export default function (state = initialState, action) {
           loading: false,
           error: {}
         }
+    case GET_FONT_THEME:
+      return {
+        ...state,
+        fontTheme: payload
+      }
     case GET_ERROR:
       return state;
     default:
