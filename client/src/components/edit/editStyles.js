@@ -188,5 +188,12 @@ export const useStyles = makeStyles((theme) => ({
     accordionDetails:{
       display: 'block',
       padding: 0
+    },
+    drawerPadding: {
+      paddingLeft: '10px'
+    },
+    displayColor: {
+      width: '20px',
+      height: '20px'
     }
   }));

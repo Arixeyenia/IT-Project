@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Typography } from '@material-ui/core';
-import logo from '../../images/Quaranteam.png';
+import logo from '../../images/Quaranteam-darkmode.png';
 import { makeStyles } from '@material-ui/core/styles';
 import { useThemeStyle } from '../../styles/themes';
 

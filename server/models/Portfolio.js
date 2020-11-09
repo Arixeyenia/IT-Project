@@ -76,17 +76,9 @@ const PortfolioSchema = new mongoose.Schema({
       type: String,
       default: 'Roboto'
     },
-    primaryFontVariant: {
-      type: String,
-      default: 'regular'
-    },
     secondaryFontFamily: {
       type: String,
       default: 'Source Sans Pro'
-    },
-    secondaryFontVariant: {
-      type: String,
-      default: 'regular'
     },
     primaryColor: {
       type: String,

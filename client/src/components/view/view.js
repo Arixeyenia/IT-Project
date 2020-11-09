@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { makeStyles, useTheme, ThemeProvider } from '@material-ui/core/styles';
 import { CssBaseline, Typography, Grid, Box, Card, CardContent, CardHeader, CardMedia, CardActions, Button, IconButton, CardActionArea } from '@material-ui/core';
 import {getPortfolio, getPage, getPortfolioAsGuest, getError, getSaved, savePortfolio, getPageAsGuest, getTheme } from '../../actions/eportfolio';
-import { getFonts } from '../../actions/googleFonts';
 import { loadUser } from '../../actions/auth';
 import { Link, useParams, useHistory } from 'react-router-dom';
 import store from '../../store';
@@ -77,16 +76,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ViewTheme = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated, error, getPortfolioAsGuest, getSaved, savePortfolio, savedPortfolios, getPageAsGuest, getTheme, muiTheme, getFonts, fonts, itemMuiThemes, headerTheme }) => {
+const ViewTheme = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated, error, getPortfolioAsGuest, getSaved, savePortfolio, savedPortfolios, getPageAsGuest, getTheme, muiTheme, itemMuiThemes, headerTheme }) => {
   const params = useParams();
   const theme = useTheme();
   const classes = useStyles();
   const themeStyle = useThemeStyle();
   const history = useHistory();
   useEffect(() => {
-    if (fonts.length === 0){
-      getFonts();
-    }
     if (Object.keys(error).length===0){
     if (Object.keys(portfolio).length === 0 || portfolio._id !== params.id) {
         if (isAuthenticated){
@@ -104,17 +100,17 @@ const ViewTheme = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenti
         getPageAsGuest(params.id, params.pagename);
       }
     }
-    if (Object.keys(portfolio).length !== 0 && Object.keys(page).length !== 0 && fonts.length !== 0){
-      getTheme(portfolio.theme, fonts, 'portfolio', '');
+    if (Object.keys(portfolio).length !== 0 && Object.keys(page).length !== 0){
+      getTheme(portfolio.theme, 'portfolio', '');
     }
-    if (Object.keys(items).length !== 0 && fonts.length !== 0){
+    if (Object.keys(items).length !== 0){
       items.forEach(object => {
         if (object.theme)
-        getTheme(object.theme, fonts, 'item', object._id);
+        getTheme(object.theme, 'item', object._id);
       });
     }
   }
-  }, [getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated, getFonts, fonts, getTheme]);
+  }, [getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated, getTheme]);
   const items = (Object.keys(page).length !== 0) ? page.items : [];
   const rowLengths = {};
   const groupedItems = [];
@@ -269,8 +265,6 @@ ViewTheme.propTypes = {
   getPageAsGuest: PropTypes.func.isRequired,
   getTheme: PropTypes.func.isRequired,
   muiTheme: PropTypes.object.isRequired,
-  getFonts: PropTypes.func.isRequired,
-  fonts: PropTypes.arrayOf(PropTypes.object).isRequired,
   itemMuiThemes: PropTypes.arrayOf(PropTypes.object).isRequired,
   headerTheme: PropTypes.object.isRequired
 };
@@ -282,9 +276,8 @@ const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
   error: state.eportfolio.error,
   muiTheme: state.eportfolio.muiTheme,
-  fonts: state.googleFonts.fonts,
   itemMuiThemes: state.eportfolio.itemMuiThemes,
   headerTheme: state.eportfolio.headerTheme
 });
 
-export default connect(mapStateToProps, {getPage, getPortfolio, loadUser, getPortfolioAsGuest, getSaved, savePortfolio, getPageAsGuest, getTheme, getFonts})(ViewTheme);
+export default connect(mapStateToProps, {getPage, getPortfolio, loadUser, getPortfolioAsGuest, getSaved, savePortfolio, getPageAsGuest, getTheme})(ViewTheme);

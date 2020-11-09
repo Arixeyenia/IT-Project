@@ -121,7 +121,6 @@ router.delete('/:comment_id', auth, async (req, res) => {
       .sort({ date: -1 })
       .exec();
 
-    console.log(comments);
 
     // return commend deleted message
     res.json(comments);
