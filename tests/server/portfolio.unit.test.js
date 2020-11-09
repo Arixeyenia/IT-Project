@@ -15,23 +15,22 @@ beforeAll(async () => {
         await firebase.auth().currentUser.getIdToken(true)
         .then(function (idToken){
             token = idToken;
-        })
-    })
-})
+        });
+    });
+});
 
 afterAll(async () => {
     await disconnectDB();
+    await firebase.auth().signOut();
+    await firebase.app().delete();
     // prevent open handle error
     await new Promise(resolve => setTimeout(() => resolve(), 500));
-})
-
-beforeEach(() => {
 });
 
 describe('Creating portfolios', ()=> {
     it('Create a portfolio without template', async () => {
         const res = await global.app
-            .post('/api/portfolio/')
+            .post('/api/portfolio')
             .set('x-auth-token', token)
             .send({
                 name: 'Jest testing portfolio',
@@ -43,7 +42,7 @@ describe('Creating portfolios', ()=> {
 
     it('Create a private portfolio', async () => {
         const res = await global.app
-            .post('/api/portfolio/')
+            .post('/api/portfolio')
             .set('x-auth-token', token)
             .send({
                 name: 'Jest testing portfolio',

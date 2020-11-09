@@ -23,7 +23,6 @@ class ServerEnvironment extends NodeEnvironment {
   }
 
   async teardown() {
-
     //await someTeardownTasks();
     await super.teardown();
   }

@@ -9,7 +9,7 @@
     "server": "node server.js",
     "client": "npm start --prefix ../client",
     "dev": "concurrently \"npm run server:dev\" \"npm run client\"",
-    "test": "jest --detectOpenHandles --runInBand"
+    "test": "jest --detectOpenHandles --runInBand --forceExit"
   },
   "engines": {
     "node": "12.x"

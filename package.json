@@ -28,6 +28,7 @@
     "axios": "^0.19.2"
   },
   "devDependencies": {
+    "form-data": "^3.0.0",
     "supertest": "^6.0.1"
   }
 }

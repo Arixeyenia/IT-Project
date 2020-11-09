@@ -24,6 +24,9 @@ beforeAll(async () => {
 
 afterAll(async () => {
     await disconnectDB();
+    await firebase.auth().signOut();
+    await firebase.app().delete();
+    // prevent open handle error
     await new Promise(resolve => setTimeout(() => resolve(), 500));
 });
 
