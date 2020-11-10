@@ -65,7 +65,6 @@ afterAll(async () => {
 it('Upload an image', async () => {
     
     let filepath = global.appDir.replace(/\\/g,'/').replace('tests/server', 'client/src/images/Quaranteam.png');
-    console.log(filepath);
     const res = await global.app
         .post('/api/media')
         .set('x-auth-token', token)
