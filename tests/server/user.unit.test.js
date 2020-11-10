@@ -17,6 +17,17 @@ beforeAll(async () => {
             token = idToken;
         });
     });
+    // Create a portfolio to test with
+    const res = await global.app
+        .post('/api/portfolio/')
+        .set('x-auth-token', token)
+        .send({
+            name: 'Jest testing page portfolio',
+            template: 'blank',
+            private: false
+        });
+    portfolio_id = res.body._id;
+    
     // Sign in with another account
     await firebase.auth().signOut();
     await firebase.auth().signInWithEmailAndPassword('arixeyenia@gmail.com', 'password').then(async () => {
@@ -31,16 +42,6 @@ beforeAll(async () => {
         .post('/api/auth')
         .set('x-auth-token', otherToken);
 
-    // Create a portfolio to test with
-    const res = await global.app
-        .post('/api/portfolio/')
-        .set('x-auth-token', token)
-        .send({
-            name: 'Jest testing page portfolio',
-            template: 'blank',
-            private: false
-        });
-    portfolio_id = res.body._id;
 });
 
 afterAll(async () => {
