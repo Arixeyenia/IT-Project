@@ -17,6 +17,10 @@ beforeAll(async () => {
             token = idToken;
         });
     });
+
+    await global.app
+        .post('/api/auth')
+        .set('x-auth-token', token);
 });
 
 afterAll(async () => {
