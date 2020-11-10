@@ -4,6 +4,8 @@ import Dashboard from '../dashboard/dashboard';
 import About from '../layout/About'
 import Contact from '../layout/Contact'
 import CreateEPortfolio from '../eportfolio/createPortfolio';
+import About from '../layout/About'
+import Contact from '../layout/Contact'
 import PickTemplate from '../eportfolio/PickTemplate';
 import PrivateRoute from '../routing/PrivateRoute';
 import View from '../view/view';
