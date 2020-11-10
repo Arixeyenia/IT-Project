@@ -5,7 +5,6 @@
 const {connectDB, disconnectDB} = require('../../server/config/db');
 const firebase = require('../../client/node_modules/firebase');
 const firebaseConfig = require('../../client/src/utils/firebaseConfig').firebaseConfig;
-const FormData = require('form-data');
 
 let token, portfolio_id, item_id, image_id, filename;
 
@@ -63,19 +62,14 @@ afterAll(async () => {
     await new Promise(resolve => setTimeout(() => resolve(), 1000));
 });
 
-let file =  require('../../client/src/images/Quaranteam.png');
-
 it('Upload an image', async () => {
-    console.log(file);
-    let data = new FormData();
-    data.append('file', file);
+    let filepath = global.appDir.replace('tests\\server', 'client\\src\\images\\Quaranteam.png'); 
+    console.log(filepath);
     const res = await global.app
         .post('/api/media')
-        .set('accept', 'application/json')
-        .set('Accept-Language', 'en-US,en;q=0.8')
-        .set('Content=Type', `multipart/form-data; boundary=${data._boundary}`)
         .set('x-auth-token', token)
-        .send(data);
+        .set('Content-Type', 'multipart/form-data')
+        .attach('file', filepath);
     expect(res.status).toBe(200);
     filename = res.body;
 });
@@ -97,5 +91,6 @@ it('Delete image', async () => {
     const res = await global.app
         .delete('/api/media/'+image_id)
         .set('x-auth-token', token);
-    expect(res.status).toBe(200);
+    // 302 is redirect code. This is expected.
+    expect(res.status).toBe(302);
 });

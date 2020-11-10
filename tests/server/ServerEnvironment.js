@@ -2,6 +2,7 @@ const NodeEnvironment = require('../../server/node_modules/jest-environment-node
 const request = require('supertest');
 const firebase = require('../../client/node_modules/firebase');
 const firebaseConfig = require('../../client/src/utils/firebaseConfig').firebaseConfig;
+const path = require('path');
 
 class ServerEnvironment extends NodeEnvironment {
   constructor(config, context) {
@@ -9,6 +10,8 @@ class ServerEnvironment extends NodeEnvironment {
     this.testPath = context.testPath;
     this.docblockPragmas = context.docblockPragmas;
     this.global.app = request(require('../../server/server'));
+    this.global.appDir = path.resolve(__dirname);
+    console.log(this.global.appDir);
   }
 
   async setup() {
