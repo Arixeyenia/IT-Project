@@ -100,7 +100,7 @@ router.post(
   }
 );
 
-// @route   GET api/portfolio/:id
+// @route   GET api/portfolio/single/:id
 // @desc    Get portfolio by Portfolio ID
 // @access  Private
 router.get('/single/:id', auth, async (req, res) => {
@@ -330,7 +330,7 @@ router.put('/socialmedia', auth, async (req, res) => {
       return res.status(401).json({ msg: 'User not authorized' });
     }
     socialMedia = { ...req.body};
-    delete socialMedia["portfolio"]; 
+    delete socialMedia["portfolio"];
     res.json(await Portfolio.findByIdAndUpdate(
         req.body.portfolio,
         { $set: { 'socialmedia': socialMedia } },  { new: true }
