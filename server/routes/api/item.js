@@ -89,8 +89,9 @@ router.put('/', auth, async (req, res) => {
     if (req.body.linkText !== null) updates.linkText = req.body.linkText;
     if (req.body.linkAddress !== null)
       updates.linkAddress = req.body.linkAddress;
-    if (req.body.row !== null) updates.row = req.body.row;
-    if (req.body.column !== null) updates.column = req.body.column;
+    if (req.body.move){
+      
+    } 
     res.json(
       await Item.findByIdAndUpdate(
         req.body.item,

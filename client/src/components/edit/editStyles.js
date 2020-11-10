@@ -185,6 +185,10 @@ export const useStyles = makeStyles((theme) => ({
     cardGroup: {
       display: 'flex'
     },
+    accordionDetails:{
+      display: 'block',
+      padding: 0
+    },
     drawerPadding: {
       paddingLeft: '10px'
     },

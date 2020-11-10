@@ -179,10 +179,10 @@ const PortfolioTheme = ({getFonts, fonts, saveTheme, theme, portfolioID, itemID,
     }
     return (
         <Box>
-            <Typography variant='h5'>Theme</Typography>
             <FormControlLabel
-                control={<Checkbox checked={custom} onChange={handleCustomChange} name='Custom' color='primary'/>}
-                label='Use a custom theme?'
+                control={<Checkbox checked={custom} onChange={(e) => {handleCustomChange(e)}} color = 'primary' name='Custom'/>}
+                label="Use custom theme"
+                labelPlacement = 'start'
                 className={classes.drawerPadding}
             />
             {custom ?
@@ -279,17 +279,16 @@ const PortfolioTheme = ({getFonts, fonts, saveTheme, theme, portfolioID, itemID,
                     </ThemeProvider>
                 </ListItem>}
             </List>}
-            
             {error.length !== 0 && <Typography variant='body1'>{error}</Typography>}
             <Box className={classes.drawerPadding}>
                 <Button
-                    variant='contained' 
+                    variant='outlined' 
                     color='primary'
                     classes={{
                         label: theme.buttonLabel
                     }}
                     onClick={save}>
-                    SAVE
+                    SAVE THEME
                 </Button>
             </Box>
         </Box>
