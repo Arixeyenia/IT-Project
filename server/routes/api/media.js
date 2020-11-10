@@ -64,7 +64,6 @@ router.get('/', (req, res) => res.send('Media route'));
 // @desc    Upload a media file to database
 // @access  Private
 router.post('/', [auth, upload.single('file')], async (req, res) => {
-  console.log(req.file);
   const filename = req.file.filename;
   return res.json(filename);
   //res.status(200).send('Uploaded image');
