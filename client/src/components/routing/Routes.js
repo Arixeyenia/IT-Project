@@ -1,8 +1,6 @@
 import React, { Fragment } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Dashboard from '../dashboard/dashboard';
-import About from '../layout/About'
-import Contact from '../layout/Contact'
 import CreateEPortfolio from '../eportfolio/createPortfolio';
 import About from '../layout/About'
 import Contact from '../layout/Contact'
