@@ -8,6 +8,7 @@ on:
     branches:
       - master
       - main
+      - jw-ci-jest-tests
 
 jobs:
   build:
