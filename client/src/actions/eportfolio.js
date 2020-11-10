@@ -583,7 +583,6 @@ export const getFontTheme = (theme) => (dispatch) => {
             }
         }
       });
-      console.log(customTheme);
       dispatch({
         type: GET_FONT_THEME,
         payload: customTheme

@@ -444,7 +444,7 @@ const EditDrawer = ({classes, drawerOpen, editID, theme, handleEditTheme, handle
           {portfolio.allowedUsers.map((object)=>
           <ListItem key={object.email}>
             <ListItemText primary={object.email}></ListItemText>
-            <IconButton onClick={() => {console.log("test");sharePortfolio(object.email, false, portfolio._id);}}><ClearIcon></ClearIcon></IconButton>
+            <IconButton onClick={() => {sharePortfolio(object.email, false, portfolio._id);}}><ClearIcon></ClearIcon></IconButton>
           </ListItem>)}
         </List>
         </div>

@@ -11,7 +11,6 @@ class ServerEnvironment extends NodeEnvironment {
     this.docblockPragmas = context.docblockPragmas;
     this.global.app = request(require('../../server/server'));
     this.global.appDir = path.resolve(__dirname);
-    console.log(this.global.appDir);
   }
 
   async setup() {
