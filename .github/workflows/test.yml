@@ -1,0 +1,15 @@
+name: CI Jest tests
+on: 
+  push:
+    branches:
+      - master
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install modules
+      run: npm run buildserver
+    - name: Run tests
+      run: npm test

@@ -9,8 +9,6 @@
     "buildclient": "cd ./client && npm install",
     "start": "cd ./server && npm run start",
     "dev": "cd ./server && npm run dev",
-    "testserver": "npm run testclient && npm run testserver",
-    "testclient": "cd ./client && npm test",
     "test": "cd ./server && npm test"
   },
   "repository": {
