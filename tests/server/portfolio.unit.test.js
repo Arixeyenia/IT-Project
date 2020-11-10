@@ -83,15 +83,12 @@ describe('Getting portfolios', () => {
             .get('/api/portfolio/single/'+portfolio_id)
             .set('x-auth-token', token);
         expect(res.status).toBe(200);
-        console.log(res.body);
-        console.log(portfolio_id);
     });
 
     it('Getting a portfolio by id - guest', async () => {
         const res = await global.app
             .get('/api/portfolio/guest/'+portfolio_id)
         expect(res.status).toBe(200);
-        console.log(portfolio_id);
     });
 
     // TODO: Please edit this after fixing images
