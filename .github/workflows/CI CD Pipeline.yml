@@ -8,6 +8,7 @@ on:
     branches:
       - master
       - main
+      - juwey-ci-jest-tests
 
 jobs:
   build:
@@ -27,7 +28,7 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
-    
+
     # Runs a single command using the runners shell
     - name: Login to Heroku Container Registry
       env:
