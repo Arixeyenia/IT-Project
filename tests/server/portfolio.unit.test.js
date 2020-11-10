@@ -20,6 +20,17 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
+    // Get all portfolios and delete
+    const res = await global.app
+            .get('/api/portfolio/user')
+            .set('x-auth-token', token);
+    let deletePortfolios = res.body;
+    console.log(deletePortfolios);
+    deletePortfolios.forEach(async portfolio => {
+        await global.app
+            .delete('/api/portfolio/delete/'+portfolio._id)
+            .set('x-auth-token', token);
+    });
     await disconnectDB();
     await firebase.auth().signOut();
     await firebase.app().delete();
@@ -191,11 +202,9 @@ describe('Templating', () => {
     });
 });
 
-it('Deleting all user portfolios', async () => {
-    await portfolios.forEach(async portfolio => {
-        const res = await global.app
-            .delete('/api/portfolio/delete/'+portfolio._id)
-            .set('x-auth-token', token);
-        expect(res.status).toBe(202);
-    });
+it('Deleting a portfolios', async () => {
+    const res = await global.app
+        .delete('/api/portfolio/delete/'+portfolio_id)
+        .set('x-auth-token', token);
+    expect(res.status).toBe(202);
 })
