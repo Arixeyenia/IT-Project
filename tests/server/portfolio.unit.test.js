@@ -29,7 +29,6 @@ afterAll(async () => {
             .get('/api/portfolio/user')
             .set('x-auth-token', token);
     let deletePortfolios = res.body;
-    console.log(deletePortfolios);
     deletePortfolios.forEach(async portfolio => {
         await global.app
             .delete('/api/portfolio/delete/'+portfolio._id)
