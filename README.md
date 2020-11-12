@@ -121,19 +121,28 @@ https://documenter.getpostman.com/view/12626526/TVK5cgbD
 ## Diagrams
 ### Motivational model
 <img src="client/src/images/motivationalModel.jpg"  width="500" >	
+
 ### Deployment diagram
 <img src="client/src/images/deploymentDiagram.png"  width="500" >	
+
 ### Architecture diagram
 <img src="client/src/images/architectureDiagram.jpg"  width="500" >	
+
 ### Domain Class diagram
 <img src="client/src/images/domainClassDiagram.png"  width="500" >	
+
 ### User stories
 <img src="client/src/images/userStories.png"  width="500" >	
+
 ### Component diagram
 <img src="client/src/images/componentDiagram.jpg"  width="500" >	
+
 ### Process diagram
 <img src="client/src/images/processDiagram.png"  width="500" >	
+
 ### Database diagram
 <img src="client/src/images/databaseDiagram.png"  width="500" >	
+
 ### Communication diagram
-<img src="client/src/images/communicationDiagram.png"  width="500" >	
+<img src="client/src/images/communicationDiagram.png"  width="500" >
+
