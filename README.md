@@ -133,3 +133,8 @@ https://documenter.getpostman.com/view/12626526/TVK5cgbD
 ### Traceability matrix
 <img src='docs/traceability_matrix_1.png' width='500'>
 <img src='docs/traceability_matrix_2.png' width='500'>
+
+## Google Fonts
+
+This project uses Google Fonts to allow for portfolio customisation for users. The attributions for all fonts in Google Fonts can be found at this link below.
+https://fonts.google.com/attribution
