@@ -130,3 +130,6 @@ https://documenter.getpostman.com/view/12626526/TVK5cgbD
 ### Communication diagram
 <img src="client/src/images/communicationDiagram.png"  width="500" >
 
+### Traceability matrix
+<img src='docs/traceability_matrix_1.png' width='500'>
+<img src='docs/traceability_matrix_2.png' width='500'>

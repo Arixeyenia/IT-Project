@@ -214,7 +214,7 @@ describe('Templating', () => {
     });
 });
 
-it('Deleting a portfolios', async () => {
+it('Deleting a portfolio', async () => {
     // create portfolio to delete so it doesn't interfere with tests
     let portfolio_id;
     const createRes = await global.app
