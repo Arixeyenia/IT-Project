@@ -118,4 +118,5 @@ Express
 ## Backend API Documentation  
 https://documenter.getpostman.com/view/12626526/TVK5cgbD   
 
-
+## Motivational model
+<img src="client/src/images/motivationalModel.jpg"  width="100%" >	
