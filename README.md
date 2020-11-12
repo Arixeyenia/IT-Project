@@ -15,8 +15,10 @@
   - [Backend API Documentation](#backend-api-documentation) 
   
                
-# User Documentation  
-
+# User Documentation      
+Our User Documentation is a static website hosted using Jekyll.     
+Comprehensive introduction of all features and design of our application is included in the User Documentation.                   
+                                     
 https://winnie76.github.io/Quaranteam/  
 
 # Setup  
