@@ -85,6 +85,15 @@ describe('Getting portfolios', () => {
     });
 
     it('Getting a portfolio by id - guest', async () => {
+        // ensure that portfolio is public
+        await global.app
+            .put('/api/portfolio/edit')
+            .set('x-auth-token', token)
+            .send({
+                portfolio: portfolio_id,
+                field: 'privacy',
+                value: false
+            });
         const res = await global.app
             .get('/api/portfolio/guest/'+portfolio_id)
         expect(res.status).toBe(200);
