@@ -71,7 +71,7 @@ const Landing = ({isAuthenticated}) => {
               label: theme.buttonLabel
             }}>
             {/** Change link */}
-            <Link to='/'>
+            <Link to='/about'>
               Learn More
             </Link>
           </Button>

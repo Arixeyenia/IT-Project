@@ -118,13 +118,13 @@ const Navbar = ({
           </ListItem>
           <ListItem disableGutters dense className={classes.listItem}>
             {/** change links */}
-            <Link to='/'>
+            <Link to='/about'>
               <MaterialUILink><Typography variant='body1' color='textPrimary'>About</Typography></MaterialUILink>
             </Link>
           </ListItem>
           <ListItem disableGutters dense className={classes.listItem}>
             {/** change links */}
-            <Link to='/'>
+            <Link to='/contact'>
               <MaterialUILink><Typography variant='body1' color='textPrimary'>Contact</Typography></MaterialUILink>
             </Link>
           </ListItem>
@@ -161,13 +161,13 @@ const Navbar = ({
           </ListItem>
           <ListItem disableGutters dense className={classes.listItem}>
             {/** change links */}
-            <Link to='/'>
+            <Link to='/about'>
               <MaterialUILink><Typography variant='body1' color='textPrimary'>About</Typography></MaterialUILink>
             </Link>
           </ListItem>
           <ListItem disableGutters dense className={classes.listItem}>
             {/** change links */}
-            <Link to='/'>
+            <Link to='/contact'>
               <MaterialUILink><Typography variant='body1' color='textPrimary'>Contact</Typography></MaterialUILink>
             </Link>
           </ListItem>
