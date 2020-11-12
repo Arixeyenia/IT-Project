@@ -64,14 +64,15 @@ React & Redux
 </p>  
 
 ## Frontend Routes
-http://localhost:3000/home   
-http://localhost:3000/dashboard   
-http://localhost:3000/eportfolio   
-http://localhost:3000/eportfolio/page
-TBA.....
-  
-  
-   
+http://localhost:3000/   
+http://localhost:3000/dashboard  
+http://localhost:3000/create-eportfolio  
+http://localhost:3000/pick-template  
+http://localhost:3000/about   
+http://localhost:3000/contact
+http://localhost:3000/view/:id/:pagename?
+http://localhost:3000/edit/:id/:pagename?
+     
 # Backend Documentation  
 ## Technologies  
 Express
