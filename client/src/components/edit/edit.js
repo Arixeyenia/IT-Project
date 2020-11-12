@@ -77,7 +77,6 @@ const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, d
       });
     }
   }, [getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated, getTheme]);
-
   const openCurrPage = () => {
     setCurrPageOpen(!currPageOpen);
   };
@@ -88,7 +87,7 @@ const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, d
 
   const editItemWrapper = (values) => {
     values.item = editID;
-    //values.move = move;
+    values.move = move;
     //upload image
     if (image.length !== 0){
       let data = new FormData();
@@ -219,6 +218,7 @@ const EditTheme = ({getPortfolio, portfolio, getPage, page, editItem, addItem, d
       groupedItems[element.row] = [element];
     }
   });
+  groupedItems.forEach(objs => objs.sort((a, b) =>  (a.column > b.column) ? 1 : ((b.column > a.column) ? -1 : 0)));
   return (
     <Box className={classes.mainContent}>
       {Object.keys(error).length!==0 ?
@@ -345,7 +345,6 @@ const PortfolioHeader = ({classes, portfolio, themeStyle, error, drawerOpen, han
 
 const EditDrawer = ({classes, drawerOpen, editID, theme, handleDrawerClose, portfolio, items, params, openCurrPage, history, currPageOpen, handleEditPage, editPageWrapper, registerEditItem, handleEditItem, registerEditPage, handleDialogOpen, handleCreatePage, createPageWrapper, registerCreatePage, shareWrapper, handleSocialMedia, socialMediaWrapper, registerSocialMedia, editItemWrapper, getField, register, onImageChanged, sharePortfolio, makeMain, setPrivacy, currMedia, setImage, image, rowLengths, setMove, move}) => {
   const item = items.find(item=>editID === item._id);
-  console.log(rowLengths);
   return (
     <Drawer
       className={classes.drawer}
@@ -511,7 +510,7 @@ const EditDrawer = ({classes, drawerOpen, editID, theme, handleDrawerClose, port
         />
         {currMedia!=="" && ((image==="") ? <div className={classes.textinput}><Typography variant="p">{currMedia} removed</Typography></div>: <div className={classes.textinput}><Typography variant="p">Remove {currMedia}</Typography><IconButton onClick={() => {setImage("")}}><ClearIcon></ClearIcon></IconButton></div>)}
         <input onChange={onImageChanged} className={classes.textinput} type="file" variant='outlined'/>
-        <div className={classes.textinput}><IconButton disabled={item===undefined || item.column===0} onClick={()=>{if(move==""){setMove("left")}else{setMove("")}}} color={(move==='left')? 'primary':'default'}><ChevronLeftIcon></ChevronLeftIcon></IconButton><IconButton disabled={item===undefined || item.row === 0} onClick={()=>{if(move==""){setMove("up")}else{setMove("")}}} color={(move==='up')? 'primary':'default'}><KeyboardArrowUpIcon></KeyboardArrowUpIcon></IconButton><IconButton disabled={item===undefined || item.row===Object.keys(rowLengths).length-1} onClick={()=>{if(move==""){setMove("down")}else{setMove("")}}} color={(move==='down')? 'primary':'default'}><KeyboardArrowDownIcon></KeyboardArrowDownIcon></IconButton><IconButton disabled={item===undefined || item.column===rowLengths[item.row.toString()]-1} onClick={()=>{if(move==""){setMove("right")}else{setMove("")}}} color={(move==='right')? 'primary':'default'}><ChevronRightIcon></ChevronRightIcon></IconButton></div>
+        <div className={classes.textinput}><IconButton disabled={item===undefined || item.column===0} onClick={()=>{if(move==""){setMove("left")}else{setMove("")}}} color={(move==='left')? 'primary':'default'}><ChevronLeftIcon></ChevronLeftIcon></IconButton><IconButton disabled={item===undefined || item.row === 0} onClick={()=>{if(move==""){setMove("up")}else{setMove("")}}} color={(move==='up')? 'primary':'default'}><KeyboardArrowUpIcon></KeyboardArrowUpIcon></IconButton><IconButton disabled={item===undefined || item.row===Object.keys(rowLengths).length-1 || rowLengths[item.row]===1} onClick={()=>{if(move==""){setMove("down")}else{setMove("")}}} color={(move==='down')? 'primary':'default'}><KeyboardArrowDownIcon></KeyboardArrowDownIcon></IconButton><IconButton disabled={item===undefined || item.column===rowLengths[item.row.toString()]-1} onClick={()=>{if(move==""){setMove("right")}else{setMove("")}}} color={(move==='right')? 'primary':'default'}><ChevronRightIcon></ChevronRightIcon></IconButton></div>
         <Button variant='outlined' color='primary' className={classes.textinput} type='submit'>Save</Button>
       <PortfolioTheme portfolioID={portfolio._id} itemID={editID} item={item}/>
       </List>      

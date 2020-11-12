@@ -9,6 +9,19 @@ const User = require('../../models/User');
 const Item = require('../../models/Item');
 const { parseDate } = require('tough-cookie');
 
+
+/*
+ Janky helper functions, to remove when populate is working
+*/
+const getItems = async (item) => {
+  const result = await Item.findById(item._id);
+  return result;
+};
+
+const getData = async (list) => {
+  return Promise.all(list.map((item) => getItems(item)));
+};
+
 /*
 The calls to create/edit/delete items 
 need to be added here, the following is
@@ -91,7 +104,47 @@ router.put('/', auth, async (req, res) => {
       updates.linkAddress = req.body.linkAddress;
     if (req.body.move){
       
-    } 
+      // retrieve page
+      const page = portfolio.pages.filter((page) => page._id.toString() == item.pageid);
+      const result = await getData(page[0].items);
+      let test;
+      let row;
+      switch(req.body.move){
+        case 'up':
+          updates.row = item.row - 1;
+          updates.column = result.filter((i) => i.row === item.row-1).length;
+          row = result.filter((i) => i.row === item.row);
+          for (let i=0; i<row.length; i++){
+            if (row[i].column > item.column){
+              test = await Item.findByIdAndUpdate(row[i]._id, {$set: {column : row[i].column-1}});
+            }
+          }
+          break;
+        case 'down':
+          updates.row = item.row + 1;
+          updates.column = result.filter((i) => i.row === item.row+1).length;
+          row = result.filter((i) => i.row === item.row);
+          for (let i=0; i<row.length; i++){
+            if (row[i].column > item.column){
+              test = await Item.findByIdAndUpdate(row[i]._id, {$set: {column : row[i].column-1}});
+            }
+          }
+          break;
+        case 'left':
+          row = result.filter((i) => i.row===item.row && i.column === item.column-1);
+          test = await Item.findByIdAndUpdate(row[0]._id, {$set: {column : row[0].column+1}});
+          updates.column = item.column - 1;
+          break;
+        case 'right':
+          row = result.filter((i) => i.row===item.row && i.column === item.column+1);
+          test = await Item.findByIdAndUpdate(row[0]._id, {$set: {column : row[0].column-1}});
+          updates.column = item.column + 1;
+          break;
+        default:
+          //pass
+          break;
+      }
+      } 
     res.json(
       await Item.findByIdAndUpdate(
         req.body.item,
@@ -121,6 +174,15 @@ router.delete('/:id', auth, async (req, res) => {
     // Check user permission
     if (portfolio.user.toString() !== req.user.uid)
       return res.status(401).json({ msg: 'User not authorized' });
+    // Shift other items in row
+    const page = portfolio.pages.filter((page) => page._id.toString() == item.pageid);
+    const result = await getData(page[0].items);
+    const row = result.filter((i) => i.row === item.row);
+    for (let i=0; i<row.length; i++){
+      if (row[i].column > item.column){
+        const test = await Item.findByIdAndUpdate(row[i]._id, {$set: {column : row[i].column-1}});
+      }
+    }
     await Item.findByIdAndDelete(req.params.item);
     // Delete item from portfolio
     const update = { $pull: { 'pages.$[elem].items': { _id: item } } };
