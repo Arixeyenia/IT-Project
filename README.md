@@ -19,19 +19,16 @@
 
 https://winnie76.github.io/Quaranteam/  
 
-  
-  
-# Frontend Documentation  
-## Setup  
+# Setup  
 1.cd client   
 2.npm install (automatically install all dependencies from client/package.json)   
+3. cd .. and cd server
+4.npm install
 
-
-**How to run both server and client:**
-1. go out of client folder by "cd .."  
-   (make sure you are at root folder)   
-2. do "npm run dev"   
-
+**How to run both server and client on localhost:**
+1. npm run dev (from root folder)
+  
+# Frontend Documentation  
   
 ## Technologies  
 React & Redux   
@@ -76,16 +73,6 @@ TBA.....
   
    
 # Backend Documentation  
-## Setup  
-1. Download Node.js  
-2. Download Postman (to make requests to backend for testing)  
-3. npm install
-
-**How to run both server and client:**
-1. go out of client folder by "cd .."  
-   (make sure you are at root folder)   
-2. do "npm run dev"    
-
 ## Technologies  
 Express
 
