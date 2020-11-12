@@ -19,7 +19,8 @@
 Our User Documentation is a static website hosted using github pages and Jekyll.    
                                           
 Comprehensive introduction of all features and design of our application is included there.                    
-                                     
+It also includes a search function to help users find needed information.            
+                                                          
 https://winnie76.github.io/Quaranteam/  
 
 # Setup  
