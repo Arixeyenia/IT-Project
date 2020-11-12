@@ -70,6 +70,7 @@ const CreateEPortfolio = ({creatingPortfolioName, resetCreatingPortfolioName}) =
           label='Private'
           className={classes.checkbox}
         />
+        <Typography variant='p'>*All content on a public portfolio is visible to anyone with the link by default, but privacy can still be set on individual items.</Typography>
         <Link onClick={() => name && creatingPortfolioName(name, privacy)} to={()=> name ? '/pick-template' : true}>
           <Button style={{float: 'right'}} 
             variant='contained' 

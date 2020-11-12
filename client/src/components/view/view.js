@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { makeStyles, useTheme, ThemeProvider } from '@material-ui/core/styles';
 import { CssBaseline, Typography, Grid, Box, Card, CardContent, CardHeader, CardMedia, CardActions, Button, IconButton, CardActionArea } from '@material-ui/core';
 import {getPortfolio, getPage, getPortfolioAsGuest, getError, getSaved, savePortfolio, getPageAsGuest, getTheme } from '../../actions/eportfolio';
-import { getFonts } from '../../actions/googleFonts';
 import { loadUser } from '../../actions/auth';
 import { Link, useParams, useHistory } from 'react-router-dom';
 import store from '../../store';
@@ -12,6 +11,7 @@ import Comment from '../comments/Comment';
 import { useThemeStyle } from '../../styles/themes';
 import StarIcon from '@material-ui/icons/Star';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
+import {Instagram, Facebook, LinkedIn, Twitter} from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
   cardRoot: {
@@ -63,51 +63,59 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: '10% !important',
     paddingRight: '10% !important',
   },
+  socialLinks:{      
+    display: 'flex',
+    alignItems: 'center'
+  },
+  socialMedia:{
+    marginTop: theme.spacing(2),
+    marginRight: theme.spacing(2),
+    fontSize: '20px',
+    color: 'white',
+    padding: theme.spacing(2),
+  },
 }));
 
-const ViewTheme = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated, error, getPortfolioAsGuest, getSaved, savePortfolio, savedPortfolios, getPageAsGuest, getTheme, muiTheme, getFonts, fonts, itemMuiThemes, headerTheme }) => {
+const ViewTheme = ({getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated, error, getPortfolioAsGuest, getSaved, savePortfolio, savedPortfolios, getPageAsGuest, getTheme, muiTheme, itemMuiThemes, headerTheme }) => {
   const params = useParams();
   const theme = useTheme();
   const classes = useStyles();
   const themeStyle = useThemeStyle();
   const history = useHistory();
   useEffect(() => {
-    if (fonts.length === 0){
-      getFonts();
-    }
+    if (Object.keys(error).length===0){
     if (Object.keys(portfolio).length === 0 || portfolio._id !== params.id) {
-        if (store.getState().auth.isAuthenticated){
+        if (isAuthenticated){
           getPortfolio(params.id);
         }
-        else{
-            getPortfolioAsGuest(params.id);
+        else if (isAuthenticated===false){
+          getPortfolioAsGuest(params.id);
         }
     }
-    if (Object.keys(page).length === 0 || portfolio._id !== params.id || !(page.url === params.pagename || (page.main && params.pagename===undefined))) {
-      if (store.getState().auth.isAuthenticated){
+    if (Object.keys(page).length === 0 || portfolio._id !== params.id || !(page.name === params.pagename || (page.main && params.pagename===undefined))) {
+      if (isAuthenticated){
         getPage(params.id, params.pagename);
       }
-      else{
+      else if (isAuthenticated===false){
         getPageAsGuest(params.id, params.pagename);
       }
     }
-    if (Object.keys(portfolio).length !== 0 && Object.keys(page).length !== 0 && fonts.length !== 0){
-      getTheme(portfolio.theme, fonts, 'portfolio', '');
+    if (Object.keys(portfolio).length !== 0 && Object.keys(page).length !== 0){
+      getTheme(portfolio.theme, 'portfolio', '');
     }
-    if (Object.keys(items).length !== 0 && fonts.length !== 0){
+    if (Object.keys(items).length !== 0){
       items.forEach(object => {
         if (object.theme)
-        getTheme(object.theme, fonts, 'item', object._id);
+        getTheme(object.theme, 'item', object._id);
       });
     }
-  }, [getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated, getFonts, fonts, getTheme]);
-  
-
+  }
+  }, [getPortfolio, portfolio, getPage, page, loadUser, isAuthenticated, getTheme]);
   const items = (Object.keys(page).length !== 0) ? page.items : [];
   const rowLengths = {};
   const groupedItems = [];
   items.forEach(element => {
-    if ([element.row] in Object.keys(rowLengths)){
+    if (rowLengths.hasOwnProperty(element.row)){
       rowLengths[element.row]++;
       groupedItems[element.row].push(element);
     }
@@ -150,6 +158,12 @@ const PortfolioHeader = ({classes, portfolio, savePortfolio, savedPortfolios}) =
             {isSaved ? <StarIcon/> : <StarBorderIcon/>}
         </IconButton>
         </Typography>
+        <div className={classes.socialLinks}>
+            {Object.keys(portfolio).includes("socialmedia") && portfolio.socialmedia.facebook !== "" && <Button className={classes.socialMedia} style={{backgroundColor:"#4267B2"}} onClick={() => window.location.href=portfolio.socialmedia.facebook}><Facebook/></Button>}
+            {Object.keys(portfolio).includes("socialmedia") && portfolio.socialmedia.instagram !== "" && <Button className={classes.socialMedia} style={{backgroundColor:"#DD2A7B"}} onClick={() => window.location.href=portfolio.socialmedia.instagram}><Instagram/></Button>}
+            {Object.keys(portfolio).includes("socialmedia") && portfolio.socialmedia.twitter !== "" && <Button className={classes.socialMedia} style={{backgroundColor:"#1DA1F2"}} onClick={() => window.location.href=portfolio.socialmedia.twitter}><Twitter/></Button>}
+            {Object.keys(portfolio).includes("socialmedia") && portfolio.socialmedia.linkedin !== "" && <Button className={classes.socialMedia} style={{backgroundColor:"#2867B2"}} onClick={() => window.location.href=portfolio.socialmedia.linkedin}><LinkedIn/></Button>}
+        </div>
     </Box>
   );
 }
@@ -228,7 +242,7 @@ const CardActionsThemed = ({classes, object, history, owner, portfolioID}) => {
     <CardActions className={classes.viewCardActions}>
       <Button size='small'
         color='textPrimary'
-        onClick={()=> {if(!/^(f|ht)tps?:\/\//i.test(object.linkAddress)){ history.push('/view/' + portfolioID + '/' + object.linkAddress);}else{ window.location.href = object.linkAddress;}window.location.reload(false);}}>
+        onClick={()=> {if (object.linkAddress.includes("http")){window.location.href = object.linkAddress} else {history.push('/view/' + portfolioID + '/' + object.linkAddress); history.go(0);}}}>
           {object.linkText}
       </Button>  
       <Comment itemID={object._id} owner={owner}/>
@@ -251,8 +265,6 @@ ViewTheme.propTypes = {
   getPageAsGuest: PropTypes.func.isRequired,
   getTheme: PropTypes.func.isRequired,
   muiTheme: PropTypes.object.isRequired,
-  getFonts: PropTypes.func.isRequired,
-  fonts: PropTypes.arrayOf(PropTypes.object).isRequired,
   itemMuiThemes: PropTypes.arrayOf(PropTypes.object).isRequired,
   headerTheme: PropTypes.object.isRequired
 };
@@ -264,9 +276,8 @@ const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
   error: state.eportfolio.error,
   muiTheme: state.eportfolio.muiTheme,
-  fonts: state.googleFonts.fonts,
   itemMuiThemes: state.eportfolio.itemMuiThemes,
   headerTheme: state.eportfolio.headerTheme
 });
 
-export default connect(mapStateToProps, {getPage, getPortfolio, loadUser, getPortfolioAsGuest, getSaved, savePortfolio, getPageAsGuest, getTheme, getFonts})(ViewTheme);
+export default connect(mapStateToProps, {getPage, getPortfolio, loadUser, getPortfolioAsGuest, getSaved, savePortfolio, getPageAsGuest, getTheme})(ViewTheme);

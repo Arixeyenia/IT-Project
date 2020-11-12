@@ -60,7 +60,7 @@ export default function ItemCard({classes, rowLengths, portfolioID, object, hist
       <CardActions className={classes.cardActions}>
         <Button size='small'
           color='textPrimary'
-          onClick={()=> {if(!/^(f|ht)tps?:\/\//i.test(object.linkAddress)){ history.push('/view/' + portfolioID + '/' + object.linkAddress);}else{ window.location.href = object.linkAddress;}window.location.reload(false);}}>
+          onClick={()=> {if (object.linkAddress.includes("http")){window.location.href = object.linkAddress} else {history.push('/view/' + portfolioID + '/' + object.linkAddress); history.go(0);}}}>
             {object.linkText}
         </Button>
       </CardActions>

@@ -51,13 +51,7 @@ const ItemSchema = new mongoose.Schema({
     primaryFontFamily: {
       type: String,
     },
-    primaryFontVariant: {
-      type: String,
-    },
     secondaryFontFamily: {
-      type: String,
-    },
-    secondaryFontVariant: {
       type: String,
     },
     primaryColor: {

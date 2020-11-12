@@ -77,6 +77,8 @@ const PickTemplate = ({createPortfolio, createPortfolioDetails, getTemplates, te
   return (
     <Fragment>
       <Box className={`${theme.content} ${classes.templateSelection} ${theme.fontg1} ${theme.gray6}`}>
+        <Typography variant='h2'>Select a template for {(Object.keys(createPortfolioDetails).length !== 0) ? createPortfolioDetails.name : ""}</Typography>
+        
         <List className={classes.list}>
           <ListItem className={classes.templateBox}>
             <Button variant='contained' 
@@ -95,13 +97,14 @@ const PickTemplate = ({createPortfolio, createPortfolioDetails, getTemplates, te
           </ListItem>)}
         </List>
         <Box className={classes.category}>
-          <Typography noWrap variant='body1' className={classes.categoryTypography}>Pick a template</Typography>
+          <Typography noWrap variant='body1' className={classes.categoryTypography}></Typography>
           <Box className={classes.categoryDiv}>
             <Divider light className={classes.categoryLine}/>
           </Box>
           <Button style={{marginBottom: '10px'}} 
             variant='contained' 
             color='primary' 
+            disabled={!Boolean(currTemplate)}
             onClick={()=>{createPortfolio(store.getState().eportfolio.createPortfolioDetails, currTemplate);}}
             classes={{
               label: theme.buttonLabel

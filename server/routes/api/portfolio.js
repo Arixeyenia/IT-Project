@@ -100,7 +100,7 @@ router.post(
   }
 );
 
-// @route   GET api/portfolio/:id
+// @route   GET api/portfolio/single/:id
 // @desc    Get portfolio by Portfolio ID
 // @access  Private
 router.get('/single/:id', auth, async (req, res) => {
@@ -109,11 +109,9 @@ router.get('/single/:id', auth, async (req, res) => {
     if (!portfolio) return res.status(404).json({ msg: 'Portfolio not found' });
     const user = await User.findOne({ googleId: req.user.uid });
     // check that user is authorized
-    
-    const isAllowed = portfolio.allowedUsers.some(function(user){
-      return user.equals(req.user.uid);
+    const isAllowed = portfolio.allowedUsers.some(function(allowedUser){
+      return allowedUser.email.trim() === user.email.trim();
     });
-
     if (
       portfolio.private &&
       portfolio.user.toString() !== req.user.uid &&
@@ -332,7 +330,7 @@ router.put('/socialmedia', auth, async (req, res) => {
       return res.status(401).json({ msg: 'User not authorized' });
     }
     socialMedia = { ...req.body};
-    delete socialMedia["portfolio"]; 
+    delete socialMedia["portfolio"];
     res.json(await Portfolio.findByIdAndUpdate(
         req.body.portfolio,
         { $set: { 'socialmedia': socialMedia } },  { new: true }
