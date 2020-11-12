@@ -215,6 +215,19 @@ describe('Templating', () => {
 });
 
 it('Deleting a portfolios', async () => {
+    // create portfolio to delete so it doesn't interfere with tests
+    let portfolio_id;
+    const createRes = await global.app
+        .post('/api/portfolio')
+        .set('x-auth-token', token)
+        .send({
+            name: 'Jest testing portfolio',
+            template: 'blank',
+            private: false
+        });
+
+    portfolio_id = createRes.body._id;
+
     const res = await global.app
         .delete('/api/portfolio/delete/'+portfolio_id)
         .set('x-auth-token', token);
