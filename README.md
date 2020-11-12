@@ -118,5 +118,22 @@ Express
 ## Backend API Documentation  
 https://documenter.getpostman.com/view/12626526/TVK5cgbD   
 
-## Motivational model
+## Diagrams
+# Motivational model
 <img src="client/src/images/motivationalModel.jpg"  width="100%" >	
+# Deployment diagram
+<img src="client/src/images/deploymentDiagram.png"  width="100%" >	
+# Architecture diagram
+<img src="client/src/images/architectureDiagram.jpg"  width="100%" >	
+# Domain Class diagram
+<img src="client/src/images/domainClassDiagram.png"  width="100%" >	
+# User stories
+<img src="client/src/images/userStories.png"  width="100%" >	
+# Component diagram
+<img src="client/src/images/componentDiagram.jpg"  width="100%" >	
+# Process diagram
+<img src="client/src/images/processDiagram.png"  width="100%" >	
+# Database diagram
+<img src="client/src/images/databaseDiagram.png"  width="100%" >	
+# Communication diagram
+<img src="client/src/images/communicationDiagram.png"  width="100%" >	
