@@ -151,25 +151,25 @@ https://fonts.google.com/attribution
 
 ## Deployment Guidelines                             
                                                  
-1.How to deploy the source code, database and run the project on a new server:                  
+### 1.How to deploy the source code, database and run the project on a new server:                  
                                                                          
--Hosted Application Link                                     
+#### -Hosted Application Link                                     
 The application was already deployed on Heroku and the hosted application link is https://eportfolio-quaranteam.herokuapp.com/                                                        
 
--How to deploy on a new server                              
+#### -How to deploy on a new server                              
 A comprehensive introduction to deployment and available tools                            
 https://vsupalov.com/deployment-intro/                             
 (As there are many ways of deploying with different tools, e.g. Heroku, Codestar, Azure, they will not all be listed here.)                                           
                                    
-2.Administrator login credentials for Heroku:                                
+### 2.Administrator login credentials for Heroku:                                
                                    
-HEROKU_API_KEY
+#### HEROKU_API_KEY
 b22327e2-5774-4300-ad23-fcf8b6ea4a66                             
                       
-HEROKU_APP_NAME                               
+#### HEROKU_APP_NAME                               
 eportfolio-qauranteam                         
                              
-To update HEROKU_API_KEY and HEROKU_APP_NAME                                
+#### To update HEROKU_API_KEY and HEROKU_APP_NAME                                
 Go to SETTINGS of Quaranteam repository                                          
 Then go to SECRETS                                          
 Click UPDATE to update them                             
@@ -177,18 +177,18 @@ Click UPDATE to update them
 For more information on Heroku Platform API, please visit https://devcenter.heroku.com/articles/platform-api-quickstart?fbclid=IwAR0WHhkSEUbGMSBZ46-cX7z6sIQOAWbokxxFveZ3FZ4T-ds0d8aIzOdDgwM         
                                            
                                                                     
-3.Access to code repository, databases and server:                                                                                                
-Code Repository                      
+### 3.Access to code repository, databases and server:                                                                                                
+#### Code Repository                      
 https://github.com/Arixeyenia/Quaranteam                                         
-Database - MongoDB Atlas                                                                   
+#### Database - MongoDB Atlas                                                                   
 invite clients to MongoDB Atlas during handover                                
-Heroku                     
+#### Heroku                     
 invite clients during handover                           
-Firebase google authentication                                  
+#### Firebase google authentication                                  
 invite clients during handover                                               
                                                                
-4.Installation Instructions:                                             
-Install web application locally (node.js should be installed already)                        
+### 4.Installation Instructions:                                             
+#### Install web application locally (node.js should be installed already)                        
 Go to https://github.com/Arixeyenia/Quaranteam which is the master branch of Quaranteam App       
 CLONE the master branch                                
 OPEN THE PROJECT FOLDER with any editor like VS Code                      
@@ -198,5 +198,5 @@ TYPE ‘cd server’ and then TYPE ‘npm install’
 Finally TYPE ‘npm run dev’ to run both client and server                    
 Client runs at localhost:3000; Server runs at localhost:5000                          
                            
-Run web application remotely                         
+#### Run web application remotely                         
 Open your browser and TYPE https://eportfolio-quaranteam.herokuapp.com/                                    
